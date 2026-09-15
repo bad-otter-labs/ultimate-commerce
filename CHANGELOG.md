@@ -1,6 +1,12 @@
 # Changelog
 
-## 0.1.2 - Unreleased
+## 0.1.3 - Unreleased
+
+- Finalise the first managed-release workflow after central Bad Otter product registration.
+- Fix canonical package validation so the build step verifies the locally resolved package filename rather than referencing a step output before it exists.
+- Require draft candidate validation, exact-package Stable promotion and live WordPress update/package integrity verification before creating the immutable GitHub release.
+
+## 0.1.2
 
 - Build deterministic release ZIPs through the canonical Bad Otter WordPress package contract.
 - Preserve `entitlement: null` in source while resolving the published package entitlement to `ultimate-commerce-core`.
