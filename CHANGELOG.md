@@ -1,6 +1,12 @@
 # Changelog
 
-## 0.1.1 - Unreleased
+## 0.1.2 - Unreleased
+
+- Build deterministic release ZIPs through the canonical Bad Otter WordPress package contract.
+- Preserve `entitlement: null` in source while resolving the published package entitlement to `ultimate-commerce-core`.
+- Add `free-core-updates` to the published manifest and validate deterministic package output in CI.
+
+## 0.1.1
 
 - Add canonical `module.json` for Bad Otter managed product registration.
 - Lock release identity to `ultimate-commerce` / `core` and validate manifest/version alignment in CI.

@@ -3,7 +3,7 @@
  * Plugin Name: Ultimate Commerce
  * Plugin URI: https://badotter.io/ultimate-commerce
  * Description: A modular enhancement platform for WooCommerce storefronts, customer journeys and commerce operations.
- * Version: 0.1.1
+ * Version: 0.1.2
  * Requires at least: 6.6
  * Requires PHP: 8.1
  * Requires Plugins: woocommerce
@@ -15,7 +15,7 @@
 
 defined('ABSPATH') || exit;
 
-define('ULTIMATE_COMMERCE_VERSION', '0.1.1');
+define('ULTIMATE_COMMERCE_VERSION', '0.1.2');
 define('ULTIMATE_COMMERCE_SCHEMA_VERSION', '1');
 define('ULTIMATE_COMMERCE_FILE', __FILE__);
 define('ULTIMATE_COMMERCE_DIR', plugin_dir_path(__FILE__));

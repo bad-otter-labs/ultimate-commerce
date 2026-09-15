@@ -57,15 +57,8 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          version='${{ steps.release.outputs.version }}'
-          mkdir -p dist
-          stage="$(mktemp -d)"
-          mkdir -p "$stage/ultimate-commerce"
-          rsync -a packages/ultimate-commerce/ "$stage/ultimate-commerce/" --exclude '*.zip' --exclude '.DS_Store'
-          (cd "$stage" && zip -qr "$GITHUB_WORKSPACE/dist/ultimate-commerce-${version}.zip" ultimate-commerce)
-          rm -rf "$stage"
-          unzip -t "dist/ultimate-commerce-${version}.zip" >/dev/null
-          sha256sum "dist/ultimate-commerce-${version}.zip" | tee "dist/ultimate-commerce-${version}.zip.sha256"
+          python3 scripts/build-plugin-package.py --source packages/ultimate-commerce --output-dir dist
+          unzip -t "dist/ultimate-commerce-${{ steps.release.outputs.version }}.zip" >/dev/null
 
       - name: Request Bad Otter publisher identity
         if: steps.release.outputs.selected == 'true'
@@ -89,6 +82,7 @@ jobs:
             -H "Authorization: Bearer $BADOTTER_OIDC_TOKEN" \
             -F "package=@${package};filename=$(basename "$package");type=application/zip" \
             -F "reason=Automated Ultimate Commerce release: ${GITHUB_REPOSITORY}@${GITHUB_SHA}" \
+            -F "releaseNotes=Ultimate Commerce ${{ steps.release.outputs.version }}" \
             -F "channel=stable" \
             -F "publish=true" \
             https://api.badotter.io/v1/release-publisher/ingest
