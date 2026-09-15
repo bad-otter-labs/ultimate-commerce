@@ -1,0 +1,80 @@
+name: Validate Ultimate Commerce
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: [self-hosted, Linux, X64, badotter, ci]
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Validate package root
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -f packages/ultimate-commerce/ultimate-commerce.php
+          test -f packages/ultimate-commerce/src/Plugin.php
+          test -f packages/ultimate-commerce/src/Support/ModuleRegistry.php
+          test -f packages/ultimate-commerce/src/Updates/ManagedUpdates.php
+
+      - name: Validate PHP syntax
+        shell: bash
+        run: |
+          set -euo pipefail
+          while IFS= read -r -d '' file; do
+            echo "Checking $file"
+            php -l "$file"
+          done < <(find packages/ultimate-commerce -type f -name '*.php' -print0)
+
+      - name: Validate plugin identity and version
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import re
+          from pathlib import Path
+          p = Path('packages/ultimate-commerce/ultimate-commerce.php').read_text()
+          header = re.search(r'^\s*\*\s*Version:\s*([^\s]+)', p, re.M)
+          const = re.search(r"define\('ULTIMATE_COMMERCE_VERSION',\s*'([^']+)'\)", p)
+          if not header or not const or header.group(1) != const.group(1):
+              raise SystemExit('Plugin header and ULTIMATE_COMMERCE_VERSION must match')
+          if 'Requires Plugins: woocommerce' not in p:
+              raise SystemExit('WooCommerce dependency header is required')
+          if 'Update URI: https://badotter.io/ultimate-commerce' not in p:
+              raise SystemExit('Bad Otter Update URI is required')
+          print('Validated Ultimate Commerce v' + header.group(1))
+          PY
+
+      - name: Enforce reusable repository boundary
+        shell: bash
+        run: |
+          set -euo pipefail
+          if grep -RniE 'FishingClothing|fishingclothing\.co\.uk' packages/ultimate-commerce; then
+            echo 'Store-specific FishingClothing references are forbidden in Ultimate Commerce.' >&2
+            exit 1
+          fi
+
+      - name: Validate managed updater invariants
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          from pathlib import Path
+          text = Path('packages/ultimate-commerce/src/Updates/ManagedUpdates.php').read_text()
+          for marker in ('pre_set_site_transient_update_plugins', 'upgrader_pre_download', 'checksum_mismatch', 'verifyArchive'):
+              if marker not in text:
+                  raise SystemExit('Managed updater invariant missing: ' + marker)
+          client = Path('packages/ultimate-commerce/src/Updates/BadOtterClient.php').read_text()
+          if "'/updates/' . self::PRODUCT . '/core'" not in client:
+              raise SystemExit('Bad Otter update endpoint invariant missing')
+          print('Managed updater invariants validated')
+          PY
