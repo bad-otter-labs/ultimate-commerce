@@ -1,8 +1,10 @@
 # Ultimate Commerce Founding Architecture
 
-Status: **Founding product and engineering constitution**
+Status: **Founding technical and engineering constitution**
 
-This document is the source of truth for the architecture, ownership boundaries, product rules and engineering principles of Ultimate Commerce. Future implementation must preserve these principles unless a deliberate architecture decision updates this document.
+This document is the source of truth for Ultimate Commerce technical architecture, WooCommerce ownership boundaries, reusable domain rules and engineering principles.
+
+`BLUEPRINT.md` is the source of truth for product family, Free/Pro packaging, WordPress.org distribution, security/commercial policy and product naming. `ROADMAP.md` defines implementation sequence. Where an older statement in this document conflicts with `BLUEPRINT.md` on those product/distribution subjects, `BLUEPRINT.md` wins and this document must be reconciled deliberately.
 
 ## 1. Mission
 
@@ -16,30 +18,25 @@ The first store using Ultimate Commerce is a proving ground, not a privileged co
 
 ## 2. Repository authority and hard boundary
 
-This repository is the sole source of truth for reusable Ultimate Commerce behaviour.
+This repository is the sole source of truth for reusable **Ultimate Commerce Free** behaviour and the public contracts consumed by stores, Pro and third-party extensions.
 
 Belongs here:
 
 - reusable product and catalogue enhancements
 - product-card data and behaviour
-- variation and swatch behaviour
-- quick add and cart drawer behaviour
-- checkout enhancements
-- account enhancements
-- customer commerce profiles
-- wishlists and saved items
-- stock alerts
-- returns and exchanges
-- order tracking normalisation
-- merchandising rules
-- promotions
-- recommendations
-- search provider contracts
+- baseline variation and swatch behaviour
+- baseline quick add and cart drawer behaviour
+- baseline account/customer experience contracts
+- wishlist/recently-viewed foundations
+- baseline stock presentation
 - analytics/event contracts
-- integration adapter contracts
-- commerce admin tooling
-- background commerce jobs
+- integration adapter contracts and public interfaces
+- commerce admin tooling and diagnostics
+- background commerce job infrastructure
 - reusable WooCommerce interoperability code
+- extension points used by Ultimate Commerce Pro
+
+Reusable paid implementation belongs in the separate Ultimate Commerce Pro product/repository once that product is established.
 
 Does not belong here:
 
@@ -55,6 +52,7 @@ Does not belong here:
 - credentials or secrets
 - bespoke ERP mappings for one merchant
 - conditionals based on a customer/store name
+- paid Pro implementation hidden behind a licence check inside Free
 
 There must never be code such as `if ( $store === 'some-client' )` in Ultimate Commerce.
 
@@ -70,13 +68,16 @@ The intended dependency direction is:
 ```text
 WordPress
     -> WooCommerce
-        -> Ultimate Commerce
-            -> Store implementation / theme / site plugin
+        -> Ultimate Commerce for WooCommerce (Free)
+            -> Ultimate Commerce Pro (optional)
+                -> Store implementation / theme / site plugin
 ```
 
-The store may depend on Ultimate Commerce.
+Free must never depend on Pro.
 
-Ultimate Commerce must **never depend on a store repository, store theme or store plugin**.
+Pro may depend on documented public Free contracts.
+
+A store may depend on Ultimate Commerce capabilities but must never require a fork.
 
 Ultimate Commerce must also work without any proprietary presentation framework. A store may style/render Ultimate Commerce using its own theme. UC therefore exposes semantic data, state, hooks, APIs, templates/slots and minimal functional UI rather than requiring a specific design system.
 
@@ -93,6 +94,8 @@ Ultimate Commerce must also work without any proprietary presentation framework.
 9. Disabled modules should not load unnecessary frontend assets or execute unnecessary queries.
 10. Performance, accessibility, security, observability and upgradeability are product features.
 11. Every enhancement should materially improve buying, servicing, merchandising or operating a store.
+12. Pro extends Free through public contracts; Free is never a crippled loader for Pro.
+13. Ultimate Commerce modules should become more valuable when used together while remaining independently useful.
 
 ## 5. WooCommerce ownership vs Ultimate Commerce ownership
 
@@ -133,9 +136,29 @@ Order code must be HPOS-safe. Ultimate Commerce must not assume orders are WordP
 
 Where an Ultimate Commerce record refers to a Woo object, it stores the Woo identifier rather than cloning the Woo object.
 
-## 6. Plugin identity
+## 6. Product and plugin identity
 
-Canonical plugin slug:
+Brand:
+
+`Ultimate Commerce`
+
+Public Free plugin name:
+
+`Ultimate Commerce for WooCommerce`
+
+Planned WordPress.org slug (subject to approval):
+
+`ultimate-commerce-for-woocommerce`
+
+Paid companion:
+
+`Ultimate Commerce Pro`
+
+Planned Pro slug:
+
+`ultimate-commerce-pro`
+
+Internal Bad Otter product identity may remain:
 
 `ultimate-commerce`
 
@@ -153,14 +176,17 @@ Canonical REST namespace for genuinely UC-owned routes:
 
 Use Woo Store API extension mechanisms when UC is enriching supported Store API resources. Do not create a duplicate cart, product or checkout API merely to avoid integrating with WooCommerce.
 
-## 7. Modular architecture
+## 7. Modular architecture and product tiers
 
-Ultimate Commerce is one installable plugin with independently activatable modules behind a central module registry.
+Ultimate Commerce Free is an installable plugin with independently activatable modules behind a central module registry.
+
+Ultimate Commerce Pro is a separate installable plugin that requires Free and registers additional modules through documented public Free contracts.
 
 A module must declare at minimum:
 
 - identifier
 - human-readable name
+- owning product/tier
 - dependencies
 - compatibility requirements
 - settings schema where applicable
@@ -169,97 +195,113 @@ A module must declare at minimum:
 
 Disabling a module must remove its shopper/admin behaviour cleanly and, where practical, prevent its assets and jobs from loading.
 
-Expected modules include:
+Expected Free modules include:
 
-### Storefront
+### Free storefront/platform
 
-- Catalogue
+- Catalogue / Product View Models
 - Product Cards
-- Product Display
-- Variants & Swatches
+- Basic Variants & Swatches
 - Quick Add
-- Cart Drawer
-- Enhanced Cart
-- Checkout Enhancements
+- Basic Cart Drawer
+- Basic Wishlist
 - Recently Viewed
+- Basic Stock Presentation
+- Basic Account/Order Contracts
+- Analytics Event Contracts
+- Integration Registry Contracts
+- Scheduled Jobs Infrastructure
+- Diagnostics
+- Import/Export of safe configuration
 
-### Customer
+Expected Pro module families include:
 
-- Enhanced Account
-- Wishlist
-- Saved Commerce Profile / Personal Attributes
-- Stock Alerts
-- Order Experience
+### Pro conversion and discovery
 
-### Aftercare
+- Advanced Variants / Linked Colours
+- Advanced Cart & Conversion
+- Advanced Checkout Enhancements
+
+### Pro customer lifecycle
+
+- Advanced Customer Portal
+- My Size / Saved Commerce Profile
+- Back-in-stock / Stock Intelligence
+
+### Pro aftercare
 
 - Returns
 - Exchanges
 - Tracking
 
-### Merchandising
+### Pro merchandising
 
 - Dynamic Collections
 - Promotions
 - Recommendations
 - Product Relationships / Complete the Look
-
-### Platform
-
-- Search Contracts
-- Integration Registry
-- Notifications
-- Analytics Events
-- Scheduled Jobs
-- Diagnostics
-- Import/Export of UC configuration
+- Advanced Analytics / Value Attribution
 
 A module may expose extension points to other modules, but circular module dependencies are prohibited.
 
+Pro must not rely on secret privileged APIs unavailable to legitimate extensions.
+
 ## 8. Proposed code layout
 
-The implementation should begin with a structure conceptually similar to:
+The Free repository should evolve toward a structure conceptually similar to:
 
 ```text
 ultimate-commerce/
-├── ultimate-commerce.php
+├── ultimate-commerce-for-woocommerce.php
 ├── composer.json
 ├── package.json
 ├── src/
 │   ├── Bootstrap/
 │   ├── Contracts/
 │   ├── Infrastructure/
+│   ├── Security/
 │   ├── Support/
 │   └── WooCommerce/
 ├── modules/
 │   ├── catalogue/
 │   ├── product-cards/
 │   ├── variants/
+│   ├── quick-add/
 │   ├── cart/
-│   ├── checkout/
-│   ├── account/
 │   ├── wishlist/
-│   ├── stock-alerts/
-│   ├── returns/
-│   ├── exchanges/
-│   ├── tracking/
-│   ├── merchandising/
-│   ├── promotions/
-│   ├── recommendations/
+│   ├── recently-viewed/
+│   ├── stock/
+│   ├── account/
 │   └── analytics/
 ├── integrations/
-│   ├── search/
-│   ├── tracking/
-│   ├── returns/
-│   ├── notifications/
-│   └── analytics/
 ├── assets/
 ├── templates/
 ├── tests/
 └── docs/
 ```
 
-The final structure may evolve, but domain boundaries must remain explicit.
+The Pro repository should mirror the same domain discipline rather than becoming a monolith:
+
+```text
+ultimate-commerce-pro/
+├── ultimate-commerce-pro.php
+├── modules/
+│   ├── advanced-variants/
+│   ├── advanced-cart/
+│   ├── merchandising/
+│   ├── recommendations/
+│   ├── customer-portal/
+│   ├── my-size/
+│   ├── stock-intelligence/
+│   ├── returns/
+│   ├── exchanges/
+│   ├── tracking/
+│   ├── promotions/
+│   └── analytics/
+└── integrations/
+```
+
+The final structures may evolve, but domain and product boundaries must remain explicit.
 
 ## 9. Product and catalogue principles
 
@@ -320,8 +362,10 @@ The variation layer should support:
 - low-stock messaging
 - deep-linking to selected variants where appropriate
 - variation-aware quick add
-- back-in-stock subscription for a precise variation
+- precise variation stock-alert contracts
 - optional linked-product strategies for catalogues that cannot be represented cleanly by standard variations
+
+Basic variation UX belongs in Free. Advanced linked-colour, preferred-size and listing-level availability intelligence may belong in Pro under `BLUEPRINT.md`.
 
 WooCommerce remains authoritative for variation price and stock.
 
@@ -343,6 +387,8 @@ Shopper enhancements may include:
 - express-payment presentation
 - configurable checkout fields
 
+Baseline cart interactions should be useful in Free. Advanced conversion/merchandising behaviour may be Pro.
+
 Use Woo Store API and supported block extensibility where suitable. Custom UC REST routes should be created only for UC-owned concepts or workflows that do not belong in Store API schemas.
 
 Ultimate Commerce does not process card data and does not implement a proprietary payment processor.
@@ -362,6 +408,8 @@ The account experience may enhance Woo's customer/order foundation with reusable
 - addresses
 - payment methods provided by installed gateways
 - communication preferences
+
+Free may expose baseline account/order contracts and presentation hooks. Advanced portal, profiles, aftercare and intelligence may be Pro.
 
 Account modules must enforce ownership checks server-side. UI visibility is never authorisation.
 
@@ -395,6 +443,8 @@ Exchange workflows must consider inventory reservation and race conditions. An e
 
 Ultimate Commerce must ultimately call Woo/payment APIs to execute monetary refunds rather than maintaining a second refund ledger.
 
+Returns/exchanges are expected Pro capabilities because they automate substantial merchant workflow.
+
 ## 15. Tracking
 
 Carrier/provider statuses should be normalised into a stable UC vocabulary such as:
@@ -412,6 +462,8 @@ Carrier/provider statuses should be normalised into a stable UC vocabulary such 
 Provider-specific payloads may be retained for diagnostics, but storefront code should consume the normalised model.
 
 Tracking providers implement a common contract. No carrier-specific logic belongs in generic order/account templates.
+
+Tracking is expected to be a Pro capability, with provider adapters behind explicit contracts.
 
 ## 16. Search
 
@@ -431,6 +483,8 @@ Search requests should be capable of expressing:
 
 Search responses should expose a stable UC result/facet model to the store layer.
 
+Hosted search may become a separate service rather than being silently subsidised by the ordinary Pro licence.
+
 ## 17. Merchandising
 
 Dynamic collections should support rule-based inclusion and manual curation.
@@ -448,6 +502,8 @@ Examples of generic rules:
 Merchants should be able to pin, exclude and order products without altering the underlying catalogue taxonomy solely for presentation.
 
 Merchandising logic must remain deterministic and inspectable.
+
+Advanced merchandising is expected to be a key Pro differentiator.
 
 ## 18. Promotions
 
@@ -475,6 +531,8 @@ Possible strategies include:
 
 A future behavioural/ML provider must fit behind the recommendation contract. Frontend components must not care how recommendations were produced.
 
+Rules/local recommendation capability may be Pro; infrastructure-heavy hosted ML is a separate hosted-service decision.
+
 ## 20. Integration contracts
 
 External systems must sit behind explicit contracts. Expected contract families include:
@@ -488,7 +546,7 @@ External systems must sit behind explicit contracts. Expected contract families 
 
 Provider adapters translate external vocabulary and failures into UC-owned result types.
 
-Credentials are stored using WordPress/WooCommerce-appropriate protected settings mechanisms and must never be committed to Git.
+Credentials use a narrow protected secret/configuration abstraction and must never be committed to Git or exposed through normal diagnostics.
 
 Provider failure must degrade safely. A tracking outage must not prevent checkout. An email timeout must not corrupt an order. Retryable work should be queued.
 
@@ -506,7 +564,9 @@ Examples:
 - bulk import processing
 - analytics aggregation
 
-Jobs must be idempotent where practical, include useful log context and have bounded retries/backoff.
+Jobs must be idempotent where practical, include useful redacted log context and have bounded retries/backoff.
+
+Queue payloads should generally store identifiers rather than unnecessary PII snapshots or credentials.
 
 Never depend on a shopper request staying open while a slow provider performs non-essential work.
 
@@ -529,6 +589,8 @@ Use existing authenticated platform APIs for administrative commerce operations 
 Every UC route requires an explicit schema, validation/sanitisation and permission/ownership callback.
 
 API responses should return data, not theme-specific HTML, unless an endpoint is explicitly documented as a fragment-rendering endpoint.
+
+Public/guest APIs must use bounded inputs, pagination/rate controls where appropriate and abuse-resistant tokens.
 
 ## 23. Event model and analytics
 
@@ -555,11 +617,13 @@ Events are contracts, not an excuse to leak personal data.
 
 Analytics-provider adapters consume these events subject to the host store's consent/privacy configuration.
 
+Free must not silently send these events to Bad Otter. Pro analytics/value attribution remains merchant-owned by default.
+
 ## 24. Admin experience
 
 Ultimate Commerce should live primarily within WooCommerce's administration context rather than creating an unrelated parallel admin universe.
 
-Expected administrative areas:
+Expected administrative areas across Free/Pro include:
 
 - Dashboard/health
 - Modules
@@ -575,6 +639,8 @@ Expected administrative areas:
 - Developer/system information
 
 The system-status view should expose versions, enabled modules, database schema version, queue health, HPOS compatibility/state and integration health without exposing secrets.
+
+Free-to-Pro discovery may exist but must be restrained and value-led rather than intrusive advertising.
 
 ## 25. Configuration
 
@@ -624,20 +690,47 @@ Deactivation does not destroy business/customer data. Destructive uninstall requ
 
 ## 27. Security and privacy
 
-Security rules include:
+Security is a platform contract, not a checklist at release time.
 
+Core rule:
+
+> Every request is untrusted. Every sensitive identifier requires authorisation. Every external system can fail or be hostile.
+
+Required practices include:
+
+- use WordPress/Woo authentication rather than inventing session/password systems
 - validate and sanitise all external input
 - escape output for its rendering context
-- use capability checks for administrative actions
-- use object ownership checks for customer actions
+- use dedicated least-privilege UC capabilities for administrative actions
+- use object ownership checks for customer actions/resources
 - use nonces/tokens as CSRF protection, not as authorisation
+- give every REST route a strict schema and explicit permission callback
+- prevent mass-assignment of privileged properties
 - use prepared/database APIs for queries
-- avoid exposing secrets in logs or diagnostics
-- minimise stored personal data
+- avoid exposing secrets in logs, diagnostics, exports, REST or frontend code
+- minimise stored personal data and classify it as public/operational/personal/secret
 - maintain audit trails for high-impact operational actions
 - avoid insecure direct object references in order/return/account endpoints
+- sign/replay-protect provider webhooks
+- make outbound configurable URLs SSRF-safe and keep TLS verification enabled
+- use high-entropy expiring tokens for guest workflows
+- enforce pagination/query/request size bounds
+- use bounded retries and idempotent background work
+- never handle raw card numbers/CVV
+- integrate UC-owned personal data with WordPress exporter/eraser mechanisms where appropriate
 
-High-impact actions such as manual refund initiation, return override, exchange override or operational status manipulation should record actor, timestamp and reason where appropriate.
+Expected capability families include concepts such as:
+
+- `uc_manage_settings`
+- `uc_manage_merchandising`
+- `uc_manage_returns`
+- `uc_manage_integrations`
+- `uc_view_analytics`
+- `uc_manage_promotions`
+
+High-impact actions such as manual refund initiation, return override, exchange override, credential changes or operational status manipulation should record actor, timestamp and reason/context where appropriate.
+
+`BLUEPRINT.md` contains the complete product security contract and supply-chain requirements.
 
 ## 28. Accessibility
 
@@ -661,14 +754,15 @@ Rules:
 - listing filters/search must remain viable with large variable-product catalogues
 - database queries require indexes appropriate to their access patterns
 - admin bulk jobs belong in queues/batches
+- public collections/endpoints require pagination/bounds
 
-Performance testing must include stores with thousands of products and tens of thousands of variations, not only toy fixtures.
+Performance testing must include stores with thousands of products and tens of thousands of variations, not only toy fixtures, and must grow toward larger enterprise fixtures as the product matures.
 
 ## 30. Compatibility policy
 
 Ultimate Commerce is built for modern WordPress/WooCommerce.
 
-Before the first executable plugin release, minimum supported versions of PHP, WordPress and WooCommerce will be recorded in plugin metadata and CI. The minimum must be recent enough to support the architecture without carrying unnecessary legacy paths.
+Minimum supported versions of PHP, WordPress and WooCommerce are recorded in plugin metadata and CI. The minimum must be recent enough to support the architecture without carrying unnecessary legacy paths.
 
 CI should test at least:
 
@@ -682,11 +776,13 @@ Compatibility declarations must reflect testing, not wishful metadata.
 
 Ultimate Commerce must avoid undocumented Woo internal namespaces/classes when a supported public API exists.
 
-## 31. Release engineering
+Additional claims for caching, multilingual, multi-currency, themes/page-builders require explicit compatibility evidence.
+
+## 31. Release engineering and distribution
 
 Ultimate Commerce is treated as a product from the first executable release.
 
-Requirements:
+Common requirements:
 
 - semantic versioning
 - changelog
@@ -698,8 +794,27 @@ Requirements:
 - versioned database migrations
 - backward-compatible public contracts within a major version where practical
 - upgrade testing against realistic data
+- dependency/security/package scanning
 
 Breaking public-contract changes require a major-version decision or an explicit deprecation path.
+
+### Free distribution
+
+Ultimate Commerce for WooCommerce is intended for WordPress.org distribution.
+
+Once public, Free updates are delivered through WordPress.org. The WordPress.org package must not contain the Bad Otter custom updater, premium implementation hidden behind licences, unsolicited telemetry or remote executable code.
+
+Free release CI must include Plugin Check, WordPress Coding Standards, security/package inspection and the compatibility/security gates defined in `BLUEPRINT.md` and `BUILD-WORKFLOW.md`.
+
+### Pro distribution
+
+Ultimate Commerce Pro uses Bad Otter managed releases/updates with short-lived GitHub OIDC publication, exact package verification and native WordPress Plugins update delivery.
+
+A Pro release is incomplete until the managed-update path and package integrity are verified.
+
+### Data and entitlement
+
+Licence expiry must never delete or hide merchant/customer data. Local installed functionality must fail safely; hosted services/updates/support may depend on active entitlement as defined in `BLUEPRINT.md`.
 
 ## 32. Observability
 
@@ -715,6 +830,7 @@ Expected observability:
 - return/tracking workflow history
 - webhook/provider verification failures
 - unexpected API errors
+- security-relevant validation/auth failures where logging is safe and useful
 
 Logs must redact credentials and unnecessary personal information.
 
@@ -732,115 +848,69 @@ Critical end-to-end journeys include:
 6. wishlist and stock-alert ownership
 7. module disabled/enabled transitions
 8. HPOS order compatibility
+9. customer object-level authorisation
+10. guest-token abuse/replay boundaries where guest flows exist
 
 Provider contracts should have reusable contract tests so new adapters prove the same behavioural expectations.
+
+Free additionally requires WordPress.org compliance/security regression tests. Pro additionally requires entitlement/update-path tests.
 
 ## 34. First vertical slice
 
 Do not build every module before proving the architecture.
 
-The first complete slice should demonstrate:
+The first complete Free slice should demonstrate:
 
 ```text
 real Woo product
  -> product card contract
  -> product detail/variation state
- -> add to cart
- -> enhanced cart
- -> checkout extension
+ -> quick add
+ -> basic cart drawer
+ -> checkout handoff
  -> real Woo order
- -> enhanced account order view
- -> return eligibility/request shell
+ -> account/order contract
 ```
 
 The first slice may be visually simple. Its job is to prove the boundary between WooCommerce, Ultimate Commerce and the consuming store before broad feature construction.
 
-## 35. Initial implementation sequence
+The first paid slice should then prove that Pro can register advanced variant/cart behaviour through the same public Free contracts without privileged shortcuts.
 
-### UC 0.1 - Foundation
+## 35. Roadmap authority
 
-- plugin bootstrap
-- dependency checks
-- module registry
-- configuration system
-- logging/diagnostics
-- migration framework
-- Woo compatibility declarations
-- test harness
+The detailed implementation sequence now lives in `ROADMAP.md`.
 
-### UC 0.2 - Catalogue and variations
+Current priority order is:
 
-- product view models
-- product-card contract
-- variation/swatch state
-- stock presentation data
-- Store API product extension
+1. product split/distribution reset
+2. security and WordPress.org engineering baseline
+3. Free catalogue/variants/cart vertical slice
+4. Free retention/admin completeness
+5. WordPress.org public launch
+6. first sellable Pro conversion pack
+7. merchandising/recommendations
+8. customer portal/My Size/stock intelligence
+9. returns/exchanges/tracking
+10. promotions/automation/value analytics
+11. agency/enterprise hardening
+12. optional hosted services
 
-### UC 0.3 - Cart
-
-- cart drawer primitives
-- asynchronous cart interactions
-- cart messaging extension points
-
-### UC 0.4 - Checkout
-
-- supported checkout extensions
-- configurable shopper fields/presentation hooks
-- integration with Store API/blocks as required
-
-### UC 0.5 - Account and orders
-
-- account navigation/components
-- order summary/detail view models
-- customer ownership rules
-
-### UC 0.6 - Customer retention
-
-- wishlist
-- recently viewed
-- stock alerts
-- saved commerce profile
-
-### UC 0.7 - Aftercare
-
-- returns
-- exchanges
-- audit history
-
-### UC 0.8 - Tracking
-
-- tracking contracts
-- normalised tracking events
-- order timeline
-
-### UC 0.9 - Merchandising
-
-- dynamic collections
-- product relationships
-- recommendation rules
-- promotion presentation
-
-### UC 1.0
-
-- public-contract review
-- hardened migrations
-- compatibility matrix
-- end-to-end regression suite
-- operational documentation
-- stable release process
+Do not revive the old linear `UC 0.1 -> 1.0` sequence if it conflicts with this roadmap.
 
 ## 36. Architecture change process
 
-This document is intentionally strong.
+This document and `BLUEPRINT.md` are intentionally strong.
 
 A future implementation may discover a better approach. Changes are allowed, but architectural changes must be deliberate.
 
-A change that affects repository ownership, WooCommerce data ownership, dependency direction, public contracts, storage architecture, security model or module boundaries should be documented in an Architecture Decision Record and reflected back into this foundation when accepted.
+A change that affects repository ownership, product-tier ownership, WooCommerce data ownership, dependency direction, public contracts, storage architecture, security model, WordPress.org distribution or module boundaries should be documented in an Architecture Decision Record and reflected back into the source-of-truth documents when accepted.
 
 Convenience in a single task is not sufficient reason to violate the platform boundary.
 
 ## 37. Definition of success
 
-Ultimate Commerce succeeds when a merchant can install it on a modern WooCommerce store, enable/configure reusable capabilities, integrate providers through stable adapters, and deliver a substantially better retail experience without the plugin knowing the merchant's brand or requiring a fork.
+Ultimate Commerce succeeds technically when a merchant can install the Free product on a modern WooCommerce store, enable/configure reusable capabilities and deliver a substantially better retail experience without the plugin knowing the merchant's brand or requiring a fork.
+
+It succeeds commercially when Free earns adoption on its own merits, Pro earns renewal through measurable merchant value, agencies can standardise on it, and larger merchants can trust its security, performance, upgrades and data ownership.
 
 That is the standard every module must preserve.
