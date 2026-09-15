@@ -26,6 +26,7 @@ jobs:
           test -f packages/ultimate-commerce/src/Plugin.php
           test -f packages/ultimate-commerce/src/Support/ModuleRegistry.php
           test -f packages/ultimate-commerce/src/Updates/ManagedUpdates.php
+          test -f scripts/build-plugin-package.py
 
       - name: Validate PHP syntax
         shell: bash
@@ -50,16 +51,15 @@ jobs:
           if not header or not const or header.group(1) != const.group(1):
               raise SystemExit('Plugin header and ULTIMATE_COMMERCE_VERSION must match')
           version = header.group(1)
-          expected = {
-              'schema': 1,
-              'id': 'core',
-              'product': 'ultimate-commerce',
-              'provider_type': 'wordpress-plugin',
-              'channel': 'stable',
-          }
+          expected = {'schema': 1, 'id': 'core', 'product': 'ultimate-commerce', 'provider_type': 'wordpress-plugin', 'channel': 'stable'}
           for key, value in expected.items():
               if manifest.get(key) != value:
                   raise SystemExit(f'module.json {key} must be {value!r}')
+          if manifest.get('entitlement') is not None:
+              raise SystemExit('Source module.json entitlement must remain null')
+          required = {'managed-updates','package-checksum-verification','product-scoped-registration','automatic-wordpress-update-discovery','managed-update-discovery-contract','licence-free-update-delivery'}
+          if required - set(manifest.get('capabilities') or []):
+              raise SystemExit('Source module.json is missing managed-update capabilities')
           if str(manifest.get('version')) != version:
               raise SystemExit('module.json version must match plugin version')
           if 'Requires Plugins: woocommerce' not in p:
@@ -92,4 +92,25 @@ jobs:
           if "'/updates/' . self::PRODUCT . '/core'" not in client:
               raise SystemExit('Bad Otter update endpoint invariant missing')
           print('Managed updater invariants validated')
+          PY
+
+      - name: Build deterministic release package twice
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 scripts/build-plugin-package.py --source packages/ultimate-commerce --output-dir dist-a >/tmp/uc-a.txt
+          python3 scripts/build-plugin-package.py --source packages/ultimate-commerce --output-dir dist-b >/tmp/uc-b.txt
+          first="$(sha256sum dist-a/*.zip | awk '{print $1}')"
+          second="$(sha256sum dist-b/*.zip | awk '{print $1}')"
+          test "$first" = "$second"
+          unzip -t dist-a/*.zip >/dev/null
+          python3 - <<'PY'
+          import json, zipfile
+          from pathlib import Path
+          package = next(Path('dist-a').glob('*.zip'))
+          with zipfile.ZipFile(package) as zf:
+              manifest = json.loads(zf.read('ultimate-commerce/module.json'))
+          assert manifest['entitlement'] == 'ultimate-commerce-core', manifest
+          assert 'free-core-updates' in manifest['capabilities'], manifest
+          print('Published manifest transformation validated')
           PY
