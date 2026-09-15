@@ -201,11 +201,33 @@ jobs:
           set -euo pipefail
           version='${{ steps.release.outputs.version }}'
           tag="v${version}"
+          package="dist/${{ steps.package.outputs.package }}"
+          checksum_file="${package}.sha256"
           git fetch --tags --force
-          if ! git rev-parse "$tag" >/dev/null 2>&1; then
-            gh release create "$tag" "dist/ultimate-commerce-${version}.zip" "dist/ultimate-commerce-${version}.zip.sha256" --target "$GITHUB_SHA" --title "Ultimate Commerce ${version}" --generate-notes
-          else
+          if git rev-parse "$tag" >/dev/null 2>&1; then
             tagged_commit="$(git rev-list -n 1 "$tag")"
             test "$tagged_commit" = "$GITHUB_SHA"
             echo "GitHub release $tag already exists at this exact source commit."
+            exit 0
           fi
+          payload="$(jq -nc --arg tag "$tag" --arg sha "$GITHUB_SHA" --arg title "Ultimate Commerce ${version}" '{tag_name:$tag,target_commitish:$sha,name:$title,draft:false,prerelease:false,generate_release_notes:true}')"
+          release="$(curl --fail --silent --show-error -X POST \
+            -H "Authorization: Bearer $GH_TOKEN" \
+            -H 'Accept: application/vnd.github+json' \
+            -H 'X-GitHub-Api-Version: 2022-11-28' \
+            -H 'Content-Type: application/json' \
+            --data "$payload" \
+            "https://api.github.com/repos/$GITHUB_REPOSITORY/releases")"
+          release_id="$(jq -r '.id // empty' <<< "$release")"
+          test -n "$release_id"
+          for asset in "$package" "$checksum_file"; do
+            name="$(basename "$asset")"
+            encoded="$(printf '%s' "$name" | jq -sRr @uri)"
+            curl --fail --silent --show-error -X POST \
+              -H "Authorization: Bearer $GH_TOKEN" \
+              -H 'Accept: application/vnd.github+json' \
+              -H 'X-GitHub-Api-Version: 2022-11-28' \
+              -H 'Content-Type: application/octet-stream' \
+              --data-binary "@$asset" \
+              "https://uploads.github.com/repos/$GITHUB_REPOSITORY/releases/$release_id/assets?name=$encoded" >/dev/null
+          done

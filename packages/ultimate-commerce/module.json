@@ -2,7 +2,7 @@
   "schema": 1,
   "id": "core",
   "name": "Ultimate Commerce",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "product": "ultimate-commerce",
   "entitlement": null,
   "minimum_core": "0.1.0",
