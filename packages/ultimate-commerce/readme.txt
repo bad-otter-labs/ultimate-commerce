@@ -2,7 +2,7 @@
 Contributors: badotterlabs
 Requires at least: 6.6
 Requires PHP: 8.1
-Stable tag: 0.1.0
+Stable tag: 0.1.1
 Requires Plugins: woocommerce
 
 A modular enhancement platform for WooCommerce.
@@ -12,6 +12,10 @@ A modular enhancement platform for WooCommerce.
 Ultimate Commerce keeps WooCommerce authoritative for products, stock, carts, totals, tax, customers, orders, payments and refunds while adding reusable commerce capabilities through public contracts and modules.
 
 == Changelog ==
+
+= 0.1.1 =
+* Add the canonical Bad Otter product manifest required for managed release registration.
+* Lock release identity to product ultimate-commerce / module core.
 
 = 0.1.0 =
 * Initial platform bootstrap.
