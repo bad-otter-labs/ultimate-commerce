@@ -1,6 +1,11 @@
 # Changelog
 
-## 0.1.3 - Unreleased
+## 0.1.4 - Unreleased
+
+- Publish immutable GitHub releases and assets through the GitHub REST API instead of relying on the `gh` CLI being installed on the self-hosted runner.
+- Keep Bad Otter draft-candidate validation, exact-package Stable promotion and live WordPress managed-update verification ahead of GitHub release publication.
+
+## 0.1.3
 
 - Finalise the first managed-release workflow after central Bad Otter product registration.
 - Fix canonical package validation so the build step verifies the locally resolved package filename rather than referencing a step output before it exists.
