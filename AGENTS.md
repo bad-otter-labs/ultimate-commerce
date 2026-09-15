@@ -1,10 +1,17 @@
 # Agent Instructions - Ultimate Commerce
 
-Before writing code or documentation in this repository, read `FOUNDATION.md` and `BUILD-WORKFLOW.md`.
+Before writing code or documentation in this repository, read:
+
+1. `FOUNDATION.md`
+2. `BLUEPRINT.md`
+3. `ROADMAP.md`
+4. `BUILD-WORKFLOW.md`
+
+`FOUNDATION.md` owns reusable commerce architecture and WooCommerce/data boundaries. `BLUEPRINT.md` owns product family, Free/Pro packaging, WordPress.org distribution, security/commercial rules and product naming. If they conflict on those subjects, follow `BLUEPRINT.md` and reconcile the older document deliberately.
 
 ## Hard repository boundary
 
-This repository is the source of truth for **reusable commerce-wide WooCommerce enhancements**.
+This repository is the source of truth for **reusable commerce-wide WooCommerce enhancements in Ultimate Commerce Free** and the public contracts Pro/third parties consume.
 
 Do not add:
 
@@ -14,8 +21,9 @@ Do not add:
 - one merchant's supplier mapping
 - credentials/secrets
 - client-name conditionals
+- paid Pro implementation code intended to be licence-gated inside Free
 
-If a requirement is store-specific, it belongs in that store's repository.
+If a requirement is store-specific, it belongs in that store's repository. If it is a paid reusable module, it belongs in the Pro product/repository once that repository exists.
 
 ## Architecture rules
 
@@ -29,24 +37,70 @@ If a requirement is store-specific, it belongs in that store's repository.
 - Modules must not create circular dependencies.
 - Disabled modules should not load unrelated frontend assets/work.
 - Never copy authoritative Woo data into UC merely for convenience.
+- Free must never depend on Pro.
+- Pro must consume documented public Free contracts rather than secret privileged internals.
 
-## Plugin release and update rule
+## Security rules
 
-Every WordPress plugin built from this repository must follow the Bad Otter release pipeline defined in `BUILD-WORKFLOW.md`.
+Treat the plugin as software that may run on large, high-value stores.
+
+- Every request is untrusted.
+- Every sensitive object identifier requires capability/ownership authorisation.
+- Nonces are CSRF protection, not authorisation.
+- REST routes require strict schemas and explicit permission callbacks.
+- Customer resources require object-level ownership checks.
+- Administrative actions use least-privilege UC capabilities rather than blanket `manage_options` where practical.
+- Use prepared/database APIs and escape output for its rendering context.
+- Provider webhooks require signature/replay/idempotency protection.
+- User-configurable outbound URLs require SSRF-safe handling.
+- Secrets must never enter logs, diagnostics exports, frontend code or configuration exports.
+- Public/guest endpoints require bounded inputs, pagination/rate controls where appropriate and abuse-resistant tokens.
+- Background jobs should store identifiers rather than unnecessary PII/credentials and must use bounded retries.
+- Ultimate Commerce must never handle raw card numbers/CVV.
+
+## Free plugin / WordPress.org rule
+
+The public Free plugin is **Ultimate Commerce for WooCommerce**.
+
+Planned directory slug: `ultimate-commerce-for-woocommerce` (subject to WordPress.org acceptance).
+
+The WordPress.org Free package must:
+
+- be independently useful without Pro
+- use WordPress.org for public Free updates
+- contain no Bad Otter custom updater/update override
+- contain no premium implementation hidden behind a licence/payment flag
+- contain no unsolicited telemetry/activation ping
+- contain no remote executable code or unnecessary remotely hosted assets
+- expose human-readable source/build instructions for compiled assets
+- pass the WordPress.org-focused CI/release gate defined in `BLUEPRINT.md` and `BUILD-WORKFLOW.md`
+
+Do not reintroduce the old rule that every plugin from this repository must update through Bad Otter. That applies to Pro/store-specific products, not WordPress.org Free.
+
+## Pro release and update rule
+
+Ultimate Commerce Pro is a separate paid companion and should ultimately live in its own private repository.
+
+Pro releases use the Bad Otter managed release/update pipeline:
 
 - GitHub source and automated release artefacts are authoritative.
-- Do not invent an alternative update server or ad-hoc production ZIP process.
-- The first installation may be manual.
-- After first installation, production upgrades must appear through WordPress's normal Plugins update flow using the Bad Otter managed updater.
-- Preserve stable plugin slug/package identity and version metadata so WordPress upgrades the installed plugin in place.
-- Every upgrade must be safe against existing data and must run required migrations rather than assuming a clean install.
-- Do not commit long-lived Bad Otter publisher credentials; publication uses the canonical GitHub OIDC workflow.
-- A release is incomplete until the published version is verified through the WordPress managed-update path.
+- Publication uses short-lived GitHub OIDC; no long-lived publisher credentials.
+- Production updates use WordPress's native Plugins update flow through the Bad Otter updater.
+- Upgrades/migrations must be existing-data safe.
+- A Pro release is incomplete until the managed-update path and exact package integrity are verified.
 
 ## Cross-repository work
 
-When a store asks for a generic commerce capability, implement and expose it here first. The store should then consume the public capability. Never duplicate UC implementation code into the store repository.
+When a store asks for a generic commerce capability:
+
+1. decide whether it is Free or Pro using `BLUEPRINT.md`
+2. implement it in the owning UC product
+3. expose it through documented public contracts/configuration
+4. release the owning UC product
+5. let the store consume/configure the capability
+
+Never duplicate UC implementation code into a store repository.
 
 ## Architectural changes
 
-If a proposed change conflicts with `FOUNDATION.md`, do not silently proceed. Document the architecture decision and update the foundation deliberately if the new decision is accepted.
+If a proposed change conflicts with `FOUNDATION.md` or `BLUEPRINT.md`, do not silently proceed. Document the architecture decision and reconcile the source-of-truth documents deliberately if the new decision is accepted.
