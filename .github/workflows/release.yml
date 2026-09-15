@@ -54,11 +54,16 @@ jobs:
 
       - name: Build canonical package
         if: steps.release.outputs.selected == 'true'
+        id: package
         shell: bash
         run: |
           set -euo pipefail
-          python3 scripts/build-plugin-package.py --source packages/ultimate-commerce --output-dir dist
-          unzip -t "dist/ultimate-commerce-${{ steps.release.outputs.version }}.zip" >/dev/null
+          output="$(python3 scripts/build-plugin-package.py --source packages/ultimate-commerce --output-dir dist)"
+          echo "$output"
+          while IFS='=' read -r key value; do
+            case "$key" in PRODUCT|VERSION|PACKAGE|SHA256) echo "${key,,}=$value" >> "$GITHUB_OUTPUT";; esac
+          done <<< "$output"
+          unzip -t "dist/${{ steps.package.outputs.package }}" >/dev/null
 
       - name: Request Bad Otter publisher identity
         if: steps.release.outputs.selected == 'true'
@@ -68,24 +73,122 @@ jobs:
           set -euo pipefail
           response="$(curl --fail --silent --show-error -H "Authorization: bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" "${ACTIONS_ID_TOKEN_REQUEST_URL}&audience=badotter-release-publisher")"
           token="$(python3 -c 'import json,sys; print(json.load(sys.stdin)["value"])' <<< "$response")"
+          test -n "$token"
           echo "token=$token" >> "$GITHUB_OUTPUT"
 
-      - name: Publish to Bad Otter Stable
+      - name: Create validated Bad Otter draft candidate
         if: steps.release.outputs.selected == 'true'
         shell: bash
         env:
           BADOTTER_OIDC_TOKEN: ${{ steps.oidc.outputs.token }}
         run: |
           set -euo pipefail
-          package="dist/ultimate-commerce-${{ steps.release.outputs.version }}.zip"
-          curl --fail-with-body --silent --show-error \
+          product="ultimate-commerce"
+          version="${{ steps.release.outputs.version }}"
+          package="dist/${{ steps.package.outputs.package }}"
+          checksum="${{ steps.package.outputs.sha256 }}"
+          response_file="$(mktemp)"
+          http_code="$(curl --silent --show-error --output "$response_file" --write-out '%{http_code}' \
             -H "Authorization: Bearer $BADOTTER_OIDC_TOKEN" \
             -F "package=@${package};filename=$(basename "$package");type=application/zip" \
-            -F "reason=Automated Ultimate Commerce release: ${GITHUB_REPOSITORY}@${GITHUB_SHA}" \
-            -F "releaseNotes=Ultimate Commerce ${{ steps.release.outputs.version }}" \
+            -F "reason=Validated Ultimate Commerce release candidate: ${GITHUB_REPOSITORY}@${GITHUB_SHA}" \
+            -F "releaseNotes=Ultimate Commerce ${version}" \
+            -F "channel=stable" \
+            -F "publish=false" \
+            https://api.badotter.io/v1/release-publisher/ingest)"
+          response="$(cat "$response_file")"
+          rm -f "$response_file"
+          echo "Bad Otter candidate HTTP $http_code"
+          echo "$response"
+          if [[ "$http_code" -ge 200 && "$http_code" -lt 300 ]]; then
+            EXPECTED_PRODUCT="$product" EXPECTED_VERSION="$version" EXPECTED_SHA="$checksum" python3 -c 'import json,os,sys; d=json.load(sys.stdin); assert d.get("success") is True,d; data=d.get("data") or {}; assert data.get("product") == os.environ["EXPECTED_PRODUCT"],data; assert str(data.get("version")) == os.environ["EXPECTED_VERSION"],data; assert data.get("status") == "draft",data; remote=(data.get("checksum") or data.get("sha256") or "").lower().removeprefix("sha256:"); remote and remote != os.environ["EXPECTED_SHA"].lower() and (_ for _ in ()).throw(AssertionError((remote,os.environ["EXPECTED_SHA"])))' <<< "$response"
+            exit 0
+          fi
+          if [[ "$http_code" == "409" ]]; then
+            echo "A candidate/release already exists for this identity; promotion will verify exact package provenance."
+            exit 0
+          fi
+          echo "Bad Otter rejected the draft candidate." >&2
+          exit 1
+
+      - name: Promote validated candidate to Bad Otter Stable
+        if: steps.release.outputs.selected == 'true'
+        shell: bash
+        env:
+          BADOTTER_OIDC_TOKEN: ${{ steps.oidc.outputs.token }}
+        run: |
+          set -euo pipefail
+          product="ultimate-commerce"
+          version="${{ steps.release.outputs.version }}"
+          package="dist/${{ steps.package.outputs.package }}"
+          checksum="${{ steps.package.outputs.sha256 }}"
+          response_file="$(mktemp)"
+          http_code="$(curl --silent --show-error --output "$response_file" --write-out '%{http_code}' \
+            -H "Authorization: Bearer $BADOTTER_OIDC_TOKEN" \
+            -F "package=@${package};filename=$(basename "$package");type=application/zip" \
+            -F "reason=Promote validated Ultimate Commerce release: ${GITHUB_REPOSITORY}@${GITHUB_SHA}" \
+            -F "releaseNotes=Ultimate Commerce ${version}" \
             -F "channel=stable" \
             -F "publish=true" \
-            https://api.badotter.io/v1/release-publisher/ingest
+            https://api.badotter.io/v1/release-publisher/ingest)"
+          response="$(cat "$response_file")"
+          rm -f "$response_file"
+          echo "Bad Otter promotion HTTP $http_code"
+          echo "$response"
+          test "$http_code" -ge 200 && test "$http_code" -lt 300
+          EXPECTED_PRODUCT="$product" EXPECTED_VERSION="$version" EXPECTED_SHA="$checksum" python3 -c 'import json,os,sys; d=json.load(sys.stdin); assert d.get("success") is True,d; data=d.get("data") or {}; assert data.get("product") == os.environ["EXPECTED_PRODUCT"],data; assert str(data.get("version")) == os.environ["EXPECTED_VERSION"],data; assert data.get("status") == "published",data; remote=(data.get("checksum") or data.get("sha256") or "").lower().removeprefix("sha256:"); remote and remote != os.environ["EXPECTED_SHA"].lower() and (_ for _ in ()).throw(AssertionError((remote,os.environ["EXPECTED_SHA"])))' <<< "$response"
+
+      - name: Verify live WordPress managed update and package integrity
+        if: steps.release.outputs.selected == 'true'
+        shell: bash
+        run: |
+          set -euo pipefail
+          version='${{ steps.release.outputs.version }}'
+          local_package="dist/${{ steps.package.outputs.package }}"
+          local_sha="${{ steps.package.outputs.sha256 }}"
+          lookup_file="$(mktemp)"
+          descriptor_file="$(mktemp)"
+          curl --fail-with-body --silent --show-error --get \
+            --data-urlencode 'site=https://build-verifier.invalid' \
+            --data-urlencode 'currentVersion=0.0.0' \
+            --data-urlencode "coreVersion=${version}" \
+            --data-urlencode 'wordpressVersion=6.6.0' \
+            --data-urlencode 'phpVersion=8.2.0' \
+            --data-urlencode 'channel=stable' \
+            'https://api.badotter.io/v1/updates/ultimate-commerce/core' > "$lookup_file"
+          LOOKUP_FILE="$lookup_file" EXPECTED="$version" python3 - <<'PY' > "$descriptor_file"
+          import json, os
+          payload=json.load(open(os.environ['LOOKUP_FILE']))
+          if payload.get('success') is not True:
+              raise SystemExit(f'Bad Otter update lookup failed: {payload}')
+          data=payload.get('data') or {}
+          if data.get('updateAvailable') is not True:
+              raise SystemExit(f'Published release is not discoverable as an update: {data}')
+          if str(data.get('version') or '') != os.environ['EXPECTED']:
+              raise SystemExit(f'Live version {data.get("version")} does not match {os.environ["EXPECTED"]}')
+          package=data.get('package') or {}
+          url=str(package.get('downloadUrl') or '')
+          checksum=str(package.get('checksum') or data.get('checksum') or '').lower().removeprefix('sha256:')
+          if not url or len(checksum) != 64 or any(c not in '0123456789abcdef' for c in checksum):
+              raise SystemExit('Live update descriptor is incomplete')
+          print(url)
+          print(checksum)
+          PY
+          rm -f "$lookup_file"
+          mapfile -t descriptor < "$descriptor_file"
+          rm -f "$descriptor_file"
+          test "${#descriptor[@]}" -eq 2
+          canonical_url="${descriptor[0]}"
+          expected_sha="${descriptor[1]}"
+          test "$expected_sha" = "$local_sha"
+          canonical_tmp="$(mktemp)"
+          curl --fail-with-body --silent --show-error --location --max-redirs 2 "$canonical_url" --output "$canonical_tmp"
+          unzip -t "$canonical_tmp" >/dev/null
+          actual_sha="$(sha256sum "$canonical_tmp" | awk '{print $1}')"
+          test "$actual_sha" = "$expected_sha"
+          cmp -s "$canonical_tmp" "$local_package"
+          rm -f "$canonical_tmp"
+          echo "Managed update and canonical package verified for Ultimate Commerce ${version} (${expected_sha})"
 
       - name: Create immutable GitHub release
         if: steps.release.outputs.selected == 'true'
@@ -99,25 +202,8 @@ jobs:
           git fetch --tags --force
           if ! git rev-parse "$tag" >/dev/null 2>&1; then
             gh release create "$tag" "dist/ultimate-commerce-${version}.zip" "dist/ultimate-commerce-${version}.zip.sha256" --target "$GITHUB_SHA" --title "Ultimate Commerce ${version}" --generate-notes
+          else
+            tagged_commit="$(git rev-list -n 1 "$tag")"
+            test "$tagged_commit" = "$GITHUB_SHA"
+            echo "GitHub release $tag already exists at this exact source commit."
           fi
-
-      - name: Verify managed update path
-        if: steps.release.outputs.selected == 'true'
-        shell: bash
-        run: |
-          set -euo pipefail
-          version='${{ steps.release.outputs.version }}'
-          curl --fail-with-body --silent --show-error "https://api.badotter.io/v1/updates/ultimate-commerce/core?site=https%3A%2F%2Fbuild-verifier.invalid&currentVersion=0.0.0&coreVersion=${version}&wordpressVersion=6.6.0&phpVersion=8.2.0&channel=stable" > /tmp/uc-update.json
-          VERSION="$version" python3 - <<'PY'
-          import json, os
-          data = json.load(open('/tmp/uc-update.json'))
-          if data.get('success') is not True:
-              raise SystemExit(data)
-          payload = data.get('data') or {}
-          if payload.get('updateAvailable') is not True or str(payload.get('version')) != os.environ['VERSION']:
-              raise SystemExit('Published release is not visible through the WordPress update endpoint')
-          package = payload.get('package') or {}
-          if not (package.get('checksum') or payload.get('checksum')):
-              raise SystemExit('Published release has no checksum descriptor')
-          print('Managed update path verified for ' + os.environ['VERSION'])
-          PY
