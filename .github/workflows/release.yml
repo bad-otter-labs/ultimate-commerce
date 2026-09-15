@@ -1,0 +1,129 @@
+name: Build and Publish Ultimate Commerce
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  id-token: write
+
+concurrency:
+  group: ultimate-commerce-release-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  release:
+    runs-on: [self-hosted, Linux, X64, badotter, ci]
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+
+      - name: Validate source
+        shell: bash
+        run: |
+          set -euo pipefail
+          while IFS= read -r -d '' file; do php -l "$file" >/dev/null; done < <(find packages/ultimate-commerce -type f -name '*.php' -print0)
+
+      - name: Select release
+        id: release
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY' >> "$GITHUB_OUTPUT"
+          import os, re, subprocess
+          from pathlib import Path
+          path = 'packages/ultimate-commerce/ultimate-commerce.php'
+          text = Path(path).read_text()
+          version = re.search(r'^\s*\*\s*Version:\s*([^\s]+)', text, re.M).group(1)
+          old = None
+          try:
+              previous = subprocess.check_output(['git','show',f'HEAD^:{path}'], text=True)
+              old = re.search(r'^\s*\*\s*Version:\s*([^\s]+)', previous, re.M).group(1)
+          except Exception:
+              pass
+          selected = os.environ.get('GITHUB_EVENT_NAME') == 'workflow_dispatch' or old != version
+          print(f'version={version}')
+          print('selected=' + ('true' if selected else 'false'))
+          PY
+
+      - name: Build canonical package
+        if: steps.release.outputs.selected == 'true'
+        shell: bash
+        run: |
+          set -euo pipefail
+          version='${{ steps.release.outputs.version }}'
+          mkdir -p dist
+          stage="$(mktemp -d)"
+          mkdir -p "$stage/ultimate-commerce"
+          rsync -a packages/ultimate-commerce/ "$stage/ultimate-commerce/" --exclude '*.zip' --exclude '.DS_Store'
+          (cd "$stage" && zip -qr "$GITHUB_WORKSPACE/dist/ultimate-commerce-${version}.zip" ultimate-commerce)
+          rm -rf "$stage"
+          unzip -t "dist/ultimate-commerce-${version}.zip" >/dev/null
+          sha256sum "dist/ultimate-commerce-${version}.zip" | tee "dist/ultimate-commerce-${version}.zip.sha256"
+
+      - name: Request Bad Otter publisher identity
+        if: steps.release.outputs.selected == 'true'
+        id: oidc
+        shell: bash
+        run: |
+          set -euo pipefail
+          response="$(curl --fail --silent --show-error -H "Authorization: bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" "${ACTIONS_ID_TOKEN_REQUEST_URL}&audience=badotter-release-publisher")"
+          token="$(python3 -c 'import json,sys; print(json.load(sys.stdin)["value"])' <<< "$response")"
+          echo "token=$token" >> "$GITHUB_OUTPUT"
+
+      - name: Publish to Bad Otter Stable
+        if: steps.release.outputs.selected == 'true'
+        shell: bash
+        env:
+          BADOTTER_OIDC_TOKEN: ${{ steps.oidc.outputs.token }}
+        run: |
+          set -euo pipefail
+          package="dist/ultimate-commerce-${{ steps.release.outputs.version }}.zip"
+          curl --fail-with-body --silent --show-error \
+            -H "Authorization: Bearer $BADOTTER_OIDC_TOKEN" \
+            -F "package=@${package};filename=$(basename "$package");type=application/zip" \
+            -F "reason=Automated Ultimate Commerce release: ${GITHUB_REPOSITORY}@${GITHUB_SHA}" \
+            -F "channel=stable" \
+            -F "publish=true" \
+            https://api.badotter.io/v1/release-publisher/ingest
+
+      - name: Create immutable GitHub release
+        if: steps.release.outputs.selected == 'true'
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          version='${{ steps.release.outputs.version }}'
+          tag="v${version}"
+          git fetch --tags --force
+          if ! git rev-parse "$tag" >/dev/null 2>&1; then
+            gh release create "$tag" "dist/ultimate-commerce-${version}.zip" "dist/ultimate-commerce-${version}.zip.sha256" --target "$GITHUB_SHA" --title "Ultimate Commerce ${version}" --generate-notes
+          fi
+
+      - name: Verify managed update path
+        if: steps.release.outputs.selected == 'true'
+        shell: bash
+        run: |
+          set -euo pipefail
+          version='${{ steps.release.outputs.version }}'
+          curl --fail-with-body --silent --show-error "https://api.badotter.io/v1/updates/ultimate-commerce/core?site=https%3A%2F%2Fbuild-verifier.invalid&currentVersion=0.0.0&coreVersion=${version}&wordpressVersion=6.6.0&phpVersion=8.2.0&channel=stable" > /tmp/uc-update.json
+          VERSION="$version" python3 - <<'PY'
+          import json, os
+          data = json.load(open('/tmp/uc-update.json'))
+          if data.get('success') is not True:
+              raise SystemExit(data)
+          payload = data.get('data') or {}
+          if payload.get('updateAvailable') is not True or str(payload.get('version')) != os.environ['VERSION']:
+              raise SystemExit('Published release is not visible through the WordPress update endpoint')
+          package = payload.get('package') or {}
+          if not (package.get('checksum') or payload.get('checksum')):
+              raise SystemExit('Published release has no checksum descriptor')
+          print('Managed update path verified for ' + os.environ['VERSION'])
+          PY
