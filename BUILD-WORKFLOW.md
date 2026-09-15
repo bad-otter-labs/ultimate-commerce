@@ -167,6 +167,48 @@ Every release should have:
 
 A release must not contain merchant credentials, environment files or store-specific configuration.
 
+### Bad Otter plugin distribution and managed updates
+
+Every WordPress plugin produced from this repository must use the standard Bad Otter build, publication and managed-update workflow.
+
+The required lifecycle is:
+
+1. GitHub `main` is the canonical source.
+2. Development happens on a focused branch and is merged only after validation passes.
+3. A releasable plugin has one unambiguous semantic version across all required version sources, including the WordPress plugin header and any plugin version constant/manifest used by the package.
+4. The GitHub release workflow builds the canonical installable ZIP from repository source. Hand-built production ZIPs are not authoritative.
+5. The workflow validates the package, generates release metadata/checksums and publishes the release through the Bad Otter Release Publisher.
+6. Publication uses short-lived GitHub OIDC identity with the Bad Otter release-publisher audience; long-lived Bad Otter publisher credentials must not be stored in the repository.
+7. Bad Otter is responsible for package inspection, release metadata, entitlement-aware delivery where applicable, and managed WordPress updates.
+8. A corresponding immutable Git tag/GitHub Release should identify the source revision for the published artefact.
+9. The first installation of a plugin may be performed manually from the canonical release ZIP.
+10. After that first install, normal upgrades must be delivered through WordPress's native Plugins update experience via the Bad Otter managed updater. Repeated manual ZIP replacement is a recovery/development procedure, not the production update model.
+11. The plugin must retain the stable plugin slug/package identity required for WordPress to recognise later versions as updates to the installed plugin.
+12. Database migrations and upgrade routines must run safely when WordPress updates the plugin in place; an update must never assume a clean install.
+13. A release is not considered complete until publication has succeeded and the new version has been verified as discoverable/installable through the WordPress update path on a representative installation.
+
+The canonical Bad Otter publication endpoint currently used by the organisation's plugin workflow is:
+
+```text
+POST https://api.badotter.io/v1/release-publisher/ingest
+```
+
+with GitHub OIDC audience:
+
+```text
+badotter-release-publisher
+```
+
+When implementing this repository's release workflow, use the current canonical Bad Otter plugin workflow as the reference rather than inventing a parallel updater/release system. If the Bad Otter release contract changes, update this workflow documentation deliberately.
+
+Track release state explicitly:
+
+```text
+implemented -> committed -> PR -> CI passed -> merged -> built -> published -> WordPress update verified
+```
+
+A version number existing in source code does not mean that version has been released.
+
 ## 11. Architecture decisions
 
 Create an ADR when a change affects any of the following:
