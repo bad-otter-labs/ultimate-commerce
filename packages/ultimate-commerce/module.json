@@ -2,11 +2,11 @@
   "schema": 1,
   "id": "core",
   "name": "Ultimate Commerce",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "product": "ultimate-commerce",
   "entitlement": null,
   "minimum_core": "0.1.0",
-  "category": "commerce-platform",
+  "category": "other",
   "provider_type": "wordpress-plugin",
   "managed_service": false,
   "capabilities": [
