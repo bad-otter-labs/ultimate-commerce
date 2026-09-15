@@ -30,6 +30,19 @@ If a requirement is store-specific, it belongs in that store's repository.
 - Disabled modules should not load unrelated frontend assets/work.
 - Never copy authoritative Woo data into UC merely for convenience.
 
+## Plugin release and update rule
+
+Every WordPress plugin built from this repository must follow the Bad Otter release pipeline defined in `BUILD-WORKFLOW.md`.
+
+- GitHub source and automated release artefacts are authoritative.
+- Do not invent an alternative update server or ad-hoc production ZIP process.
+- The first installation may be manual.
+- After first installation, production upgrades must appear through WordPress's normal Plugins update flow using the Bad Otter managed updater.
+- Preserve stable plugin slug/package identity and version metadata so WordPress upgrades the installed plugin in place.
+- Every upgrade must be safe against existing data and must run required migrations rather than assuming a clean install.
+- Do not commit long-lived Bad Otter publisher credentials; publication uses the canonical GitHub OIDC workflow.
+- A release is incomplete until the published version is verified through the WordPress managed-update path.
+
 ## Cross-repository work
 
 When a store asks for a generic commerce capability, implement and expose it here first. The store should then consume the public capability. Never duplicate UC implementation code into the store repository.
