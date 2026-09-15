@@ -1,0 +1,30 @@
+{
+  "schema": 1,
+  "id": "core",
+  "name": "Ultimate Commerce",
+  "version": "0.1.1",
+  "product": "ultimate-commerce",
+  "entitlement": null,
+  "minimum_core": "0.1.0",
+  "category": "commerce-platform",
+  "provider_type": "wordpress-plugin",
+  "managed_service": false,
+  "capabilities": [
+    "woocommerce-enhancement-platform",
+    "modular-commerce",
+    "product-view-model",
+    "variation-state",
+    "cart-foundation",
+    "account-foundation",
+    "returns-foundation",
+    "hpos-compatible",
+    "cart-checkout-blocks-compatible",
+    "managed-updates",
+    "package-checksum-verification",
+    "product-scoped-registration",
+    "automatic-wordpress-update-discovery",
+    "licence-free-update-delivery"
+  ],
+  "description": "Ultimate Commerce is the reusable Bad Otter Labs WooCommerce enhancement platform. WooCommerce remains authoritative for commerce truth while Ultimate Commerce provides modular storefront, customer-journey and operational capabilities.",
+  "channel": "stable"
+}

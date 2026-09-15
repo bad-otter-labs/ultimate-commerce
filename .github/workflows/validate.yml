@@ -22,6 +22,7 @@ jobs:
         run: |
           set -euo pipefail
           test -f packages/ultimate-commerce/ultimate-commerce.php
+          test -f packages/ultimate-commerce/module.json
           test -f packages/ultimate-commerce/src/Plugin.php
           test -f packages/ultimate-commerce/src/Support/ModuleRegistry.php
           test -f packages/ultimate-commerce/src/Updates/ManagedUpdates.php
@@ -35,23 +36,37 @@ jobs:
             php -l "$file"
           done < <(find packages/ultimate-commerce -type f -name '*.php' -print0)
 
-      - name: Validate plugin identity and version
+      - name: Validate plugin and product identity
         shell: bash
         run: |
           set -euo pipefail
           python3 - <<'PY'
-          import re
+          import json, re
           from pathlib import Path
           p = Path('packages/ultimate-commerce/ultimate-commerce.php').read_text()
+          manifest = json.loads(Path('packages/ultimate-commerce/module.json').read_text())
           header = re.search(r'^\s*\*\s*Version:\s*([^\s]+)', p, re.M)
           const = re.search(r"define\('ULTIMATE_COMMERCE_VERSION',\s*'([^']+)'\)", p)
           if not header or not const or header.group(1) != const.group(1):
               raise SystemExit('Plugin header and ULTIMATE_COMMERCE_VERSION must match')
+          version = header.group(1)
+          expected = {
+              'schema': 1,
+              'id': 'core',
+              'product': 'ultimate-commerce',
+              'provider_type': 'wordpress-plugin',
+              'channel': 'stable',
+          }
+          for key, value in expected.items():
+              if manifest.get(key) != value:
+                  raise SystemExit(f'module.json {key} must be {value!r}')
+          if str(manifest.get('version')) != version:
+              raise SystemExit('module.json version must match plugin version')
           if 'Requires Plugins: woocommerce' not in p:
               raise SystemExit('WooCommerce dependency header is required')
           if 'Update URI: https://badotter.io/ultimate-commerce' not in p:
               raise SystemExit('Bad Otter Update URI is required')
-          print('Validated Ultimate Commerce v' + header.group(1))
+          print('Validated Ultimate Commerce product identity v' + version)
           PY
 
       - name: Enforce reusable repository boundary
