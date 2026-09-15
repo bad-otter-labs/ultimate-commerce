@@ -6,7 +6,7 @@
   "product": "ultimate-commerce",
   "entitlement": null,
   "minimum_core": "0.1.0",
-  "category": "commerce-platform",
+  "category": "other",
   "provider_type": "wordpress-plugin",
   "managed_service": false,
   "capabilities": [
