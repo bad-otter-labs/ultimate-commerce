@@ -18,6 +18,8 @@
 - Add external-boundary regression tests for token tampering, plaintext-secret prevention, provider allowlists and webhook replay protection.
 - Add Audit API v1 with structured high-impact events, safe context guardrails and pluggable sinks without implicit debug-log persistence.
 - Add Privacy API v1 with canonical data classifications, retention vocabulary and WordPress exporter/eraser registration for UC-owned personal data.
+- Add Execution API v1 contracts for short critical-section locks, durable idempotency claims, replaceable rate limiting and Action Scheduler jobs.
+- Add bounded retry policy and regression coverage for lease safety, duplicate business execution, rate-limit decisions and PII-minimised job arguments.
 
 ## 0.1.4 - 2026-09-15
 
