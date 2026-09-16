@@ -1,0 +1,182 @@
+name: Publish Free Development Build
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: Development version, for example 0.2.0-dev.2
+        required: true
+        type: string
+
+permissions:
+  contents: read
+  id-token: write
+
+concurrency:
+  group: ultimate-commerce-free-development-release
+  cancel-in-progress: false
+
+env:
+  PRODUCT: ultimate-commerce-for-woocommerce-dev
+
+jobs:
+  publish:
+    runs-on: [self-hosted, Linux, X64, badotter, ci]
+    timeout-minutes: 20
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Validate version and build development package
+        id: package
+        shell: bash
+        env:
+          DEV_VERSION: ${{ inputs.version }}
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import os, re
+          value=os.environ['DEV_VERSION']
+          if not re.fullmatch(r'\d+\.\d+\.\d+-dev\.[1-9]\d*', value):
+              raise SystemExit('version must look like 0.2.0-dev.2')
+          PY
+          php -l development/free-updater/BadOtterDevelopmentClient.php >/dev/null
+          php -l development/free-updater/ManagedDevelopmentUpdates.php >/dev/null
+          output="$(python3 scripts/build-development-package.py --version "$DEV_VERSION" --output-dir dist-development)"
+          echo "$output"
+          package="$(printf '%s\n' "$output" | sed -n 's/^PACKAGE=//p')"
+          test -n "$package"
+          unzip -t "dist-development/$package" >/dev/null
+          while IFS='=' read -r key value; do
+            case "$key" in PRODUCT|VERSION|PACKAGE|SHA256) echo "${key,,}=$value" >> "$GITHUB_OUTPUT";; esac
+          done <<< "$output"
+
+      - name: Verify Bad Otter development product registration
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import json, urllib.request
+          url='https://api.badotter.io/v1/products/ultimate-commerce-for-woocommerce-dev/modules'
+          with urllib.request.urlopen(url, timeout=20) as response:
+              payload=json.load(response)
+          data=payload.get('data', payload)
+          modules=data.get('modules') or []
+          core=next((item for item in modules if item.get('code') == 'core'), None)
+          if not core:
+              raise SystemExit('Bad Otter product ultimate-commerce-for-woocommerce-dev/core is not registered')
+          if core.get('access') != 'free':
+              raise SystemExit(f'Expected development core access=free, got {core}')
+          print('Bad Otter development product registration verified')
+          PY
+
+      - name: Request Bad Otter publisher identity
+        id: oidc
+        shell: bash
+        run: |
+          set -euo pipefail
+          response="$(curl --fail --silent --show-error -H "Authorization: bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" "${ACTIONS_ID_TOKEN_REQUEST_URL}&audience=badotter-release-publisher")"
+          token="$(python3 -c 'import json,sys; print(json.load(sys.stdin)["value"])' <<< "$response")"
+          test -n "$token"
+          echo "token=$token" >> "$GITHUB_OUTPUT"
+
+      - name: Create validated Bad Otter draft candidate
+        shell: bash
+        env:
+          BADOTTER_OIDC_TOKEN: ${{ steps.oidc.outputs.token }}
+        run: |
+          set -euo pipefail
+          version="${{ steps.package.outputs.version }}"
+          package="dist-development/${{ steps.package.outputs.package }}"
+          checksum="${{ steps.package.outputs.sha256 }}"
+          response_file="$(mktemp)"
+          http_code="$(curl --silent --show-error --output "$response_file" --write-out '%{http_code}' \
+            -H "Authorization: Bearer $BADOTTER_OIDC_TOKEN" \
+            -F "package=@${package};filename=$(basename "$package");type=application/zip" \
+            -F "reason=Validated Ultimate Commerce Free development candidate: ${GITHUB_REPOSITORY}@${GITHUB_SHA}" \
+            -F "releaseNotes=Ultimate Commerce for WooCommerce development ${version}" \
+            -F "channel=stable" \
+            -F "publish=false" \
+            https://api.badotter.io/v1/release-publisher/ingest)"
+          response="$(cat "$response_file")"; rm -f "$response_file"
+          if [ "$http_code" -ge 200 ] && [ "$http_code" -lt 300 ]; then
+            EXPECTED_PRODUCT="$PRODUCT" EXPECTED_VERSION="$version" EXPECTED_SHA="$checksum" python3 -c 'import json,os,sys; d=json.load(sys.stdin); assert d.get("success") is True,d; data=d.get("data") or {}; assert data.get("product") == os.environ["EXPECTED_PRODUCT"],data; assert str(data.get("version")) == os.environ["EXPECTED_VERSION"],data; assert data.get("status") == "draft",data; remote=(data.get("checksum") or data.get("sha256") or "").lower().removeprefix("sha256:"); remote and remote != os.environ["EXPECTED_SHA"].lower() and (_ for _ in ()).throw(AssertionError((remote,os.environ["EXPECTED_SHA"])))' <<< "$response"
+            exit 0
+          fi
+          if [ "$http_code" = "409" ]; then
+            echo "Development candidate already exists; promotion will verify the identity."
+            exit 0
+          fi
+          cat <<< "$response" >&2
+          exit 1
+
+      - name: Promote development candidate
+        shell: bash
+        env:
+          BADOTTER_OIDC_TOKEN: ${{ steps.oidc.outputs.token }}
+        run: |
+          set -euo pipefail
+          version="${{ steps.package.outputs.version }}"
+          package="dist-development/${{ steps.package.outputs.package }}"
+          checksum="${{ steps.package.outputs.sha256 }}"
+          response_file="$(mktemp)"
+          http_code="$(curl --silent --show-error --output "$response_file" --write-out '%{http_code}' \
+            -H "Authorization: Bearer $BADOTTER_OIDC_TOKEN" \
+            -F "package=@${package};filename=$(basename "$package");type=application/zip" \
+            -F "reason=Publish Ultimate Commerce Free development build: ${GITHUB_REPOSITORY}@${GITHUB_SHA}" \
+            -F "releaseNotes=Ultimate Commerce for WooCommerce development ${version}" \
+            -F "channel=stable" \
+            -F "publish=true" \
+            https://api.badotter.io/v1/release-publisher/ingest)"
+          response="$(cat "$response_file")"; rm -f "$response_file"
+          test "$http_code" -ge 200 && test "$http_code" -lt 300
+          EXPECTED_PRODUCT="$PRODUCT" EXPECTED_VERSION="$version" EXPECTED_SHA="$checksum" python3 -c 'import json,os,sys; d=json.load(sys.stdin); assert d.get("success") is True,d; data=d.get("data") or {}; assert data.get("product") == os.environ["EXPECTED_PRODUCT"],data; assert str(data.get("version")) == os.environ["EXPECTED_VERSION"],data; assert data.get("status") == "published",data; remote=(data.get("checksum") or data.get("sha256") or "").lower().removeprefix("sha256:"); remote and remote != os.environ["EXPECTED_SHA"].lower() and (_ for _ in ()).throw(AssertionError((remote,os.environ["EXPECTED_SHA"])))' <<< "$response"
+
+      - name: Verify live development update discovery
+        shell: bash
+        env:
+          DEV_VERSION: ${{ steps.package.outputs.version }}
+          DEV_SHA: ${{ steps.package.outputs.sha256 }}
+        run: |
+          set -euo pipefail
+          lookup_file="$(mktemp)"
+          curl --fail-with-body --silent --show-error --get \
+            -H 'Accept: application/json' \
+            -H 'X-BadOtter-Site: https://development-verifier.invalid' \
+            -H 'X-BadOtter-Product: ultimate-commerce-for-woocommerce-dev' \
+            -H 'X-BadOtter-Module: core' \
+            -H 'X-BadOtter-Module-Version: 0.0.0' \
+            --data-urlencode 'site=https://development-verifier.invalid' \
+            --data-urlencode 'currentVersion=0.0.0' \
+            --data-urlencode 'coreVersion=0.0.0' \
+            --data-urlencode 'wordpressVersion=6.6.0' \
+            --data-urlencode 'phpVersion=8.1.0' \
+            --data-urlencode 'channel=stable' \
+            'https://api.badotter.io/v1/updates/ultimate-commerce-for-woocommerce-dev/core' > "$lookup_file"
+          LOOKUP_FILE="$lookup_file" python3 - <<'PY'
+          import json, os
+          payload=json.load(open(os.environ['LOOKUP_FILE']))
+          if payload.get('success') is not True:
+              raise SystemExit(f'Development update lookup failed: {payload}')
+          data=payload.get('data') or {}
+          if data.get('updateAvailable') is not True:
+              raise SystemExit(f'Development build is not discoverable: {data}')
+          if str(data.get('version') or data.get('newVersion') or '') != os.environ['DEV_VERSION']:
+              raise SystemExit(f'Live version does not match {os.environ["DEV_VERSION"]}: {data}')
+          package=data.get('package') or {}
+          checksum=str(package.get('checksum') or package.get('sha256') or '').lower().removeprefix('sha256:')
+          if checksum != os.environ['DEV_SHA'].lower():
+              raise SystemExit(f'Live checksum {checksum!r} does not match built package')
+          print('Live Bad Otter development update verified')
+          PY
+          rm -f "$lookup_file"
+
+      - name: Upload published development package
+        uses: actions/upload-artifact@v4
+        with:
+          name: ultimate-commerce-for-woocommerce-${{ steps.package.outputs.version }}
+          path: |
+            dist-development/*.zip
+            dist-development/*.sha256
+          if-no-files-found: error
+          retention-days: 30
