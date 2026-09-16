@@ -1,5 +1,7 @@
 <?php
 
+defined('ABSPATH') || exit;
+
 use BadOtter\UltimateCommerce\Modules\Account\AccountModule;
 use BadOtter\UltimateCommerce\Modules\Cart\CartModule;
 use BadOtter\UltimateCommerce\Modules\ProductDisplay\ProductDisplayModule;

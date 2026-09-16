@@ -1,0 +1,46 @@
+name: Validate WordPress.org Package
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  package-review:
+    # Repository is still private. Before public visibility, move untrusted PR
+    # execution to GitHub-hosted or isolated ephemeral runners.
+    runs-on: [self-hosted, Linux, X64, badotter, ci]
+    timeout-minutes: 20
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Build and statically inspect canonical Free package
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -rf dist-wporg wporg-check
+          python3 scripts/build-wordpress-org-package.py \
+            --source packages/ultimate-commerce-for-woocommerce \
+            --output-dir dist-wporg
+          package="$(printf '%s\n' dist-wporg/*.zip)"
+          test -f "$package"
+          python3 scripts/check-wordpress-org-package.py "$package"
+          mkdir -p wporg-check
+          unzip -q "$package" -d wporg-check
+          test -f wporg-check/ultimate-commerce-for-woocommerce/ultimate-commerce-for-woocommerce.php
+
+      - name: Run official WordPress Plugin Check
+        uses: wordpress/plugin-check-action@v1
+        with:
+          build-dir: './wporg-check/ultimate-commerce-for-woocommerce'
+          slug: 'ultimate-commerce-for-woocommerce'
+          include-experimental: false
+          # Internal error helpers accept only package-owned literal messages, but
+          # Plugin Check cannot infer that provenance once the literal crosses the
+          # helper boundary. Keep this one narrow false-positive exemption visible.
+          ignore-codes: 'WordPress.WP.I18n.NonSingularStringLiteralText'

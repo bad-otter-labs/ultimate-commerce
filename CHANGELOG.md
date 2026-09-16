@@ -20,6 +20,7 @@
 - Add Privacy API v1 with canonical data classifications, retention vocabulary and WordPress exporter/eraser registration for UC-owned personal data.
 - Add Execution API v1 contracts for short critical-section locks, durable idempotency claims, replaceable rate limiting and Action Scheduler jobs.
 - Add bounded retry policy and regression coverage for lease safety, duplicate business execution, rate-limit decisions and PII-minimised job arguments.
+- Add a deterministic WordPress.org package audit, private vulnerability-reporting policy and official Plugin Check CI gate for the built Free artifact.
 
 ## 0.1.4 - 2026-09-15
 
