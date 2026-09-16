@@ -7,7 +7,7 @@
 - Remove the Bad Otter managed updater and managed-release manifest from the canonical Free runtime.
 - Adopt GPL-2.0-or-later metadata for the canonical Free package.
 - Migrate legacy `ultimate_commerce_*` options to the canonical `uc_*` prefix without deleting rollback data.
-- Validate normal pull requests on GitHub-hosted runners and build the WordPress.org-targeted package deterministically.
+- Build the WordPress.org-targeted package deterministically and record the requirement to move untrusted PR validation off the persistent private runner before repository visibility changes.
 
 ## 0.1.4 - 2026-09-15
 
