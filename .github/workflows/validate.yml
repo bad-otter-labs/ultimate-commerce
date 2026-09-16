@@ -11,7 +11,9 @@ permissions:
 
 jobs:
   validate:
-    runs-on: ubuntu-latest
+    # Phase 0 repository is still private. Before changing repository visibility,
+    # move untrusted pull_request validation to GitHub-hosted or ephemeral runners.
+    runs-on: [self-hosted, Linux, X64, badotter, ci]
     timeout-minutes: 10
     steps:
       - name: Checkout
@@ -111,7 +113,7 @@ jobs:
         run: |
           set -euo pipefail
           python3 - <<'PY'
-          import json, re
+          import json
           from pathlib import Path
           root = Path('packages/ultimate-commerce')
           plugin = (root / 'ultimate-commerce.php').read_text()
