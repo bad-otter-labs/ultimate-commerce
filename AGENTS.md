@@ -6,8 +6,9 @@ Before writing code or documentation in this repository, read:
 2. `BLUEPRINT.md`
 3. `ROADMAP.md`
 4. `BUILD-WORKFLOW.md`
+5. relevant ADRs under `docs/adr/`
 
-`FOUNDATION.md` owns reusable commerce architecture and WooCommerce/data boundaries. `BLUEPRINT.md` owns product family, Free/Pro packaging, WordPress.org distribution, security/commercial rules and product naming. If they conflict on those subjects, follow `BLUEPRINT.md` and reconcile the older document deliberately.
+`FOUNDATION.md` owns reusable commerce architecture and WooCommerce/data boundaries. `BLUEPRINT.md` is the master product blueprint: product family, Free/Pro packaging, Hub, shared engines, WordPress.org distribution, security/commercial rules and long-term product scope. If a change creates an apparent conflict, stop and reconcile the source-of-truth documents deliberately.
 
 ## Hard repository boundary
 
@@ -25,9 +26,20 @@ Do not add:
 
 If a requirement is store-specific, it belongs in that store's repository. If it is a paid reusable module, it belongs in the Pro product/repository once that repository exists.
 
+## Product classification rule
+
+Before implementation, classify work as one of:
+
+1. **Free** — meaningful reusable baseline WooCommerce enhancement suitable for the WordPress.org product.
+2. **Pro** — advanced conversion, merchandising, customer lifecycle, operations, intelligence or automation capability with substantial merchant value.
+3. **Hosted service** — capability with genuine ongoing Bad Otter infrastructure cost such as hosted search, managed communications or future ML services.
+4. **Store-specific** — merchant branding, presentation, business-specific policy/configuration or one-off integration.
+
+Ultimate Commerce Hub is part of **Pro**, not a separate purchase/product at launch.
+
 ## Architecture rules
 
-- WooCommerce remains authoritative for products, variations, stock, carts, orders, totals, tax, payments and refunds.
+- WooCommerce remains authoritative for products, variations, sellable stock, carts, orders, totals, tax, payments and refunds.
 - Use public WooCommerce/WordPress APIs and CRUD objects.
 - Order code must be HPOS-safe.
 - Use Store API extension mechanisms when enriching supported shopper resources.
@@ -39,16 +51,64 @@ If a requirement is store-specific, it belongs in that store's repository. If it
 - Never copy authoritative Woo data into UC merely for convenience.
 - Free must never depend on Pro.
 - Pro must consume documented public Free contracts rather than secret privileged internals.
+- Hub must use UC/Woo service contracts rather than direct database shortcuts.
+
+## Shared-engine rule
+
+Before adding feature-specific storage/logic, check whether the concept belongs in an existing shared platform engine from `BLUEPRINT.md`.
+
+Key shared primitives include:
+
+- Product Relationship Graph
+- Availability Service
+- Campaign Engine
+- Rules & Automation Engine
+- Inventory Movement Ledger
+- Location Model
+- Stored Value Ledger
+- Approval Framework
+- Alert/Notification Engine
+- Audit Trail
+- Provider Registry
+- Secret Store
+- Background Job/idempotency conventions
+- Product Template Schema
+- Event/Analytics vocabulary
+
+Do not create separate relationship, campaign, balance, inventory-history or approval mechanisms inside individual modules when the shared engine fits.
+
+## Inventory and Hub rules
+
+- Hub is a purpose-built staff application included in Pro; it is not wp-admin with different styling.
+- Hub reuses WordPress/Woo identity rather than inventing a second password database.
+- Staff can be permitted Hub access while denied everyday wp-admin access.
+- Product creation/editing in Hub must use WooCommerce CRUD/public APIs.
+- WooCommerce remains authoritative for sellable stock.
+- UC may own location allocations, movements, stocktakes, transfers, receiving and purchasing workflow, but these must reconcile deliberately to Woo stock.
+- A Hub stock mutation should create an auditable inventory movement with actor/reason/context.
+- Product create, product publish, price edit, stock adjust, cost view and stored-value issue permissions are separable.
+- Ordinary operational workflows should archive rather than destructively erase historical products/records.
+
+## Stored-value rule
+
+Gift cards, store credit, goodwill credit and future promotional/referral credit share the Stored Value Ledger.
+
+- balances are transaction-ledger based
+- redemption/issue must be idempotent and concurrency-safe
+- public codes are high-entropy/non-sequential
+- full codes/secrets do not enter logs
+- monetary order totals/refunds remain owned/executed through Woo/payment APIs
 
 ## Security rules
 
-Treat the plugin as software that may run on large, high-value stores.
+Treat the product as software that may run on large, high-value stores.
 
 - Every request is untrusted.
 - Every sensitive object identifier requires capability/ownership authorisation.
 - Nonces are CSRF protection, not authorisation.
 - REST routes require strict schemas and explicit permission callbacks.
 - Customer resources require object-level ownership checks.
+- Operational resources may also require location scope.
 - Administrative actions use least-privilege UC capabilities rather than blanket `manage_options` where practical.
 - Use prepared/database APIs and escape output for its rendering context.
 - Provider webhooks require signature/replay/idempotency protection.
@@ -56,6 +116,7 @@ Treat the plugin as software that may run on large, high-value stores.
 - Secrets must never enter logs, diagnostics exports, frontend code or configuration exports.
 - Public/guest endpoints require bounded inputs, pagination/rate controls where appropriate and abuse-resistant tokens.
 - Background jobs should store identifiers rather than unnecessary PII/credentials and must use bounded retries.
+- High-risk workflows such as stock receipt and stored-value redemption must be duplicate-safe.
 - Ultimate Commerce must never handle raw card numbers/CVV.
 
 ## Free plugin / WordPress.org rule
@@ -93,14 +154,28 @@ Pro releases use the Bad Otter managed release/update pipeline:
 
 When a store asks for a generic commerce capability:
 
-1. decide whether it is Free or Pro using `BLUEPRINT.md`
-2. implement it in the owning UC product
-3. expose it through documented public contracts/configuration
-4. release the owning UC product
-5. let the store consume/configure the capability
+1. classify it as Free / Pro / hosted / store-specific
+2. identify the owning module and any shared engine it requires
+3. implement it in the owning UC product
+4. expose it through documented public contracts/configuration
+5. release the owning UC product
+6. let the store consume/configure the capability
 
 Never duplicate UC implementation code into a store repository.
 
 ## Architectural changes
 
-If a proposed change conflicts with `FOUNDATION.md` or `BLUEPRINT.md`, do not silently proceed. Document the architecture decision and reconcile the source-of-truth documents deliberately if the new decision is accepted.
+Create/revise an ADR when a proposed change materially affects:
+
+- repository/product boundary
+- Free/Pro/Hub commercial packaging
+- Woo vs UC data ownership
+- inventory or stored-value ownership/reconciliation
+- database/storage architecture
+- public APIs/contracts
+- authentication/authorisation model
+- module/shared-engine boundaries
+- update/distribution strategy
+- backwards compatibility policy
+
+Accepted decisions must be reflected back into the blueprint/foundation/workflow where relevant.
