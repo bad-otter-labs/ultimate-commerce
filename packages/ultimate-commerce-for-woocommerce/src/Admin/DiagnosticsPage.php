@@ -3,6 +3,7 @@
 namespace BadOtter\UltimateCommerce\Admin;
 
 use BadOtter\UltimateCommerce\Plugin;
+use BadOtter\UltimateCommerce\Security\Capabilities;
 defined('ABSPATH') || exit;
 
 final class DiagnosticsPage
@@ -18,7 +19,7 @@ final class DiagnosticsPage
             'woocommerce',
             __('Ultimate Commerce', 'ultimate-commerce-for-woocommerce'),
             __('Ultimate Commerce', 'ultimate-commerce-for-woocommerce'),
-            'manage_woocommerce',
+            Capabilities::VIEW_DIAGNOSTICS,
             'ultimate-commerce',
             array(__CLASS__, 'render')
         );
@@ -26,7 +27,7 @@ final class DiagnosticsPage
 
     public static function render(): void
     {
-        if (!current_user_can('manage_woocommerce')) {
+        if (!current_user_can(Capabilities::VIEW_DIAGNOSTICS)) {
             wp_die(esc_html__('You do not have permission to view this page.', 'ultimate-commerce-for-woocommerce'));
         }
 

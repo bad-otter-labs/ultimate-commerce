@@ -29,8 +29,14 @@ jobs:
           test -f packages/ultimate-commerce-for-woocommerce/src/Contracts/AbstractModule.php
           test -f packages/ultimate-commerce-for-woocommerce/src/Support/ModuleRegistry.php
           test -f packages/ultimate-commerce-for-woocommerce/src/Support/OptionMigrator.php
+          test -f packages/ultimate-commerce-for-woocommerce/src/Security/Capabilities.php
+          test -f packages/ultimate-commerce-for-woocommerce/src/Security/Authorization.php
+          test -f packages/ultimate-commerce-for-woocommerce/src/Security/Csrf.php
+          test -f packages/ultimate-commerce-for-woocommerce/src/Rest/RouteRegistrar.php
           test -f docs/module-extension-contract-v1.md
+          test -f docs/security-request-conventions.md
           test -f tests/module-contract-v1.php
+          test -f tests/security-request-foundations.php
           test -f scripts/build-wordpress-org-package.py
           test -f packages/ultimate-commerce/ultimate-commerce.php
           test -f packages/ultimate-commerce/module.json
@@ -46,6 +52,7 @@ jobs:
             php -l "$file"
           done < <(find packages/ultimate-commerce-for-woocommerce packages/ultimate-commerce -type f -name '*.php' -print0)
           php -l tests/module-contract-v1.php
+          php -l tests/security-request-foundations.php
           python3 -m py_compile scripts/build-wordpress-org-package.py scripts/build-plugin-package.py
 
       - name: Validate public module extension contract v1
@@ -77,6 +84,30 @@ jobs:
           if '$registry->register(new $class());' not in plugin:
               raise SystemExit('Built-in modules are not using the public registry registration path')
           print('Public module extension contract v1 validated')
+          PY
+
+      - name: Validate security and request foundations
+        shell: bash
+        run: |
+          set -euo pipefail
+          php tests/security-request-foundations.php
+          python3 - <<'PY'
+          from pathlib import Path
+
+          root = Path('packages/ultimate-commerce-for-woocommerce')
+          diagnostics = (root / 'src/Admin/DiagnosticsPage.php').read_text()
+          capabilities = (root / 'src/Security/Capabilities.php').read_text()
+          routes = (root / 'src/Rest/RouteRegistrar.php').read_text()
+
+          if 'manage_woocommerce' in diagnostics or 'manage_options' in diagnostics:
+              raise SystemExit('UC diagnostics must use a dedicated UC capability')
+          if 'Capabilities::VIEW_DIAGNOSTICS' not in diagnostics:
+              raise SystemExit('UC diagnostics capability check is missing')
+          if "uc_view_diagnostics" not in capabilities or "uc_manage_settings" not in capabilities:
+              raise SystemExit('Required Phase 1 capability constants are missing')
+          if "permission_callback" not in routes or "register_rest_route" not in routes:
+              raise SystemExit('Strict UC REST route registrar is incomplete')
+          print('Security and request foundations validated')
           PY
 
       - name: Validate WordPress.org Free identity and storage boundary

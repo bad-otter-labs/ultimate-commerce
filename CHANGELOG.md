@@ -11,6 +11,9 @@
 - Add public Module API v1 metadata and `uc_register_modules` registration for Pro and third-party extensions.
 - Resolve module dependencies before boot and expose blocked/disabled module reasons in diagnostics.
 - Add a standalone contract regression test covering external registration, dependency ordering, missing dependencies, cycles and disabled dependencies.
+- Add versioned UC capabilities and move diagnostics to `uc_view_diagnostics` instead of a broad WooCommerce capability.
+- Add reusable authentication, exact-capability, object-ownership and CSRF helpers with fail-closed errors.
+- Add a strict UC REST route registrar requiring explicit permission callbacks, typed request arguments and bounded pagination helpers.
 
 ## 0.1.4 - 2026-09-15
 
