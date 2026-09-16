@@ -4,6 +4,7 @@ namespace BadOtter\UltimateCommerce;
 
 use BadOtter\UltimateCommerce\Admin\DiagnosticsPage;
 use BadOtter\UltimateCommerce\Compatibility\WooCommerceCompatibility;
+use BadOtter\UltimateCommerce\Security\Capabilities;
 use BadOtter\UltimateCommerce\Support\ModuleRegistry;
 use BadOtter\UltimateCommerce\Support\OptionMigrator;
 
@@ -22,6 +23,8 @@ final class Plugin
             add_action('admin_notices', array(__CLASS__, 'woocommerceMissingNotice'));
             return;
         }
+
+        Capabilities::maybeInstall();
 
         $registry = new ModuleRegistry();
         $classes = require ULTIMATE_COMMERCE_DIR . 'config/modules.php';
@@ -50,6 +53,7 @@ final class Plugin
     public static function activate(): void
     {
         OptionMigrator::migrate();
+        Capabilities::install();
         update_option('uc_version', ULTIMATE_COMMERCE_VERSION, false);
         update_option('uc_schema_version', ULTIMATE_COMMERCE_SCHEMA_VERSION, false);
     }
