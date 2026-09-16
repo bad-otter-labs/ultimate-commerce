@@ -14,6 +14,8 @@
 - Add versioned UC capabilities and move diagnostics to `uc_view_diagnostics` instead of a broad WooCommerce capability.
 - Add reusable authentication, exact-capability, object-ownership and CSRF helpers with fail-closed errors.
 - Add a strict UC REST route registrar requiring explicit permission callbacks, typed request arguments and bounded pagination helpers.
+- Add Security API v1 foundations for signed guest tokens, encrypted secret storage, SSRF-safe provider requests and signed webhook replay leases.
+- Add external-boundary regression tests for token tampering, plaintext-secret prevention, provider allowlists and webhook replay protection.
 
 ## 0.1.4 - 2026-09-15
 
