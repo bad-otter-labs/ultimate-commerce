@@ -1,252 +1,232 @@
-# Ultimate Commerce Roadmap
+# Ultimate Commerce Master Roadmap
 
-Status: **Sequenced product roadmap**
+Status: **Sequenced outcome-based roadmap**
 
-This roadmap turns `BLUEPRINT.md` and `FOUNDATION.md` into an implementation order. It is intentionally outcome-based rather than date-based. A phase exits only when its technical, security and product gates are satisfied.
+This roadmap turns `BLUEPRINT.md` and `FOUNDATION.md` into implementation order. It is intentionally outcome-based rather than date-based. A phase exits only when its product, security, performance and upgrade gates are satisfied.
 
-The roadmap is designed around three simultaneous goals:
+The roadmap serves four simultaneous goals:
 
 1. build a genuinely useful WordPress.org Free product
 2. create a premium Pro product with obvious merchant ROI
-3. use FishingClothing.co.uk as the first serious proving ground without creating store-specific code paths
+3. grow Pro into a coherent commerce + retail-operations platform rather than a bag of unrelated add-ons
+4. use FishingClothing.co.uk as the first serious proving ground without creating store-specific code paths
 
 ## Roadmap principles
 
-- build the Free public contracts first; Pro extends them
-- security/compliance is built in, not added at submission time
-- prove each module on realistic WooCommerce data before broadening scope
-- prioritise features that either drive adoption, generate merchant revenue or remove significant operational work
-- do not create hosted-service cost until the local product has product-market evidence
-- no major release is complete without an upgrade test from realistic existing data
+- Free public contracts come first; Pro extends them
+- security/WordPress.org compliance is built in from the start
+- WooCommerce remains commerce truth
+- shared platform concepts are built once as engines/ledgers/contracts
+- each phase must be valuable before the whole vision is complete
+- merchant ROI and operational workload reduction drive Pro priorities
+- no major release is complete without realistic upgrade testing
+- phases may move based on product evidence, but architectural boundaries may not be bypassed
 
 ---
 
-## Phase 0 — Product split and constitutional reset
+# Phase 0 — Product split and constitutional reset
 
-**Goal:** align the codebase with the Free/Pro/WordPress.org model before more feature code compounds the old assumptions.
+**Goal:** align the codebase with the Free/Pro/WordPress.org product model before more feature work compounds old assumptions.
 
-### Deliverables
+## Deliverables
 
-- lock public name: **Ultimate Commerce for WooCommerce**
-- lock brand name: **Ultimate Commerce**
-- reserve/prepare planned Free slug `ultimate-commerce-for-woocommerce`
-- define `ultimate-commerce-pro` as the paid companion identity
-- create the private `bad-otter-labs/ultimate-commerce-pro` repository
-- ensure Free has no runtime dependency on Pro
-- define the public extension/module registration contract Pro will consume
-- define the migration path from the current private pre-release plugin identity to the WordPress.org Free identity before public installs exist
-- remove the assumption that Free production updates come from Bad Otter
-- retain Bad Otter managed updates for Pro
-- reconcile `FOUNDATION.md`, `AGENTS.md`, `BUILD-WORKFLOW.md` and CI with `BLUEPRINT.md`
+- public name: **Ultimate Commerce for WooCommerce**
+- brand: **Ultimate Commerce**
+- planned Free slug `ultimate-commerce-for-woocommerce`
+- Pro identity `ultimate-commerce-pro`
+- private `bad-otter-labs/ultimate-commerce-pro` repository
+- Free has no runtime dependency on Pro
+- public module/extension registration contract Pro will consume
+- migration plan from current private pre-release Free identity to WordPress.org identity
+- Free release path separated from Bad Otter managed Pro release path
+- documentation/CI reconciled with the master blueprint
+- Hub explicitly defined as a Pro subsystem, not a separate purchase
 
-### Exit gate
+## Exit gate
 
-- no architecture document contradicts the Free/Pro distribution model
+- no architecture document contradicts Free/Pro distribution
 - Free and Pro package identities are explicit
-- Free can run independently with Pro absent
-- Pro can register modules only through public Free contracts
+- Free works independently with Pro absent
+- Pro can register modules only through documented Free contracts
 
-### Commercial outcome
+## Commercial outcome
 
-We avoid expensive identity/distribution migration after users exist and create the clean foundation required for WordPress.org acquisition.
+The product avoids an expensive identity/distribution migration after users exist.
 
 ---
 
-## Phase 1 — Security and WordPress.org engineering baseline
+# Phase 1 — Security and WordPress.org engineering baseline
 
-**Goal:** make the development process capable of producing code safe enough for large merchants and reviewable by WordPress.org.
+**Goal:** make the development process capable of producing software safe enough for serious merchants and reviewable by WordPress.org.
 
-### Deliverables
+## Platform/security deliverables
 
 - dedicated UC capability model
-- reusable object-ownership authorisation helpers
+- object-ownership authorisation helpers
 - strict REST route/schema conventions
-- shared CSRF/nonce patterns
+- shared CSRF/nonce conventions
 - secure guest-token utility
 - secret-store abstraction
-- shared provider HTTP client conventions with SSRF protections
-- shared signed webhook gateway with replay/idempotency controls
+- SSRF-safe provider HTTP conventions
+- signed webhook gateway with replay/idempotency controls
 - structured audit-event contract
-- privacy data classification rules
-- WordPress personal-data exporter/eraser integration foundation
-- Action Scheduler job conventions: IDs over PII snapshots, bounded retry, idempotency
+- privacy/data classification rules
+- WordPress personal-data exporter/eraser foundations
+- Action Scheduler job conventions
 - pagination/query-limit standards
-- security-focused coding standards and review checklist
+- idempotency/locking conventions for high-risk workflows
+- security disclosure process / `SECURITY.md`
 
-### CI / release gate
-
-Add or prepare:
+## CI / release gate
 
 - Plugin Check
 - PHPCS + WordPress Coding Standards
 - PHP compatibility/static analysis
-- dependency vulnerability scans
+- Composer/npm vulnerability scanning
 - secret scanning
-- package inspection
+- release-package inspection
 - permission/ownership regression tests
-- CSRF/REST schema tests
+- REST/CSRF/schema tests
 - HPOS compatibility tests
-- Blocks compatibility tests
+- Cart/Checkout Blocks tests where relevant
 
-### Exit gate
+## Exit gate
 
-A deliberately vulnerable fixture/test cannot bypass the expected permission, ownership, CSRF or request-schema boundaries.
-
-### Commercial outcome
-
-Security becomes part of the product, making future agency/enterprise adoption realistic instead of requiring a rewrite later.
+Deliberately vulnerable fixtures cannot bypass expected permission, ownership, CSRF or request-schema controls.
 
 ---
 
-## Phase 2 — Free storefront value: catalogue, variants and cart
+# Phase 2 — Free storefront value: catalogue, variants and cart
 
-**Goal:** create the first Free experience that a merchant would install even if Pro did not exist.
+**Goal:** create a Free experience merchants would install even if Pro did not exist.
 
-### Free modules
+## Catalogue / Product Cards
 
-#### Catalogue/Product Cards
-
-- reusable product view model
-- reusable product-card contract
+- reusable Woo product view model
+- product-card contract
 - media/secondary-media state
-- brand/title/price/rating data contracts
+- brand/title/price/rating contracts
 - configurable card components
 - manual badge support
-- no N+1 catalogue queries
+- no N+1 listing queries
 
-#### Variants & Swatches
+## Variants & Swatches
 
 - text/button selectors
 - colour/image swatches
 - selected state
-- variation image switching
+- variation imagery
 - available/unavailable state
-- low-stock presentation
-- URL/deep-link state where appropriate
+- basic low-stock presentation
+- deep-link state where appropriate
 
-#### Quick Add
+## Quick Add
 
 - variation-aware quick add
 - accessible dialog/state management
 - stock-safe add-to-cart
 
-#### Basic Cart Drawer
+## Basic Cart Drawer
 
 - Woo Store API/cart truth
 - add/remove/update quantity
-- accessible drawer/focus management
-- loading/error state
-- extension slots for Pro recommendations/incentives later
+- accessible focus management
+- error/loading states
+- extension slots for future Pro conversion modules
 
-### FishingClothing proving slice
-
-Prove:
+## FishingClothing proving slice
 
 ```text
 PLP product card
  -> variation/size selection
  -> quick add
  -> cart drawer
- -> Woo cart totals
+ -> Woo totals
  -> checkout
  -> real Woo order
 ```
 
-### Exit gate
+## Exit gate
 
-- performant against a large variable-product fixture
-- keyboard/screen-reader core flow passes accessibility review
+- performant on a large variable-product fixture
+- accessibility baseline passes
 - HPOS/Blocks matrix green
-- no store-specific rendering/business logic in UC
-
-### Commercial outcome
-
-Free becomes visibly valuable and begins providing the hooks Pro will monetise later.
+- no store-specific code in UC
 
 ---
 
-## Phase 3 — Free retention and merchant usability
+# Phase 3 — Free retention and merchant usability
 
-**Goal:** make Free feel complete rather than a demo of storefront components.
+**Goal:** make Free complete enough to stand alone rather than feeling like a Pro demo.
 
-### Deliverables
+## Deliverables
 
 - basic wishlist
 - recently viewed
-- basic stock/low-stock presentation
-- basic account/order enhancement hooks/view models
+- basic stock presentation
+- basic account/order hooks/view models
 - settings import/export
-- mature diagnostics/system-status screen
+- mature diagnostics/system status
 - module enable/disable UX
 - documentation for theme/store integration
 - translation readiness
 - uninstall/data-retention controls
 
-### Exit gate
+## Exit gate
 
-A normal WooCommerce merchant can configure and use Free without a Bad Otter account, custom code or external service.
-
-### Commercial outcome
-
-Free is strong enough for positive directory reviews, agency experimentation and organic adoption.
+A normal Woo merchant can configure/use Free without Bad Otter account, Pro, custom code or external service.
 
 ---
 
-## Phase 4 — WordPress.org public beta and Free 1.0
+# Phase 4 — WordPress.org public beta and Free 1.0
 
-**Goal:** turn Free into a directory-quality acquisition product.
+**Goal:** establish Free as the acquisition channel for the product family.
 
-### Submission preparation
+## Submission preparation
 
-- transition public package identity to `ultimate-commerce-for-woocommerce`
-- remove Bad Otter updater code from the directory package
-- public/reviewable Free source repository
-- human-readable JS/CSS source and reproducible build instructions
+- transition package identity to `ultimate-commerce-for-woocommerce`
+- remove Bad Otter updater from public directory package
+- public/reviewable source
+- human-readable JS/CSS source and build instructions
 - WordPress.org readme/screenshots/assets
-- clear privacy/external-service disclosures
-- restrained Pro discovery/upgrade UI
+- privacy/external-service disclosures
+- restrained Pro discovery UI
 - translation template
 - support/documentation links
 
-### Mandatory release gate
+## Mandatory gate
 
-- Plugin Check: no blocking errors
+- Plugin Check has no blocking issues
 - WPCS/PHPCS green
 - dependency/security scans green
 - no unsolicited telemetry
-- no remote executable/static dependencies for normal local Free features
+- no remote executable dependency for normal Free operation
 - package contains production files only
-- tested minimum/current WordPress + WooCommerce matrix
-- HPOS and Blocks green
+- supported WordPress/WooCommerce matrix green
+- HPOS/Blocks green
 - accessibility baseline green
-- upgrade from pre-release data fixture validated
+- pre-release data upgrade validated
 
-### Exit gate
+## Exit gate
 
-WordPress.org submission accepted or all reviewer feedback is resolved with no architecture compromise.
-
-### Commercial outcome
-
-Free becomes the top-of-funnel channel for Ultimate Commerce Pro.
+WordPress.org submission is accepted or reviewer feedback is resolved without compromising the architecture.
 
 ---
 
-## Phase 5 — Pro foundation and first paid conversion pack
+# Phase 5 — Pro foundation and first paid conversion release
 
-**Goal:** ship a paid product with enough immediate ROI to justify an annual licence.
+**Goal:** ship the first paid product with immediate, understandable merchant ROI.
 
-### Pro platform
+## Pro platform
 
 - Pro dependency guard requiring Free
 - Bad Otter entitlement/update client
 - staging/development licence treatment
-- Pro module registry integration through Free public contracts
-- safe expiry behaviour
-- Pro diagnostics without leaking licence secrets
+- Pro module registration through Free contracts
+- safe licence-expiry behaviour
+- Pro diagnostics
 
-### First Pro modules
-
-#### Advanced Variants
+## Advanced Variants
 
 - linked/sibling colours
 - colour families
@@ -255,215 +235,434 @@ Free becomes the top-of-funnel channel for Ultimate Commerce Pro.
 - `Available in my size` contract
 - advanced variation/linked-product strategies
 
-#### Advanced Cart & Conversion
+## Advanced Cart & Conversion
 
-- free-shipping progress rules
+- free-delivery progress
 - cart recommendations
-- cross-sells
-- complete-the-look slots
-- configurable incentive messaging
+- contextual cross-sells
 - saved-cart foundation
+- Complete-the-Look placement foundation
+- configurable incentive messaging
 
-### Exit gate
+## Exit gate
 
-A merchant can install Free + Pro, activate a licence, receive a native managed update, disable Pro without corrupting Free data and demonstrate measurable conversion-oriented features on FishingClothing.
+Free + Pro installs/upgrades safely, Pro can be disabled without corrupting Free data, and conversion-oriented features are proven on FishingClothing.
 
-### Commercial outcome
+## Commercial outcome
 
 **First sellable Ultimate Commerce Pro.**
 
-Pricing experiment starts around the blueprint's £149–£199 single-site annual range.
-
 ---
 
-## Phase 6 — Merchandising and recommendations
+# Phase 6 — Rich merchandising, relationships and bundles
 
-**Goal:** build the first major moat and strongest agency/merchant selling point.
+**Goal:** create the first major premium moat and replace multiple disconnected merchandising plugins.
 
-### Dynamic Merchandising
+## Shared engines
 
-- rule-based collections
-- include/exclude/pin/boost
+- Product Relationship Graph
+- Availability Service
+- Campaign Engine
+
+## Bundles
+
+- fixed bundles
+- optional/required components
+- mix-and-match
+- build-your-own
+- outfit/Complete-the-Look
+- quantity bundle foundation
+
+## Relationships / recommendations
+
+- upsells
+- cross-sells
+- Frequently Bought Together
+- accessories
+- alternatives/upgrades
+- colour siblings
+- stock-aware alternatives
+
+## Smart out-of-stock recovery
+
+- same product/different colour
+- alternative variation
+- linked sibling
+- manually curated substitute
+- category/brand fallback
+- notify-me fallback
+
+## Merchandising
+
+- dynamic collections
+- pin/exclude/boost
 - stock/newness/sale rules
 - schedules
 - automated badges
-- deterministic rule explanations
+- sale/offer image overlays
 - stock-aware sorting
+- deterministic rule explanation
 
-### Recommendations
+## Notice / announcement system
 
-- manual curation
-- complementary products
-- same brand/collection
-- recently viewed
-- frequently bought together from order data
-- fallback strategy chains
-- storefront placement contracts
+- multiple/rotating notices
+- schedule/campaign association
+- page/category/product targeting
+- device/customer/cart targeting
+- real delivery cut-offs/countdowns where configured
 
-### Analytics
+## Campaigns
 
-- recommendation impressions/clicks/add-to-cart/purchase attribution
-- collection performance
-- merchant-owned reporting
+One campaign can coordinate:
 
-### Exit gate
+- notices
+- badges/overlays
+- collection state
+- cart messaging
+- free-gift presentation
+- search merchandising
 
-Merchants can explain why a product appears in a collection/recommendation and measure whether the feature contributes value.
+## Exit gate
 
-### Commercial outcome
-
-Pro moves from "better UX" to a **merchandising platform** with stronger recurring value.
+Merchants can explain why products/offers appear, control presentation across surfaces and measure basic conversion contribution.
 
 ---
 
-## Phase 7 — Customer portal, My Size and stock intelligence
+# Phase 7 — Gift Cards, Store Credit and Stored Value
 
-**Goal:** connect customer preferences to catalogue availability and retention.
+**Goal:** add a commercially strong Pro module with year-round and seasonal value.
 
-### Customer Portal
+## Stored Value Engine
+
+- secure ledger-based accounts
+- gift cards
+- return/store credit
+- goodwill credit
+- promotional credit foundation
+- append-only transactions/reversals
+- concurrency/idempotency protections
+
+## Digital Gift Cards
+
+- fixed/custom values
+- recipient/sender/message
+- branded templates
+- scheduled delivery
+- customer wallet
+- partial redemption
+- mixed gift-card/gateway payment
+- secure balance checking
+
+## Physical Gift Cards
+
+- inactive card inventory
+- activation through Hub
+- barcode/QR lookup
+- add/redeem/check balance
+- replacement/transfer workflow with permissions
+
+## Reporting
+
+- outstanding liability
+- sold/redeemed value
+- average purchase
+- redemption basket value
+
+## Future bulk/corporate foundation
+
+- recipient import
+- bulk issue/delivery
+- corporate reporting
+
+## Exit gate
+
+Stored-value redemption is concurrency-safe, refund allocation is deterministic, codes are abuse-resistant, and no retry can double-issue/redeem value.
+
+## Commercial outcome
+
+A headline Pro feature with strong Christmas/birthday/returns value.
+
+---
+
+# Phase 8 — Customer Portal, My Size and Stock Intelligence
+
+**Goal:** connect customer preferences, availability and retention.
+
+## Customer Portal
 
 - account overview
 - visual order history/timeline
 - wishlist/preferences
+- gift-card/store-credit wallet
 - stock alerts
 - recently viewed
 - communication preferences
+- Buy Again foundation
 
-### My Size / Commerce Profile
+## My Size / Commerce Profile
 
 - merchant-defined profile attributes
 - apparel presets
 - preferred-size persistence
-- `shop my size` availability/filter contracts
+- Shop My Size contracts
 - consent/privacy controls
 
-### Stock Intelligence
+## Stock Intelligence
 
 - variation-level back-in-stock alerts
-- stock-aware recommendation/merchandising inputs
-- demand/velocity signals
+- stock-aware recommendations/merchandising inputs
+- velocity signals
 - low-stock/high-demand reporting
+- days-of-cover foundation
 
-### Exit gate
+## Exit gate
 
-Customer profile data is exportable/erasable, object-authorised and useful across at least two independent modules without creating a hard coupling.
-
-### Commercial outcome
-
-UC begins creating the cross-module data advantage described in the blueprint.
+Customer profile data is exportable/erasable, object-authorised and useful across multiple independent modules.
 
 ---
 
-## Phase 8 — Returns, exchanges and tracking
+# Phase 9 — Ultimate Commerce Hub foundation
 
-**Goal:** make Pro materially reduce merchant service workload and improve post-purchase experience.
+**Goal:** create the staff operational workspace included with Pro, without wp-admin dependency for everyday jobs.
 
-### Returns
+## Hub application
+
+- separate staff-facing route/application surface
+- WordPress identity/auth foundation
+- Hub-only access option without wp-admin
+- mobile-first/PWA-capable shell
+- barcode/scanner-friendly search
+- role-aware dashboard
+- dedicated UC capabilities
+- location-scope foundation
+
+## Generic approval framework
+
+- requested
+- awaiting approval
+- approved/rejected
+- executed/cancelled
+- audit trail
+
+## Catalog Operations
+
+- create/edit Woo products through CRUD APIs
+- simple products
+- variable products
+- product templates
+- guided workflow
+- barcode-first lookup/create
+- duplicate detection
+- variant matrix
+- image capture/upload
+- supplier metadata foundation
+- draft/review/publish permissions
+- archive rather than ordinary destructive deletion
+
+## Inventory foundation
+
+- single-location operational model
+- Inventory Movement Ledger
+- view/adjust/receive stock
+- reason codes
+- damaged/shrinkage corrections
+- audit trail
+- basic stocktake
+- low-stock notifications
+
+## Exit gate
+
+A non-WordPress-trained staff member can create a product, receive/adjust stock and complete a stock count through Hub without wp-admin, with every mutation authorised/audited.
+
+## Commercial outcome
+
+Pro expands from storefront software into a retail operations platform.
+
+---
+
+# Phase 10 — Multi-location inventory, receiving, transfers and purchasing
+
+**Goal:** support serious retail/warehouse operations while preserving WooCommerce sellable stock truth.
+
+## Locations
+
+- warehouse/store/location model
+- operational location balances
+- reconciliation strategy to Woo sellable stock
+- location-scoped staff permissions
+
+## Transfers
+
+```text
+Requested -> Approved -> Picked -> In Transit -> Received -> Closed
+```
+
+- partial receipts
+- discrepancy handling
+- barcode workflows
+
+## Stocktake
+
+- full/cycle/location counts
+- blind count option
+- resumable sessions
+- discrepancy approval
+
+## Receiving
+
+- receive against existing product
+- create missing product when permitted
+- partial receiving
+- damaged/quarantine state
+- discrepancy capture
+
+## Suppliers / Purchase Orders
+
+- supplier records
+- supplier SKU/cost/lead time
+- purchase-order workflow
+- inbound quantities
+- partial receipt
+- approval rules
+
+## Stock intelligence growth
+
+- days of cover
+- likely stockouts
+- reorder suggestions
+- slow/dead stock
+- inbound coverage
+
+## Exit gate
+
+Location balances reconcile to WooCommerce according to a documented strategy, and duplicate/retried operational requests cannot silently double-adjust stock.
+
+---
+
+# Phase 11 — Returns, exchanges and tracking maturity
+
+**Goal:** materially reduce customer-service workload and improve post-purchase experience.
+
+## Returns
 
 - eligibility policy engine
-- return request workflow
+- self-service return request
 - line-item quantities
 - reasons
-- audit trail
+- audit history
 - partial returns
+- Hub receipt/inspection workflow
 - refund handoff to Woo/payment APIs
 
-### Exchanges
+## Exchanges
 
 - size/variation exchange
-- inventory/reservation policy
+- inventory reservation policy
 - race-condition handling
-- replacement order/adjustment strategy after dedicated architecture review
+- replacement-order strategy after dedicated architecture review
 
-### Tracking
+## Tracking
 
 - normalised shipment/event model
 - multiple shipments
 - customer timeline
-- provider contract
-- first production courier adapters
+- provider contracts
+- production courier adapters
 - signed webhook/polling support
 
-### Exit gate
-
-End-to-end:
+## Exit gate
 
 ```text
 Woo order
  -> shipment
- -> tracking timeline
+ -> tracking
  -> return request
+ -> Hub receipt/inspection
  -> exchange/refund decision
- -> WooCommerce monetary/order handoff
+ -> Woo monetary/order handoff
 ```
 
-with complete ownership and audit checks.
-
-### Commercial outcome
-
-Pro has a strong operational ROI story and can justify higher single-site pricing.
+with complete ownership and audit controls.
 
 ---
 
-## Phase 9 — Promotions, automation and value reporting
+# Phase 12 — Automation, alerts and value analytics
 
-**Goal:** deepen merchant automation without replacing WooCommerce calculation truth.
+**Goal:** connect the platform so modules become more valuable together.
 
-### Deliverables
+## Rules & Automation Engine
 
-- promotion presentation rules
-- scheduled campaigns
-- spend/category/brand eligibility messaging
-- free-gift/bundle orchestration where calculation ownership is explicit
-- notification provider contracts
-- automation events/actions
-- operational dashboards
-- module value reporting
-- return/fit/stock/merchandising analytics
+```text
+WHEN event/schedule
+IF conditions
+THEN actions
+```
 
-### Exit gate
+Examples:
 
-Promotion presentation never disagrees with authoritative Woo totals, and automations are idempotent/auditable.
+- low days-of-cover -> alert purchasing + badge + recommendation adjustment
+- campaign starts -> activate collection + notices + overlays + search boost
+- repeated fit-return reason -> create insight
 
-### Commercial outcome
+## Alert / Notification Engine
 
-Pro becomes increasingly difficult to replace with disconnected single-purpose plugins.
+- Hub notifications
+- email
+- push/provider contracts
+- Slack/Teams adapters later
+- SMS as hosted/usage-billed service where appropriate
+- Morning Operations Brief
+
+## Advanced value analytics
+
+- bundle revenue
+- recommendation revenue
+- OOS alternative conversion
+- gift-card performance
+- back-in-stock conversion
+- return/fit insight
+- stock movement/shrinkage
+- campaign/collection performance
+
+## Exit gate
+
+Automations are idempotent/auditable, do not create uncontrolled recursion, and value attribution is documented rather than overstated.
 
 ---
 
-## Phase 10 — Agency/enterprise hardening
+# Phase 13 — Agency / enterprise hardening
 
-**Goal:** make Ultimate Commerce credible on major stores and repeatable agency estates.
+**Goal:** make UC credible on major stores and repeatable agency estates.
 
-### Deliverables
+## Deliverables
 
 - WP-CLI operational commands
 - mature config deployment/import/export
-- expanded role/capability presets
+- expanded capability/role presets
+- optional enterprise SSO/SAML integration surface
 - performance benchmark suite
-- large-catalogue/order fixtures
-- object-cache/CDN compatibility guidance
-- failure-injection/provider-outage testing
+- 100k+ product / large operational fixtures where representative
+- object-cache/CDN guidance
+- provider-outage/failure-injection tests
 - migration interruption/recovery tests
-- formal support/compatibility matrix
-- security incident response process
+- reconciliation tooling
+- formal compatibility matrix
+- security incident-response process
 - independent penetration/security review
 - SBOM/release provenance where useful
-- agency documentation/reference implementations
+- agency docs/reference implementations
+- audit retention controls
+- advanced governance/approval options
 
-### Exit gate
+## Exit gate
 
-Independent security review issues are resolved, documented scale targets are met and upgrades are proven against realistic large datasets.
-
-### Commercial outcome
-
-Agency/25-site licences and higher-value merchant conversations become credible.
+Independent security findings are resolved and documented scale/upgrade targets are proven on realistic data.
 
 ---
 
-## Phase 11 — Optional hosted services
+# Phase 14 — Optional hosted services
 
-**Goal:** add services only where hosted infrastructure creates value that cannot be delivered well as local WordPress code.
+**Goal:** add infrastructure-backed services only when they create value local WordPress code cannot deliver economically/reliably.
 
 Potential services:
 
@@ -474,39 +673,36 @@ Potential services:
 - image/data enrichment
 - large-scale analytics
 
-### Rules
+## Rules
 
-- separate service entitlement/usage from local Pro licence
-- explicit merchant consent/data contracts
-- clear degradation when service is unavailable
-- no checkout dependency on a non-essential Bad Otter service
-- transparent usage limits/costs
-
-### Exit gate
-
-Service economics are proven and the local Free/Pro plugins remain useful if the hosted service is absent.
+- separate service entitlement/usage from ordinary Pro licence
+- explicit merchant data/consent contracts
+- graceful degradation when unavailable
+- no non-essential hosted service may become a checkout single point of failure
+- transparent limits/costs
 
 ---
 
-# Recommended build priority from today
+# Immediate build priority
 
-The immediate sequence should be:
+The immediate sequence remains:
 
-1. **Phase 0:** complete product split/distribution architecture.
-2. **Phase 1:** land security + WordPress.org CI foundations.
-3. **Phase 2:** build the Free catalogue/variant/cart vertical slice and prove it on FishingClothing.
-4. **Phase 3:** make Free complete enough to stand alone.
-5. **Phase 4:** submit/launch Free on WordPress.org.
-6. **Phase 5:** launch the first commercially sellable Pro with Advanced Variants + Advanced Cart.
-7. **Phase 6:** prioritise Merchandising + Recommendations as the first major premium moat.
-8. Build customer lifecycle and aftercare after the conversion/merchandising foundation is stable.
+1. finish Phase 0 product split/distribution architecture
+2. land Phase 1 security + WordPress.org CI foundations
+3. build Phase 2 Free catalogue/variant/cart vertical slice and prove it on FishingClothing
+4. make Free complete enough to stand alone
+5. submit/launch Free on WordPress.org
+6. ship the first sellable Pro conversion release
+7. build merchandising/relationships/bundles as the first major premium moat
 
-This sequence deliberately gets a strong Free acquisition product and a sellable Pro product into the market before attempting every long-term module.
+Gift Cards, Customer Portal and Hub can then be pulled forward according to commercial timing and merchant demand without violating the underlying shared-engine architecture.
+
+---
 
 # North-star release test
 
-Before prioritising any roadmap item, ask:
+Before prioritising a roadmap item, ask:
 
-> Does this materially increase adoption, merchant revenue, customer retention, operational efficiency, platform defensibility, security or scalability?
+> Does this materially increase adoption, merchant revenue, customer retention, operational efficiency, security, scalability or platform defensibility?
 
 If not, it should not displace work that does.
