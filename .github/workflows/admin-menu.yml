@@ -1,0 +1,54 @@
+name: Validate Ultimate Commerce Admin Menu
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  admin-menu:
+    runs-on: [self-hosted, Linux, X64, badotter, ci]
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Validate admin menu contract
+        shell: bash
+        run: |
+          set -euo pipefail
+          php -l packages/ultimate-commerce-for-woocommerce/src/Admin/AdminMenu.php
+          php -l packages/ultimate-commerce-for-woocommerce/src/Admin/OverviewPage.php
+          php -l packages/ultimate-commerce-for-woocommerce/src/Admin/DiagnosticsPage.php
+          php -l tests/admin-menu-structure.php
+          php tests/admin-menu-structure.php
+
+          python3 - <<'PY'
+          from pathlib import Path
+
+          root = Path('packages/ultimate-commerce-for-woocommerce')
+          menu = (root / 'src/Admin/AdminMenu.php').read_text()
+          diagnostics = (root / 'src/Admin/DiagnosticsPage.php').read_text()
+          plugin = (root / 'src/Plugin.php').read_text()
+
+          if "add_menu_page(" not in menu:
+              raise SystemExit('Ultimate Commerce top-level menu registration is missing')
+          if "public const ROOT_SLUG = 'ultimate-commerce';" not in menu:
+              raise SystemExit('Stable Ultimate Commerce root slug is missing')
+          if "do_action('uc_admin_menu', self::ROOT_SLUG);" not in menu:
+              raise SystemExit('Public UC admin-menu extension action is missing')
+          if "'woocommerce'" in menu or "add_submenu_page(\n            'woocommerce'" in diagnostics:
+              raise SystemExit('Ultimate Commerce admin pages must not be nested under WooCommerce')
+          if 'Capabilities::VIEW_DIAGNOSTICS' not in menu or 'Capabilities::VIEW_DIAGNOSTICS' not in diagnostics:
+              raise SystemExit('UC admin pages must preserve dedicated capability checks')
+          if 'AdminMenu::hooks();' not in plugin:
+              raise SystemExit('Plugin bootstrap must own admin navigation through AdminMenu')
+          if 'DiagnosticsPage::hooks();' in plugin:
+              raise SystemExit('Diagnostics must not self-register beneath a legacy parent menu')
+
+          print('Ultimate Commerce top-level admin menu contract validated')
+          PY
