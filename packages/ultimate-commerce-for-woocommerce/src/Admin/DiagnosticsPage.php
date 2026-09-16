@@ -4,27 +4,11 @@ namespace BadOtter\UltimateCommerce\Admin;
 
 use BadOtter\UltimateCommerce\Plugin;
 use BadOtter\UltimateCommerce\Security\Capabilities;
+
 defined('ABSPATH') || exit;
 
 final class DiagnosticsPage
 {
-    public static function hooks(): void
-    {
-        add_action('admin_menu', array(__CLASS__, 'menu'));
-    }
-
-    public static function menu(): void
-    {
-        add_submenu_page(
-            'woocommerce',
-            __('Ultimate Commerce', 'ultimate-commerce-for-woocommerce'),
-            __('Ultimate Commerce', 'ultimate-commerce-for-woocommerce'),
-            Capabilities::VIEW_DIAGNOSTICS,
-            'ultimate-commerce',
-            array(__CLASS__, 'render')
-        );
-    }
-
     public static function render(): void
     {
         if (!current_user_can(Capabilities::VIEW_DIAGNOSTICS)) {
@@ -37,8 +21,8 @@ final class DiagnosticsPage
             : false;
         ?>
         <div class="wrap">
-            <h1><?php echo esc_html__('Ultimate Commerce', 'ultimate-commerce-for-woocommerce'); ?></h1>
-            <p><?php echo esc_html__('Reusable WooCommerce enhancement platform by Bad Otter Labs.', 'ultimate-commerce-for-woocommerce'); ?></p>
+            <h1><?php echo esc_html__('Ultimate Commerce Diagnostics', 'ultimate-commerce-for-woocommerce'); ?></h1>
+            <p><?php echo esc_html__('System state for Ultimate Commerce and its registered modules.', 'ultimate-commerce-for-woocommerce'); ?></p>
             <table class="widefat striped" style="max-width:900px">
                 <tbody>
                     <tr><th><?php echo esc_html__('Version', 'ultimate-commerce-for-woocommerce'); ?></th><td><?php echo esc_html(ULTIMATE_COMMERCE_VERSION); ?></td></tr>
