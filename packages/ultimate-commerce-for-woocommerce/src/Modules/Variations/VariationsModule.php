@@ -2,15 +2,31 @@
 
 namespace BadOtter\UltimateCommerce\Modules\Variations;
 
+use BadOtter\UltimateCommerce\Contracts\AbstractModule;
 use BadOtter\UltimateCommerce\Contracts\Module;
 
 defined('ABSPATH') || exit;
 
-final class VariationsModule implements Module
+final class VariationsModule extends AbstractModule
 {
     public function key(): string
     {
         return 'variations';
+    }
+
+    public function name(): string
+    {
+        return __('Variants & Swatches', 'ultimate-commerce-for-woocommerce');
+    }
+
+    public function product(): string
+    {
+        return 'ultimate-commerce-for-woocommerce';
+    }
+
+    public function tier(): string
+    {
+        return Module::TIER_FREE;
     }
 
     public function register(): void

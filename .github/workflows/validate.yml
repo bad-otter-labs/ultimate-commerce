@@ -25,8 +25,12 @@ jobs:
           set -euo pipefail
           test -f packages/ultimate-commerce-for-woocommerce/ultimate-commerce-for-woocommerce.php
           test -f packages/ultimate-commerce-for-woocommerce/src/Plugin.php
+          test -f packages/ultimate-commerce-for-woocommerce/src/Contracts/Module.php
+          test -f packages/ultimate-commerce-for-woocommerce/src/Contracts/AbstractModule.php
           test -f packages/ultimate-commerce-for-woocommerce/src/Support/ModuleRegistry.php
           test -f packages/ultimate-commerce-for-woocommerce/src/Support/OptionMigrator.php
+          test -f docs/module-extension-contract-v1.md
+          test -f tests/module-contract-v1.php
           test -f scripts/build-wordpress-org-package.py
           test -f packages/ultimate-commerce/ultimate-commerce.php
           test -f packages/ultimate-commerce/module.json
@@ -41,7 +45,39 @@ jobs:
             echo "Checking $file"
             php -l "$file"
           done < <(find packages/ultimate-commerce-for-woocommerce packages/ultimate-commerce -type f -name '*.php' -print0)
+          php -l tests/module-contract-v1.php
           python3 -m py_compile scripts/build-wordpress-org-package.py scripts/build-plugin-package.py
+
+      - name: Validate public module extension contract v1
+        shell: bash
+        run: |
+          set -euo pipefail
+          php tests/module-contract-v1.php
+          python3 - <<'PY'
+          import re
+          from pathlib import Path
+
+          root = Path('packages/ultimate-commerce-for-woocommerce')
+          entry = (root / 'ultimate-commerce-for-woocommerce.php').read_text()
+          interface = (root / 'src/Contracts/Module.php').read_text()
+          plugin = (root / 'src/Plugin.php').read_text()
+
+          version = re.search(r"define\('ULTIMATE_COMMERCE_MODULE_API_VERSION',\s*'([^']+)'\)", entry)
+          contract = re.search(r"CONTRACT_VERSION\s*=\s*'([^']+)'", interface)
+          if not version or not contract or version.group(1) != contract.group(1):
+              raise SystemExit('Module API version constant and Module::CONTRACT_VERSION must match')
+
+          required_methods = ('key', 'name', 'product', 'tier', 'dependencies', 'compatibility', 'settingsSchema', 'assets', 'register')
+          for method in required_methods:
+              if f'function {method}(' not in interface:
+                  raise SystemExit(f'Module contract is missing {method}()')
+
+          if "do_action('uc_register_modules', $registry)" not in plugin:
+              raise SystemExit('Public uc_register_modules registration action is missing')
+          if '$registry->register(new $class());' not in plugin:
+              raise SystemExit('Built-in modules are not using the public registry registration path')
+          print('Public module extension contract v1 validated')
+          PY
 
       - name: Validate WordPress.org Free identity and storage boundary
         shell: bash
