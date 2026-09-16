@@ -1,6 +1,15 @@
 # Changelog
 
-## 0.1.4 - Unreleased
+## 0.2.0 - Unreleased
+
+- Establish the canonical `ultimate-commerce-for-woocommerce` Free package boundary for WordPress.org.
+- Keep the historical `ultimate-commerce` 0.1.x package as a temporary private-distribution migration bridge only.
+- Remove the Bad Otter managed updater and managed-release manifest from the canonical Free runtime.
+- Adopt GPL-2.0-or-later metadata for the canonical Free package.
+- Migrate legacy `ultimate_commerce_*` options to the canonical `uc_*` prefix without deleting rollback data.
+- Validate normal pull requests on GitHub-hosted runners and build the WordPress.org-targeted package deterministically.
+
+## 0.1.4 - 2026-09-15
 
 - Publish immutable GitHub releases and assets through the GitHub REST API instead of relying on the `gh` CLI being installed on the self-hosted runner.
 - Keep Bad Otter draft-candidate validation, exact-package Stable promotion and live WordPress managed-update verification ahead of GitHub release publication.

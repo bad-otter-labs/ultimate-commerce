@@ -11,106 +11,159 @@ permissions:
 
 jobs:
   validate:
-    runs-on: [self-hosted, Linux, X64, badotter, ci]
+    runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Validate package root
+      - name: Validate package roots
         shell: bash
         run: |
           set -euo pipefail
+          test -f packages/ultimate-commerce-for-woocommerce/ultimate-commerce-for-woocommerce.php
+          test -f packages/ultimate-commerce-for-woocommerce/src/Plugin.php
+          test -f packages/ultimate-commerce-for-woocommerce/src/Support/ModuleRegistry.php
+          test -f packages/ultimate-commerce-for-woocommerce/src/Support/OptionMigrator.php
+          test -f scripts/build-wordpress-org-package.py
           test -f packages/ultimate-commerce/ultimate-commerce.php
           test -f packages/ultimate-commerce/module.json
-          test -f packages/ultimate-commerce/src/Plugin.php
-          test -f packages/ultimate-commerce/src/Support/ModuleRegistry.php
           test -f packages/ultimate-commerce/src/Updates/ManagedUpdates.php
           test -f scripts/build-plugin-package.py
 
-      - name: Validate PHP syntax
+      - name: Validate source syntax
         shell: bash
         run: |
           set -euo pipefail
           while IFS= read -r -d '' file; do
             echo "Checking $file"
             php -l "$file"
-          done < <(find packages/ultimate-commerce -type f -name '*.php' -print0)
+          done < <(find packages/ultimate-commerce-for-woocommerce packages/ultimate-commerce -type f -name '*.php' -print0)
+          python3 -m py_compile scripts/build-wordpress-org-package.py scripts/build-plugin-package.py
 
-      - name: Validate plugin and product identity
+      - name: Validate WordPress.org Free identity and storage boundary
         shell: bash
         run: |
           set -euo pipefail
           python3 - <<'PY'
           import json, re
           from pathlib import Path
-          p = Path('packages/ultimate-commerce/ultimate-commerce.php').read_text()
-          manifest = json.loads(Path('packages/ultimate-commerce/module.json').read_text())
-          header = re.search(r'^\s*\*\s*Version:\s*([^\s]+)', p, re.M)
-          const = re.search(r"define\('ULTIMATE_COMMERCE_VERSION',\s*'([^']+)'\)", p)
-          if not header or not const or header.group(1) != const.group(1):
-              raise SystemExit('Plugin header and ULTIMATE_COMMERCE_VERSION must match')
-          version = header.group(1)
-          expected = {'schema': 1, 'id': 'core', 'product': 'ultimate-commerce', 'provider_type': 'wordpress-plugin', 'channel': 'stable'}
-          for key, value in expected.items():
-              if manifest.get(key) != value:
-                  raise SystemExit(f'module.json {key} must be {value!r}')
-          if manifest.get('entitlement') is not None:
-              raise SystemExit('Source module.json entitlement must remain null')
-          required = {'managed-updates','package-checksum-verification','product-scoped-registration','automatic-wordpress-update-discovery','managed-update-discovery-contract','licence-free-update-delivery'}
-          if required - set(manifest.get('capabilities') or []):
-              raise SystemExit('Source module.json is missing managed-update capabilities')
-          if str(manifest.get('version')) != version:
-              raise SystemExit('module.json version must match plugin version')
-          if 'Requires Plugins: woocommerce' not in p:
-              raise SystemExit('WooCommerce dependency header is required')
-          if 'Update URI: https://badotter.io/ultimate-commerce' not in p:
-              raise SystemExit('Bad Otter Update URI is required')
-          print('Validated Ultimate Commerce product identity v' + version)
+
+          root = Path('packages/ultimate-commerce-for-woocommerce')
+          plugin = (root / 'ultimate-commerce-for-woocommerce.php').read_text()
+          composer = json.loads((root / 'composer.json').read_text())
+          modules = (root / 'config/modules.php').read_text()
+          settings = (root / 'src/Support/Settings.php').read_text()
+          migrator = (root / 'src/Support/OptionMigrator.php').read_text()
+
+          required_headers = {
+              'Plugin Name': 'Ultimate Commerce for WooCommerce',
+              'Text Domain': 'ultimate-commerce-for-woocommerce',
+              'License': 'GPL v2 or later',
+              'Requires Plugins': 'woocommerce',
+          }
+          for key, expected in required_headers.items():
+              match = re.search(rf'^\s*\*\s*{re.escape(key)}:\s*(.+?)\s*$', plugin, re.M)
+              if not match or match.group(1) != expected:
+                  raise SystemExit(f'{key} must be {expected!r}')
+
+          if re.search(r'^\s*\*\s*Update URI:', plugin, re.M):
+              raise SystemExit('WordPress.org Free must not define a third-party Update URI')
+          if composer.get('license') != 'GPL-2.0-or-later':
+              raise SystemExit('Canonical Free composer license must be GPL-2.0-or-later')
+          if (root / 'module.json').exists():
+              raise SystemExit('Canonical WordPress.org Free package must not contain the Bad Otter product manifest')
+          if 'ReturnsModule' in modules:
+              raise SystemExit('Premium returns implementation must not be registered in canonical Free')
+          if "private const MODULE_OPTION = 'uc_modules';" not in settings:
+              raise SystemExit('Canonical module settings must use the uc_ prefix')
+          for legacy, canonical in {
+              'ultimate_commerce_version': 'uc_version',
+              'ultimate_commerce_schema_version': 'uc_schema_version',
+              'ultimate_commerce_modules': 'uc_modules',
+          }.items():
+              if legacy not in migrator or canonical not in migrator:
+                  raise SystemExit(f'Missing legacy option migration {legacy} -> {canonical}')
+          print('WordPress.org Free identity and storage boundary validated')
           PY
+
+      - name: Enforce WordPress.org Free distribution boundary
+        shell: bash
+        run: |
+          set -euo pipefail
+          test ! -d packages/ultimate-commerce-for-woocommerce/src/Updates
+          if grep -RniE 'Update URI:|api\.badotter\.io|ManagedUpdates|BadOtterClient|uc-bad-otter://' packages/ultimate-commerce-for-woocommerce; then
+            echo 'Canonical Free contains private managed-update implementation or metadata.' >&2
+            exit 1
+          fi
 
       - name: Enforce reusable repository boundary
         shell: bash
         run: |
           set -euo pipefail
-          if grep -RniE 'FishingClothing|fishingclothing\.co\.uk' packages/ultimate-commerce; then
-            echo 'Store-specific FishingClothing references are forbidden in Ultimate Commerce.' >&2
+          if grep -RniE 'FishingClothing|fishingclothing\.co\.uk' packages/ultimate-commerce-for-woocommerce packages/ultimate-commerce; then
+            echo 'Store-specific FishingClothing references are forbidden in Ultimate Commerce packages.' >&2
             exit 1
           fi
 
-      - name: Validate managed updater invariants
+      - name: Validate legacy 0.1.x migration bridge
         shell: bash
         run: |
           set -euo pipefail
           python3 - <<'PY'
+          import json, re
           from pathlib import Path
-          text = Path('packages/ultimate-commerce/src/Updates/ManagedUpdates.php').read_text()
-          for marker in ('pre_set_site_transient_update_plugins', 'upgrader_pre_download', 'checksum_mismatch', 'verifyArchive'):
-              if marker not in text:
-                  raise SystemExit('Managed updater invariant missing: ' + marker)
-          client = Path('packages/ultimate-commerce/src/Updates/BadOtterClient.php').read_text()
-          if "'/updates/' . self::PRODUCT . '/core'" not in client:
-              raise SystemExit('Bad Otter update endpoint invariant missing')
-          print('Managed updater invariants validated')
+          root = Path('packages/ultimate-commerce')
+          plugin = (root / 'ultimate-commerce.php').read_text()
+          manifest = json.loads((root / 'module.json').read_text())
+          if manifest.get('product') != 'ultimate-commerce' or manifest.get('id') != 'core':
+              raise SystemExit('Legacy Bad Otter package identity changed unexpectedly')
+          if 'Update URI: https://badotter.io/ultimate-commerce' not in plugin:
+              raise SystemExit('Legacy bridge must retain its existing managed-update identity until migration is completed')
+          if not (root / 'src/Updates/ManagedUpdates.php').is_file():
+              raise SystemExit('Legacy bridge updater is missing')
+          print('Legacy 0.1.x migration bridge validated')
           PY
 
-      - name: Build deterministic release package twice
+      - name: Build deterministic WordPress.org Free package twice
         shell: bash
         run: |
           set -euo pipefail
-          python3 scripts/build-plugin-package.py --source packages/ultimate-commerce --output-dir dist-a >/tmp/uc-a.txt
-          python3 scripts/build-plugin-package.py --source packages/ultimate-commerce --output-dir dist-b >/tmp/uc-b.txt
-          first="$(sha256sum dist-a/*.zip | awk '{print $1}')"
-          second="$(sha256sum dist-b/*.zip | awk '{print $1}')"
+          python3 scripts/build-wordpress-org-package.py --source packages/ultimate-commerce-for-woocommerce --output-dir dist-free-a >/tmp/uc-free-a.txt
+          python3 scripts/build-wordpress-org-package.py --source packages/ultimate-commerce-for-woocommerce --output-dir dist-free-b >/tmp/uc-free-b.txt
+          first="$(sha256sum dist-free-a/*.zip | awk '{print $1}')"
+          second="$(sha256sum dist-free-b/*.zip | awk '{print $1}')"
           test "$first" = "$second"
-          unzip -t dist-a/*.zip >/dev/null
+          unzip -t dist-free-a/*.zip >/dev/null
           python3 - <<'PY'
-          import json, zipfile
+          import zipfile
           from pathlib import Path
-          package = next(Path('dist-a').glob('*.zip'))
+          package = next(Path('dist-free-a').glob('*.zip'))
+          root = 'ultimate-commerce-for-woocommerce/'
           with zipfile.ZipFile(package) as zf:
-              manifest = json.loads(zf.read('ultimate-commerce/module.json'))
-          assert manifest['entitlement'] == 'ultimate-commerce-core', manifest
-          assert 'free-core-updates' in manifest['capabilities'], manifest
-          print('Published manifest transformation validated')
+              names = zf.namelist()
+              if not names or any(not name.startswith(root) for name in names):
+                  raise SystemExit('Free package contains files outside the canonical plugin root')
+              required = root + 'ultimate-commerce-for-woocommerce.php'
+              if required not in names:
+                  raise SystemExit('Free package is missing the canonical plugin entry file')
+              forbidden = {
+                  root + 'module.json',
+                  root + 'src/Updates/ManagedUpdates.php',
+                  root + 'src/Updates/BadOtterClient.php',
+              }
+              if forbidden.intersection(names):
+                  raise SystemExit('Free package contains private update/release files')
+          print('Deterministic WordPress.org Free package validated')
           PY
+
+      - name: Preserve deterministic legacy bridge package
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 scripts/build-plugin-package.py --source packages/ultimate-commerce --output-dir dist-legacy-a >/tmp/uc-legacy-a.txt
+          python3 scripts/build-plugin-package.py --source packages/ultimate-commerce --output-dir dist-legacy-b >/tmp/uc-legacy-b.txt
+          first="$(sha256sum dist-legacy-a/*.zip | awk '{print $1}')"
+          second="$(sha256sum dist-legacy-b/*.zip | awk '{print $1}')"
+          test "$first" = "$second"
+          unzip -t dist-legacy-a/*.zip >/dev/null
