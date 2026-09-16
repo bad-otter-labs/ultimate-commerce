@@ -4,6 +4,7 @@ namespace BadOtter\UltimateCommerce;
 
 use BadOtter\UltimateCommerce\Admin\DiagnosticsPage;
 use BadOtter\UltimateCommerce\Compatibility\WooCommerceCompatibility;
+use BadOtter\UltimateCommerce\Privacy\PersonalDataRegistry;
 use BadOtter\UltimateCommerce\Security\Capabilities;
 use BadOtter\UltimateCommerce\Security\Replay\OptionReplayStore;
 use BadOtter\UltimateCommerce\Support\ModuleRegistry;
@@ -19,6 +20,7 @@ final class Plugin
     {
         OptionMigrator::migrate();
         OptionReplayStore::hooks();
+        PersonalDataRegistry::hooks();
         WooCommerceCompatibility::hooks();
 
         if (!class_exists('WooCommerce')) {

@@ -16,6 +16,8 @@
 - Add a strict UC REST route registrar requiring explicit permission callbacks, typed request arguments and bounded pagination helpers.
 - Add Security API v1 foundations for signed guest tokens, encrypted secret storage, SSRF-safe provider requests and signed webhook replay leases.
 - Add external-boundary regression tests for token tampering, plaintext-secret prevention, provider allowlists and webhook replay protection.
+- Add Audit API v1 with structured high-impact events, safe context guardrails and pluggable sinks without implicit debug-log persistence.
+- Add Privacy API v1 with canonical data classifications, retention vocabulary and WordPress exporter/eraser registration for UC-owned personal data.
 
 ## 0.1.4 - 2026-09-15
 
