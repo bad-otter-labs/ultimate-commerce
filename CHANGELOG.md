@@ -21,6 +21,7 @@
 - Add Execution API v1 contracts for short critical-section locks, durable idempotency claims, replaceable rate limiting and Action Scheduler jobs.
 - Add bounded retry policy and regression coverage for lease safety, duplicate business execution, rate-limit decisions and PII-minimised job arguments.
 - Add a deterministic WordPress.org package audit, private vulnerability-reporting policy and official Plugin Check CI gate for the built Free artifact.
+- Move Ultimate Commerce out of the WooCommerce admin menu into its own top-level Overview/Diagnostics structure with public `uc_admin_menu` and `uc_admin_overview` extension points.
 
 ## 0.1.4 - 2026-09-15
 
