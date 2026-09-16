@@ -30,8 +30,18 @@ final class Plugin
                 $registry->register(new $class());
             }
         }
-        $registry->boot();
+
         self::$registry = $registry;
+
+        /**
+         * Register Pro or third-party modules through the public module API.
+         *
+         * Extensions should call ModuleRegistry::register() with a Module implementation.
+         */
+        do_action('uc_register_modules', $registry);
+        do_action('uc_modules_registered', $registry);
+
+        $registry->boot();
 
         DiagnosticsPage::hooks();
         do_action('ultimate_commerce_loaded', $registry);

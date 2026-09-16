@@ -3,7 +3,6 @@
 namespace BadOtter\UltimateCommerce\Admin;
 
 use BadOtter\UltimateCommerce\Plugin;
-
 defined('ABSPATH') || exit;
 
 final class DiagnosticsPage
@@ -42,17 +41,32 @@ final class DiagnosticsPage
             <table class="widefat striped" style="max-width:900px">
                 <tbody>
                     <tr><th><?php echo esc_html__('Version', 'ultimate-commerce-for-woocommerce'); ?></th><td><?php echo esc_html(ULTIMATE_COMMERCE_VERSION); ?></td></tr>
+                    <tr><th><?php echo esc_html__('Module API', 'ultimate-commerce-for-woocommerce'); ?></th><td><?php echo esc_html(ULTIMATE_COMMERCE_MODULE_API_VERSION); ?></td></tr>
                     <tr><th><?php echo esc_html__('WooCommerce', 'ultimate-commerce-for-woocommerce'); ?></th><td><?php echo esc_html(defined('WC_VERSION') ? WC_VERSION : 'Unavailable'); ?></td></tr>
                     <tr><th><?php echo esc_html__('HPOS active', 'ultimate-commerce-for-woocommerce'); ?></th><td><?php echo esc_html($hpos ? 'Yes' : 'No'); ?></td></tr>
                     <tr><th><?php echo esc_html__('Schema', 'ultimate-commerce-for-woocommerce'); ?></th><td><?php echo esc_html(ULTIMATE_COMMERCE_SCHEMA_VERSION); ?></td></tr>
                 </tbody>
             </table>
             <h2><?php echo esc_html__('Modules', 'ultimate-commerce-for-woocommerce'); ?></h2>
-            <table class="widefat striped" style="max-width:900px">
-                <thead><tr><th><?php echo esc_html__('Module', 'ultimate-commerce-for-woocommerce'); ?></th><th><?php echo esc_html__('State', 'ultimate-commerce-for-woocommerce'); ?></th></tr></thead>
+            <table class="widefat striped" style="max-width:1100px">
+                <thead>
+                    <tr>
+                        <th><?php echo esc_html__('Module', 'ultimate-commerce-for-woocommerce'); ?></th>
+                        <th><?php echo esc_html__('Product', 'ultimate-commerce-for-woocommerce'); ?></th>
+                        <th><?php echo esc_html__('Tier', 'ultimate-commerce-for-woocommerce'); ?></th>
+                        <th><?php echo esc_html__('State', 'ultimate-commerce-for-woocommerce'); ?></th>
+                        <th><?php echo esc_html__('Issue', 'ultimate-commerce-for-woocommerce'); ?></th>
+                    </tr>
+                </thead>
                 <tbody>
-                <?php foreach ($registry->states() as $key => $active) : ?>
-                    <tr><td><code><?php echo esc_html($key); ?></code></td><td><?php echo esc_html($active ? 'Enabled' : 'Disabled'); ?></td></tr>
+                <?php foreach ($registry->statuses() as $key => $status) : ?>
+                    <tr>
+                        <td><?php echo esc_html((string) $status['name']); ?> <code><?php echo esc_html($key); ?></code></td>
+                        <td><code><?php echo esc_html((string) $status['product']); ?></code></td>
+                        <td><?php echo esc_html((string) $status['tier']); ?></td>
+                        <td><?php echo esc_html((string) $status['status']); ?></td>
+                        <td><?php echo esc_html((string) $status['issue']); ?></td>
+                    </tr>
                 <?php endforeach; ?>
                 </tbody>
             </table>

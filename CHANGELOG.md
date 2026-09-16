@@ -8,6 +8,9 @@
 - Adopt GPL-2.0-or-later metadata for the canonical Free package.
 - Migrate legacy `ultimate_commerce_*` options to the canonical `uc_*` prefix without deleting rollback data.
 - Build the WordPress.org-targeted package deterministically and record the requirement to move untrusted PR validation off the persistent private runner before repository visibility changes.
+- Add public Module API v1 metadata and `uc_register_modules` registration for Pro and third-party extensions.
+- Resolve module dependencies before boot and expose blocked/disabled module reasons in diagnostics.
+- Add a standalone contract regression test covering external registration, dependency ordering, missing dependencies, cycles and disabled dependencies.
 
 ## 0.1.4 - 2026-09-15
 

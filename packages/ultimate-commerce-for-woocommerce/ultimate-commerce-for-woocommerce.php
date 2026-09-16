@@ -18,6 +18,7 @@ defined('ABSPATH') || exit;
 
 define('ULTIMATE_COMMERCE_VERSION', '0.2.0');
 define('ULTIMATE_COMMERCE_SCHEMA_VERSION', '1');
+define('ULTIMATE_COMMERCE_MODULE_API_VERSION', '1.0.0');
 define('ULTIMATE_COMMERCE_FILE', __FILE__);
 define('ULTIMATE_COMMERCE_DIR', plugin_dir_path(__FILE__));
 define('ULTIMATE_COMMERCE_URL', plugin_dir_url(__FILE__));
