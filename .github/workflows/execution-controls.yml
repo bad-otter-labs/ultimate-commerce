@@ -1,0 +1,99 @@
+name: Validate Ultimate Commerce Execution Controls
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  execution-controls:
+    # Repository remains private during Phase 0/1. Before public visibility,
+    # move untrusted pull_request jobs off persistent self-hosted runners.
+    runs-on: [self-hosted, Linux, X64, badotter, ci]
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Validate execution-control source files
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -f packages/ultimate-commerce-for-woocommerce/src/Contracts/LockStore.php
+          test -f packages/ultimate-commerce-for-woocommerce/src/Contracts/IdempotencyStore.php
+          test -f packages/ultimate-commerce-for-woocommerce/src/Contracts/RateLimiter.php
+          test -f packages/ultimate-commerce-for-woocommerce/src/Concurrency/OptionLockStore.php
+          test -f packages/ultimate-commerce-for-woocommerce/src/Idempotency/OptionIdempotencyStore.php
+          test -f packages/ultimate-commerce-for-woocommerce/src/RateLimit/TransientRateLimiter.php
+          test -f packages/ultimate-commerce-for-woocommerce/src/Jobs/ActionScheduler.php
+          test -f packages/ultimate-commerce-for-woocommerce/src/Jobs/RetryPolicy.php
+          test -f docs/execution-control-foundations.md
+          test -f tests/execution-control-foundations.php
+
+      - name: Validate execution-control syntax and regressions
+        shell: bash
+        run: |
+          set -euo pipefail
+          for file in \
+            packages/ultimate-commerce-for-woocommerce/src/Contracts/LockStore.php \
+            packages/ultimate-commerce-for-woocommerce/src/Contracts/IdempotencyStore.php \
+            packages/ultimate-commerce-for-woocommerce/src/Contracts/RateLimiter.php \
+            packages/ultimate-commerce-for-woocommerce/src/Concurrency/OptionLockStore.php \
+            packages/ultimate-commerce-for-woocommerce/src/Concurrency/Lock.php \
+            packages/ultimate-commerce-for-woocommerce/src/Idempotency/OptionIdempotencyStore.php \
+            packages/ultimate-commerce-for-woocommerce/src/Idempotency/Idempotency.php \
+            packages/ultimate-commerce-for-woocommerce/src/RateLimit/TransientRateLimiter.php \
+            packages/ultimate-commerce-for-woocommerce/src/RateLimit/RateLimit.php \
+            packages/ultimate-commerce-for-woocommerce/src/Jobs/ActionScheduler.php \
+            packages/ultimate-commerce-for-woocommerce/src/Jobs/RetryPolicy.php \
+            tests/execution-control-foundations.php; do
+            php -l "$file"
+          done
+          php tests/execution-control-foundations.php
+
+      - name: Validate public execution-control invariants
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import re
+          from pathlib import Path
+
+          root = Path('packages/ultimate-commerce-for-woocommerce')
+          entry = (root / 'ultimate-commerce-for-woocommerce.php').read_text()
+          plugin = (root / 'src/Plugin.php').read_text()
+          lock = (root / 'src/Concurrency/OptionLockStore.php').read_text()
+          idem = (root / 'src/Idempotency/OptionIdempotencyStore.php').read_text()
+          limiter = (root / 'src/RateLimit/TransientRateLimiter.php').read_text()
+          scheduler = (root / 'src/Jobs/ActionScheduler.php').read_text()
+          retry = (root / 'src/Jobs/RetryPolicy.php').read_text()
+
+          match = re.search(r"define\('ULTIMATE_COMMERCE_EXECUTION_API_VERSION',\s*'([^']+)'\)", entry)
+          if not match or match.group(1) != '1.0.0':
+              raise SystemExit('Execution API v1 constant is missing')
+
+          for source, hook in ((lock, 'uc_lock_store_delete'), (idem, 'uc_idempotency_store_delete')):
+              if 'add_option(' not in source or 'random_bytes(16)' not in source or 'hash_equals' not in source:
+                  raise SystemExit('Lease-backed stores must use atomic option claims, random leases and constant-time lease checks')
+              if hook not in source:
+                  raise SystemExit(f'Lease cleanup hook {hook} is missing')
+
+          if "STATUS_COMPLETED = 'completed'" not in idem or "result_ref" not in idem:
+              raise SystemExit('Idempotency store must preserve completion state with opaque result reference')
+          if 'get_transient(' not in limiter or 'set_transient(' not in limiter or "hash('sha256'" not in limiter:
+              raise SystemExit('Default rate limiter must hash subjects and use bounded transient counter storage')
+          if "public const GROUP = 'ultimate-commerce'" not in scheduler or 'as_schedule_single_action' not in scheduler:
+              raise SystemExit('UC jobs must use the Action Scheduler wrapper/group')
+          if 'uc_job_args_sensitive' not in scheduler or 'uc_job_args_invalid' not in scheduler:
+              raise SystemExit('Job wrapper must reject sensitive/personal snapshots and nested payloads')
+          if 'maxAttempts = 5' not in retry or '2 ** $exponent' not in retry:
+              raise SystemExit('Retry policy must remain bounded exponential retry')
+          if 'OptionLockStore::hooks();' not in plugin or 'OptionIdempotencyStore::hooks();' not in plugin:
+              raise SystemExit('Lease cleanup hooks must be registered by the Free plugin')
+
+          print('Execution-control public invariants validated')
+          PY
