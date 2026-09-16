@@ -40,3 +40,7 @@ jobs:
           build-dir: './wporg-check/ultimate-commerce-for-woocommerce'
           slug: 'ultimate-commerce-for-woocommerce'
           include-experimental: false
+          # Internal error helpers accept only package-owned literal messages, but
+          # Plugin Check cannot infer that provenance once the literal crosses the
+          # helper boundary. Keep this one narrow false-positive exemption visible.
+          ignore-codes: 'WordPress.WP.I18n.NonSingularStringLiteralText'
