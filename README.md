@@ -16,6 +16,17 @@ Read these before designing or implementing features:
 
 If the documents appear to conflict, do not silently choose the convenient interpretation. Reconcile them deliberately through the architecture decision process.
 
+## Phase 0 package layout
+
+During the pre-WordPress.org identity migration this repository intentionally contains two Free package roots:
+
+- `packages/ultimate-commerce-for-woocommerce/` — the **canonical new Free source** targeting WordPress.org. New Free product development belongs here.
+- `packages/ultimate-commerce/` — the **legacy 0.1.x private-distribution bridge**. It retains the historical Bad Otter updater only so existing early/private installs can be migrated deliberately. Do not add new product functionality here.
+
+The canonical Free package must not contain the Bad Otter updater, Bad Otter release entitlement metadata or a third-party `Update URI`. Its public PHP namespace remains `BadOtter\UltimateCommerce` so the product identity migration does not create unnecessary PHP API churn.
+
+See `docs/free-identity-migration.md` for the migration contract.
+
 ## Product family
 
 - **Ultimate Commerce for WooCommerce (Free)** — meaningful standalone WooCommerce enhancements intended for WordPress.org distribution and WordPress.org updates.

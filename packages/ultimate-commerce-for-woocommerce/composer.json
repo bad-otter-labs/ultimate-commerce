@@ -1,0 +1,14 @@
+{
+  "name": "bad-otter-labs/ultimate-commerce-for-woocommerce",
+  "description": "WordPress.org Free commerce experience enhancements for WooCommerce.",
+  "type": "wordpress-plugin",
+  "license": "GPL-2.0-or-later",
+  "require": {
+    "php": ">=8.1"
+  },
+  "autoload": {
+    "psr-4": {
+      "BadOtter\\UltimateCommerce\\": "src/"
+    }
+  }
+}
