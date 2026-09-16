@@ -27,16 +27,26 @@ jobs:
           test -f packages/ultimate-commerce-for-woocommerce/src/Plugin.php
           test -f packages/ultimate-commerce-for-woocommerce/src/Contracts/Module.php
           test -f packages/ultimate-commerce-for-woocommerce/src/Contracts/AbstractModule.php
+          test -f packages/ultimate-commerce-for-woocommerce/src/Contracts/SecretStore.php
+          test -f packages/ultimate-commerce-for-woocommerce/src/Contracts/ReplayStore.php
           test -f packages/ultimate-commerce-for-woocommerce/src/Support/ModuleRegistry.php
           test -f packages/ultimate-commerce-for-woocommerce/src/Support/OptionMigrator.php
           test -f packages/ultimate-commerce-for-woocommerce/src/Security/Capabilities.php
           test -f packages/ultimate-commerce-for-woocommerce/src/Security/Authorization.php
           test -f packages/ultimate-commerce-for-woocommerce/src/Security/Csrf.php
+          test -f packages/ultimate-commerce-for-woocommerce/src/Security/GuestToken.php
+          test -f packages/ultimate-commerce-for-woocommerce/src/Security/SecretStore.php
+          test -f packages/ultimate-commerce-for-woocommerce/src/Security/Secrets/EncryptedOptionSecretStore.php
+          test -f packages/ultimate-commerce-for-woocommerce/src/Security/Replay/OptionReplayStore.php
+          test -f packages/ultimate-commerce-for-woocommerce/src/Security/SignedWebhook.php
+          test -f packages/ultimate-commerce-for-woocommerce/src/Http/ProviderHttp.php
           test -f packages/ultimate-commerce-for-woocommerce/src/Rest/RouteRegistrar.php
           test -f docs/module-extension-contract-v1.md
           test -f docs/security-request-conventions.md
+          test -f docs/external-boundary-security.md
           test -f tests/module-contract-v1.php
           test -f tests/security-request-foundations.php
+          test -f tests/external-boundary-security.php
           test -f scripts/build-wordpress-org-package.py
           test -f packages/ultimate-commerce/ultimate-commerce.php
           test -f packages/ultimate-commerce/module.json
@@ -53,6 +63,7 @@ jobs:
           done < <(find packages/ultimate-commerce-for-woocommerce packages/ultimate-commerce -type f -name '*.php' -print0)
           php -l tests/module-contract-v1.php
           php -l tests/security-request-foundations.php
+          php -l tests/external-boundary-security.php
           python3 -m py_compile scripts/build-wordpress-org-package.py scripts/build-plugin-package.py
 
       - name: Validate public module extension contract v1
@@ -108,6 +119,43 @@ jobs:
           if "permission_callback" not in routes or "register_rest_route" not in routes:
               raise SystemExit('Strict UC REST route registrar is incomplete')
           print('Security and request foundations validated')
+          PY
+
+      - name: Validate external-boundary security foundations
+        shell: bash
+        run: |
+          set -euo pipefail
+          php tests/external-boundary-security.php
+          python3 - <<'PY'
+          import re
+          from pathlib import Path
+
+          root = Path('packages/ultimate-commerce-for-woocommerce')
+          entry = (root / 'ultimate-commerce-for-woocommerce.php').read_text()
+          guest = (root / 'src/Security/GuestToken.php').read_text()
+          secrets = (root / 'src/Security/Secrets/EncryptedOptionSecretStore.php').read_text()
+          provider = (root / 'src/Http/ProviderHttp.php').read_text()
+          replay = (root / 'src/Security/Replay/OptionReplayStore.php').read_text()
+          webhook = (root / 'src/Security/SignedWebhook.php').read_text()
+
+          version = re.search(r"define\('ULTIMATE_COMMERCE_SECURITY_API_VERSION',\s*'([^']+)'\)", entry)
+          if not version or version.group(1) != '1.0.0':
+              raise SystemExit('Security API v1 constant is missing')
+          if "hash_hmac('sha256'" not in guest or 'hash_equals' not in guest or 'wp_salt' not in guest:
+              raise SystemExit('Guest tokens must be purpose-bound HMAC tokens derived from WordPress salt material')
+          if 'sodium_crypto_aead_xchacha20poly1305_ietf_encrypt' not in secrets or "aes-256-gcm" not in secrets:
+              raise SystemExit('Secret Store must use authenticated encryption with Sodium/OpenSSL support')
+          if "wp_salt('secure_auth')" not in secrets:
+              raise SystemExit('Secret Store key material must derive from WordPress secure-auth salt')
+          if 'wp_safe_remote_request' not in provider or "['redirection'] = 0" not in provider:
+              raise SystemExit('Provider HTTP must use safe requests with redirects disabled')
+          if "['sslverify'] = true" not in provider or "['reject_unsafe_urls'] = true" not in provider:
+              raise SystemExit('Provider HTTP must force TLS and unsafe-URL rejection')
+          if 'add_option(' not in replay or 'random_bytes(16)' not in replay:
+              raise SystemExit('Replay store must atomically claim events with random leases')
+          if "hash_hmac('sha256'" not in webhook or 'hash_equals' not in webhook or 'ReplayStore' not in webhook:
+              raise SystemExit('Signed webhooks must verify HMAC and claim a replay store')
+          print('External-boundary security foundations validated')
           PY
 
       - name: Validate WordPress.org Free identity and storage boundary
