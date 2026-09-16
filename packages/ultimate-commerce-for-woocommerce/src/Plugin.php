@@ -4,6 +4,8 @@ namespace BadOtter\UltimateCommerce;
 
 use BadOtter\UltimateCommerce\Admin\DiagnosticsPage;
 use BadOtter\UltimateCommerce\Compatibility\WooCommerceCompatibility;
+use BadOtter\UltimateCommerce\Concurrency\OptionLockStore;
+use BadOtter\UltimateCommerce\Idempotency\OptionIdempotencyStore;
 use BadOtter\UltimateCommerce\Privacy\PersonalDataRegistry;
 use BadOtter\UltimateCommerce\Security\Capabilities;
 use BadOtter\UltimateCommerce\Security\Replay\OptionReplayStore;
@@ -20,6 +22,8 @@ final class Plugin
     {
         OptionMigrator::migrate();
         OptionReplayStore::hooks();
+        OptionLockStore::hooks();
+        OptionIdempotencyStore::hooks();
         PersonalDataRegistry::hooks();
         WooCommerceCompatibility::hooks();
 
