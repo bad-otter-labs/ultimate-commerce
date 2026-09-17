@@ -98,12 +98,14 @@ final class VariationViewModel
                 if ($option === '') {
                     continue;
                 }
+                $requestValue = (string) ($declaredOption['request_value'] ?? $option);
                 $swatch = (array) ($declaredOption['swatch'] ?? array());
                 $imageId = (int) ($swatch['image_id'] ?? 0);
                 $available = self::optionAvailable($variations, $selection, $attributeName, $option, $availabilityComplete);
                 $selectedOption = (($selection[$attributeName] ?? '') === $option);
                 $attributeOptions[] = array(
                     'value' => $option,
+                    'request_value' => $requestValue,
                     'label' => (string) ($declaredOption['label'] ?? $option),
                     'selected' => $selectedOption,
                     'available' => $available,
@@ -309,8 +311,10 @@ final class VariationViewModel
                     if ($termId <= 0 || !isset($allowedIds[$termId])) {
                         continue;
                     }
+                    $slug = (string) ($term['slug'] ?? '');
                     $options[] = array(
-                        'value' => (string) ($term['slug'] ?? ''),
+                        'value' => $slug,
+                        'request_value' => $slug,
                         'label' => (string) ($term['label'] ?? ''),
                         'swatch' => (array) ($term['swatch'] ?? array()),
                     );
@@ -320,11 +324,17 @@ final class VariationViewModel
                     if (!is_scalar($option)) {
                         continue;
                     }
-                    $value = sanitize_title((string) $option);
+                    $requestValue = (string) $option;
+                    $value = sanitize_title($requestValue);
                     if ($value === '') {
                         continue;
                     }
-                    $options[] = array('value' => $value, 'label' => (string) $option, 'swatch' => array());
+                    $options[] = array(
+                        'value' => $value,
+                        'request_value' => $requestValue,
+                        'label' => $requestValue,
+                        'swatch' => array(),
+                    );
                 }
             }
             if ($options === array()) {
