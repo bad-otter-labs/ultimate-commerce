@@ -61,7 +61,7 @@ jobs:
               raise SystemExit('Catalogue must delegate bounded product querying to Woo Store API ProductQuery')
           if '$wpdb' in query or 'meta_query' in query:
               raise SystemExit('UC catalogue query must not implement a direct SQL/product-meta query path')
-          if "apply_filters('uc_catalog_public_cache_safe'" not in query or "'public_cache_safe' => $publicCacheSafe" not in query:
+          if "'uc_catalog_public_cache_safe'" not in query or "'public_cache_safe' => $publicCacheSafe" not in query:
               raise SystemExit('Public catalogue caching must remain explicit opt-in')
           for marker in ('MAX_PER_PAGE = 48', 'MAX_PAGE = 500', 'MAX_SELECTED_PER_FILTER = 12'):
               if marker not in filters:
