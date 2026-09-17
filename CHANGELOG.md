@@ -26,6 +26,8 @@
 - Add batch-safe variable-product state with text/button, colour/image swatches, selected variation media/price, availability, accessibility semantics and Woo Store API cart handoff metadata.
 - Add validated catalogue filter/sort state for Woo product attributes, price and availability with deterministic URL state and public Pro/third-party extension points.
 - Keep `uc_product_view_model` and `uc_variation_view_model` as documented compatibility filters while introducing the supported Storefront API service surface.
+- Add Cart API v1 with variation-aware quick add and an accessible cart drawer backed exclusively by WooCommerce Store API cart/session/totals truth.
+- Add cart drawer extension slots/events, quantity/remove operations, loading/error states and native Woo link/form fallbacks without embedding customer nonces in cacheable markup.
 
 ## 0.1.4 - 2026-09-15
 
