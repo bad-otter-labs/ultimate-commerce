@@ -2,7 +2,7 @@
 
 namespace BadOtter\UltimateCommerce;
 
-use BadOtter\UltimateCommerce\Admin\DiagnosticsPage;
+use BadOtter\UltimateCommerce\Admin\AdminMenu;
 use BadOtter\UltimateCommerce\Compatibility\WooCommerceCompatibility;
 use BadOtter\UltimateCommerce\Concurrency\OptionLockStore;
 use BadOtter\UltimateCommerce\Idempotency\OptionIdempotencyStore;
@@ -54,7 +54,7 @@ final class Plugin
 
         $registry->boot();
 
-        DiagnosticsPage::hooks();
+        AdminMenu::hooks();
         do_action('ultimate_commerce_loaded', $registry);
     }
 
