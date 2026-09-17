@@ -27,6 +27,11 @@ The canonical Free package must not contain the Bad Otter updater, Bad Otter rel
 
 See `docs/free-identity-migration.md` for the migration contract.
 
+## Integration and translation
+
+- `docs/theme-store-integration.md` — supported public theme/store integration contracts, extension points and WooCommerce fallbacks.
+- `docs/translation-readiness.md` — canonical text-domain rules plus PHP/JavaScript translation-readiness requirements ahead of the WordPress.org translation-template release step.
+
 ## Product family
 
 - **Ultimate Commerce for WooCommerce (Free)** — meaningful standalone WooCommerce enhancements intended for WordPress.org distribution and WordPress.org updates.

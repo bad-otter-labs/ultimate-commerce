@@ -51,22 +51,22 @@ final class AuditEvent
         $reasonCode = strtolower(trim($reasonCode));
 
         if (!self::validKey($action, 127)) {
-            return self::error('uc_audit_action_invalid', 'Audit action is invalid.');
+            return self::error('uc_audit_action_invalid', __('Audit action is invalid.', 'ultimate-commerce-for-woocommerce'));
         }
         if (!in_array($actorType, self::actorTypes(), true)) {
-            return self::error('uc_audit_actor_invalid', 'Audit actor type is invalid.');
+            return self::error('uc_audit_actor_invalid', __('Audit actor type is invalid.', 'ultimate-commerce-for-woocommerce'));
         }
         if (!self::validIdentifier($actorId, $actorType === self::ACTOR_SYSTEM)) {
-            return self::error('uc_audit_actor_invalid', 'Audit actor identifier is invalid.');
+            return self::error('uc_audit_actor_invalid', __('Audit actor identifier is invalid.', 'ultimate-commerce-for-woocommerce'));
         }
         if ($actorType === self::ACTOR_USER && !preg_match('/^[1-9][0-9]*$/', $actorId)) {
-            return self::error('uc_audit_actor_invalid', 'User audit actor must use a numeric WordPress user ID.');
+            return self::error('uc_audit_actor_invalid', __('User audit actor must use a numeric WordPress user ID.', 'ultimate-commerce-for-woocommerce'));
         }
         if (!self::validKey($targetType, 63) || !self::validIdentifier($targetId, false)) {
-            return self::error('uc_audit_target_invalid', 'Audit target is invalid.');
+            return self::error('uc_audit_target_invalid', __('Audit target is invalid.', 'ultimate-commerce-for-woocommerce'));
         }
         if ($reasonCode !== '' && !self::validKey($reasonCode, 63)) {
-            return self::error('uc_audit_reason_invalid', 'Audit reason code is invalid.');
+            return self::error('uc_audit_reason_invalid', __('Audit reason code is invalid.', 'ultimate-commerce-for-woocommerce'));
         }
 
         $contextProblem = self::validateContext($context);
@@ -76,7 +76,7 @@ final class AuditEvent
 
         $id = wp_generate_uuid4();
         if (!is_string($id) || $id === '') {
-            return self::error('uc_audit_id_failed', 'Audit event identifier could not be generated.');
+            return self::error('uc_audit_id_failed', __('Audit event identifier could not be generated.', 'ultimate-commerce-for-woocommerce'));
         }
 
         return new self(
@@ -104,7 +104,7 @@ final class AuditEvent
     ) {
         $userId = (int) get_current_user_id();
         if ($userId <= 0) {
-            return self::error('uc_audit_actor_invalid', 'A logged-in user is required for this audit event.');
+            return self::error('uc_audit_actor_invalid', __('A logged-in user is required for this audit event.', 'ultimate-commerce-for-woocommerce'));
         }
 
         return self::create(
@@ -163,21 +163,21 @@ final class AuditEvent
     private static function validateContext(array $context)
     {
         if (count($context) > self::MAX_CONTEXT_ITEMS) {
-            return self::error('uc_audit_context_too_large', 'Audit context contains too many fields.');
+            return self::error('uc_audit_context_too_large', __('Audit context contains too many fields.', 'ultimate-commerce-for-woocommerce'));
         }
 
         foreach ($context as $key => $value) {
             if (!is_string($key) || !self::validKey(strtolower($key), 63)) {
-                return self::error('uc_audit_context_invalid', 'Audit context field name is invalid.');
+                return self::error('uc_audit_context_invalid', __('Audit context field name is invalid.', 'ultimate-commerce-for-woocommerce'));
             }
             if (self::sensitiveKey($key)) {
-                return self::error('uc_audit_context_sensitive', 'Credentials and authentication material must not be placed in audit context.');
+                return self::error('uc_audit_context_sensitive', __('Credentials and authentication material must not be placed in audit context.', 'ultimate-commerce-for-woocommerce'));
             }
             if ($value !== null && !is_scalar($value)) {
-                return self::error('uc_audit_context_invalid', 'Audit context values must be scalar.');
+                return self::error('uc_audit_context_invalid', __('Audit context values must be scalar.', 'ultimate-commerce-for-woocommerce'));
             }
             if (is_string($value) && strlen($value) > self::MAX_CONTEXT_STRING) {
-                return self::error('uc_audit_context_too_large', 'Audit context string value is too large.');
+                return self::error('uc_audit_context_too_large', __('Audit context string value is too large.', 'ultimate-commerce-for-woocommerce'));
             }
         }
 
@@ -192,6 +192,6 @@ final class AuditEvent
 
     private static function error(string $code, string $message): \WP_Error
     {
-        return new \WP_Error($code, __($message, 'ultimate-commerce-for-woocommerce'));
+        return new \WP_Error($code, $message);
     }
 }

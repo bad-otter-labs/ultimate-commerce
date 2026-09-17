@@ -1,6 +1,10 @@
 (function () {
     'use strict';
 
+    var __ = wp.i18n.__;
+    var _n = wp.i18n._n;
+    var sprintf = wp.i18n.sprintf;
+
     function onReady(callback) {
         if (document.readyState === 'loading') {
             document.addEventListener('DOMContentLoaded', callback, { once: true });
@@ -84,7 +88,7 @@
         }
 
         function apiError(message, response, payload) {
-            var error = new Error(message || 'Cart request failed.');
+            var error = new Error(message || __('Cart request failed.', 'ultimate-commerce-for-woocommerce'));
             error.ucApi = true;
             error.status = response ? response.status : 0;
             error.code = payload && payload.code ? String(payload.code) : '';
@@ -131,7 +135,7 @@
                     if (!response.ok) {
                         var message = payload && payload.message
                             ? String(payload.message)
-                            : 'Cart request failed (' + response.status + ').';
+                            : sprintf(__('Cart request failed (%d).', 'ultimate-commerce-for-woocommerce'), response.status);
                         throw apiError(message, response, payload);
                     }
                     return payload;
@@ -147,7 +151,7 @@
                 return loadPromise;
             }
 
-            setBusy(true, 'Loading cart…');
+            setBusy(true, __('Loading cart…', 'ultimate-commerce-for-woocommerce'));
             setError('');
             loadPromise = request('/cart').then(function (cart) {
                 currentCart = cart || { items: [], totals: {} };
@@ -169,12 +173,12 @@
         }
 
         function mutate(path, body, retryNonce) {
-            setBusy(true, 'Updating cart…');
+            setBusy(true, __('Updating cart…', 'ultimate-commerce-for-woocommerce'));
             setError('');
             return request(path, { method: 'POST', body: body }).then(function (cart) {
                 currentCart = cart || { items: [], totals: {} };
                 renderCart(currentCart);
-                setBusy(false, 'Cart updated.');
+                setBusy(false, __('Cart updated.', 'ultimate-commerce-for-woocommerce'));
                 emit('uc:cart-updated', { cart: currentCart });
                 return currentCart;
             }).catch(function (error) {
@@ -298,7 +302,7 @@
             title.href = String(item.permalink || '#');
             body.appendChild(title);
 
-            var variation = itemVariation(item);
+            var itemVariation(item);
             if (variation) {
                 body.appendChild(variation);
             }
@@ -310,7 +314,7 @@
             } else {
                 var decrement = node('button', 'uc-cart-item__quantity-button', '−');
                 decrement.type = 'button';
-                decrement.setAttribute('aria-label', 'Decrease quantity');
+                decrement.setAttribute('aria-label', __('Decrease quantity', 'ultimate-commerce-for-woocommerce'));
                 decrement.setAttribute('data-uc-cart-mutation', '1');
 
                 var input = node('input', 'uc-cart-item__quantity');
@@ -321,12 +325,12 @@
                     input.max = String(limits.maximum);
                 }
                 input.step = String(limits.multiple_of || 1);
-                input.setAttribute('aria-label', 'Quantity for ' + String(item.name || 'cart item'));
+                input.setAttribute('aria-label', sprintf(__('Quantity for %s', 'ultimate-commerce-for-woocommerce'), String(item.name || __('cart item', 'ultimate-commerce-for-woocommerce'))));
                 input.setAttribute('data-uc-cart-mutation', '1');
 
                 var increment = node('button', 'uc-cart-item__quantity-button', '+');
                 increment.type = 'button';
-                increment.setAttribute('aria-label', 'Increase quantity');
+                increment.setAttribute('aria-label', __('Increase quantity', 'ultimate-commerce-for-woocommerce'));
                 increment.setAttribute('data-uc-cart-mutation', '1');
 
                 decrement.addEventListener('click', function () {
@@ -346,7 +350,7 @@
                 controls.appendChild(increment);
             }
 
-            var remove = node('button', 'uc-cart-item__remove', 'Remove');
+            var remove = node('button', 'uc-cart-item__remove', __('Remove', 'ultimate-commerce-for-woocommerce'));
             remove.type = 'button';
             remove.setAttribute('data-uc-cart-mutation', '1');
             remove.addEventListener('click', function () {
@@ -388,12 +392,12 @@
                 : items.reduce(function (sum, item) { return sum + Number(item.quantity || 0); }, 0);
             Array.prototype.forEach.call(document.querySelectorAll('[data-uc-cart-count="1"]'), function (countNode) {
                 countNode.textContent = count > 0 ? String(count) : '';
-                countNode.setAttribute('aria-label', count + (count === 1 ? ' item in cart' : ' items in cart'));
+                countNode.setAttribute('aria-label', sprintf(_n('%d item in cart', '%d items in cart', count, 'ultimate-commerce-for-woocommerce'), count));
             });
         }
 
         function showMutationError(error) {
-            var message = error && error.message ? String(error.message) : 'The cart could not be updated.';
+            var message = error && error.message ? String(error.message) : __('The cart could not be updated.', 'ultimate-commerce-for-woocommerce');
             setError(message, {
                 message: message,
                 code: error && error.code ? error.code : '',
@@ -448,7 +452,7 @@
 
         function quickAdd(body, fallback) {
             setError('');
-            setBusy(true, 'Adding to cart…');
+            setBusy(true, __('Adding to cart…', 'ultimate-commerce-for-woocommerce'));
             return loadCart(false).then(function () {
                 return mutate('/cart/add-item', body);
             }).then(function (cart) {

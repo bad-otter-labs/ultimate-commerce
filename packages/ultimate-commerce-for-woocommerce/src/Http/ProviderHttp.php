@@ -18,7 +18,7 @@ final class ProviderHttp
     {
         $method = strtoupper(trim($method));
         if (!in_array($method, self::METHODS, true)) {
-            return self::error('uc_provider_http_method', 'Provider HTTP method is not allowed.');
+            return self::error('uc_provider_http_method', __('Provider HTTP method is not allowed.', 'ultimate-commerce-for-woocommerce'));
         }
 
         $authority = self::validatedAuthority($url, $allowedAuthorities);
@@ -26,7 +26,7 @@ final class ProviderHttp
             return $authority;
         }
         if (!wp_http_validate_url($url)) {
-            return self::error('uc_provider_http_unsafe_url', 'Provider URL failed WordPress safety validation.');
+            return self::error('uc_provider_http_unsafe_url', __('Provider URL failed WordPress safety validation.', 'ultimate-commerce-for-woocommerce'));
         }
 
         $request = $args;
@@ -65,19 +65,19 @@ final class ProviderHttp
     {
         $parts = wp_parse_url($url);
         if (!is_array($parts) || strtolower((string) ($parts['scheme'] ?? '')) !== 'https') {
-            return self::error('uc_provider_http_https_required', 'Provider URLs must use HTTPS.');
+            return self::error('uc_provider_http_https_required', __('Provider URLs must use HTTPS.', 'ultimate-commerce-for-woocommerce'));
         }
         if (!empty($parts['user']) || !empty($parts['pass']) || !empty($parts['fragment'])) {
-            return self::error('uc_provider_http_url_invalid', 'Provider URLs must not contain credentials or fragments.');
+            return self::error('uc_provider_http_url_invalid', __('Provider URLs must not contain credentials or fragments.', 'ultimate-commerce-for-woocommerce'));
         }
 
         $host = strtolower(rtrim((string) ($parts['host'] ?? ''), '.'));
         if ($host === '' || filter_var($host, FILTER_VALIDATE_IP)) {
-            return self::error('uc_provider_http_host_invalid', 'Provider URLs must use an allowlisted DNS host.');
+            return self::error('uc_provider_http_host_invalid', __('Provider URLs must use an allowlisted DNS host.', 'ultimate-commerce-for-woocommerce'));
         }
         $port = isset($parts['port']) ? (int) $parts['port'] : 443;
         if ($port < 1 || $port > 65535) {
-            return self::error('uc_provider_http_port_invalid', 'Provider URL port is invalid.');
+            return self::error('uc_provider_http_port_invalid', __('Provider URL port is invalid.', 'ultimate-commerce-for-woocommerce'));
         }
         $authority = $host . ($port === 443 ? '' : ':' . $port);
 
@@ -89,7 +89,7 @@ final class ProviderHttp
             }
         }
         if (!in_array($authority, $allowed, true)) {
-            return self::error('uc_provider_http_host_forbidden', 'Provider host is not allowlisted.');
+            return self::error('uc_provider_http_host_forbidden', __('Provider host is not allowlisted.', 'ultimate-commerce-for-woocommerce'));
         }
 
         return $authority;
@@ -97,6 +97,6 @@ final class ProviderHttp
 
     private static function error(string $code, string $message): \WP_Error
     {
-        return new \WP_Error($code, __($message, 'ultimate-commerce-for-woocommerce'));
+        return new \WP_Error($code, $message);
     }
 }
