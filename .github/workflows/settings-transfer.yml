@@ -1,0 +1,73 @@
+name: Validate Ultimate Commerce Settings Transfer
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  settings-transfer:
+    runs-on: [self-hosted, Linux, X64, badotter, ci]
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Validate settings transfer contract
+        shell: bash
+        run: |
+          set -euo pipefail
+          php -l packages/ultimate-commerce-for-woocommerce/src/Support/Settings.php
+          php -l packages/ultimate-commerce-for-woocommerce/src/Support/SettingsTransfer.php
+          php -l packages/ultimate-commerce-for-woocommerce/src/Admin/SettingsPage.php
+          php -l tests/settings-transfer-contract.php
+          php tests/settings-transfer-contract.php
+
+          python3 - <<'PY'
+          from pathlib import Path
+
+          root = Path('packages/ultimate-commerce-for-woocommerce')
+          transfer = (root / 'src/Support/SettingsTransfer.php').read_text()
+          page = (root / 'src/Admin/SettingsPage.php').read_text()
+          plugin = (root / 'src/Plugin.php').read_text()
+
+          required_transfer = (
+              "public const MAX_BYTES = 65536;",
+              "private const FORMAT = 'ultimate-commerce-settings';",
+              "private const PRODUCT = 'ultimate-commerce-for-woocommerce';",
+              "private const MAX_MODULES = 128;",
+              'Settings::updateModuleStates($states)',
+          )
+          for marker in required_transfer:
+              if marker not in transfer:
+                  raise SystemExit(f'Settings transfer contract missing: {marker}')
+
+          for forbidden in ('uc_version', 'uc_schema_version', 'SecretStore', 'get_option('):
+              if forbidden in transfer:
+                  raise SystemExit(f'Settings transfer must not expose runtime/secret/arbitrary option data: {forbidden}')
+
+          required_page = (
+              'Capabilities::MANAGE_SETTINGS',
+              'Csrf::require',
+              "admin_post_uc_settings_export",
+              "admin_post_uc_settings_import",
+              'SettingsTransfer::MAX_BYTES',
+              'is_uploaded_file',
+          )
+          for marker in required_page:
+              if marker not in page:
+                  raise SystemExit(f'Settings admin boundary missing: {marker}')
+
+          if 'SettingsPage::hooks();' not in plugin:
+              raise SystemExit('Settings transfer handlers must be registered by the Free plugin bootstrap')
+
+          combined = transfer + page
+          if 'FishingClothing' in combined or 'fishingclothing.co.uk' in combined.lower():
+              raise SystemExit('Store-specific reference leaked into settings transfer')
+
+          print('Ultimate Commerce settings transfer source contract validated')
+          PY
