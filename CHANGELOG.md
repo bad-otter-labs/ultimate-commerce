@@ -22,6 +22,10 @@
 - Add bounded retry policy and regression coverage for lease safety, duplicate business execution, rate-limit decisions and PII-minimised job arguments.
 - Add a deterministic WordPress.org package audit, private vulnerability-reporting policy and official Plugin Check CI gate for the built Free artifact.
 - Move Ultimate Commerce out of the WooCommerce admin menu into its own top-level Overview/Diagnostics structure with public `uc_admin_menu` and `uc_admin_overview` extension points.
+- Add Storefront API v1 with public product-card, bounded catalogue-query and semantic rendering contracts for themes/extensions.
+- Add batch-safe variable-product state with text/button, colour/image swatches, selected variation media/price, availability, accessibility semantics and Woo Store API cart handoff metadata.
+- Add validated catalogue filter/sort state for Woo product attributes, price and availability with deterministic URL state and public Pro/third-party extension points.
+- Keep `uc_product_view_model` and `uc_variation_view_model` as documented compatibility filters while introducing the supported Storefront API service surface.
 
 ## 0.1.4 - 2026-09-15
 

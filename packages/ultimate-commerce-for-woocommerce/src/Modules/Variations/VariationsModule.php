@@ -4,6 +4,7 @@ namespace BadOtter\UltimateCommerce\Modules\Variations;
 
 use BadOtter\UltimateCommerce\Contracts\AbstractModule;
 use BadOtter\UltimateCommerce\Contracts\Module;
+use BadOtter\UltimateCommerce\Storefront\VariationViewModel;
 
 defined('ABSPATH') || exit;
 
@@ -34,19 +35,9 @@ final class VariationsModule extends AbstractModule
         do_action('uc_variations_ready', $this);
     }
 
+    /** Historical compatibility facade for `uc_variation_view_model`. */
     public function state(\WC_Product_Variation $variation): array
     {
-        $state = array(
-            'id' => $variation->get_id(),
-            'attributes' => $variation->get_variation_attributes(false),
-            'purchasable' => $variation->is_purchasable(),
-            'in_stock' => $variation->is_in_stock(),
-            'stock_status' => $variation->get_stock_status(),
-            'stock_quantity' => $variation->get_stock_quantity(),
-            'price_html' => $variation->get_price_html(),
-            'image_id' => $variation->get_image_id(),
-        );
-
-        return (array) apply_filters('uc_variation_view_model', $state, $variation);
+        return VariationViewModel::fromVariation($variation);
     }
 }
