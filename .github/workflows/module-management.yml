@@ -1,0 +1,73 @@
+name: Validate Ultimate Commerce Module Management
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  module-management:
+    runs-on: [self-hosted, Linux, X64, badotter, ci]
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Validate module management contract
+        shell: bash
+        run: |
+          set -euo pipefail
+          php -l packages/ultimate-commerce-for-woocommerce/src/Support/Settings.php >/dev/null
+          php -l packages/ultimate-commerce-for-woocommerce/src/Admin/ModulesPage.php >/dev/null
+          php -l packages/ultimate-commerce-for-woocommerce/src/Admin/AdminMenu.php >/dev/null
+          php -l packages/ultimate-commerce-for-woocommerce/src/Plugin.php >/dev/null
+          php -l tests/module-settings-contract.php >/dev/null
+          php tests/module-settings-contract.php
+
+          python3 - <<'PY'
+          from pathlib import Path
+
+          root = Path('packages/ultimate-commerce-for-woocommerce')
+          settings = (root / 'src/Support/Settings.php').read_text()
+          page = (root / 'src/Admin/ModulesPage.php').read_text()
+          menu = (root / 'src/Admin/AdminMenu.php').read_text()
+          plugin = (root / 'src/Plugin.php').read_text()
+          docs = Path('docs/module-management.md').read_text()
+
+          required_settings = (
+              'public static function updateModuleStates',
+              'update_option(self::MODULE_OPTION, $stored, false);',
+          )
+          for marker in required_settings:
+              if marker not in settings:
+                  raise SystemExit(f'Module settings write contract missing: {marker}')
+
+          required_page = (
+              "add_action('admin_post_uc_modules_save'",
+              'Capabilities::MANAGE_SETTINGS',
+              'Csrf::require(',
+              'Plugin::registry()->statuses()',
+              'Plugin::registry()->all()',
+              'Settings::updateModuleStates($states)',
+          )
+          for marker in required_page:
+              if marker not in page:
+                  raise SystemExit(f'Module management security/runtime contract missing: {marker}')
+
+          if 'manage_options' in page:
+              raise SystemExit('Module management must use the exact UC capability, not manage_options')
+          if 'ultimate-commerce-pro' in page.lower() or 'fishingclothing' in page.lower():
+              raise SystemExit('Free module management must not depend on Pro or store-specific code')
+          if 'ModulesPage::SLUG' not in menu or 'Capabilities::MANAGE_SETTINGS' not in menu:
+              raise SystemExit('Modules submenu must be registered beneath the UC menu with MANAGE_SETTINGS')
+          if 'ModulesPage::hooks();' not in plugin:
+              raise SystemExit('Plugin bootstrap must register the module-management admin-post handler')
+          if 'temporarily unregistered' not in docs:
+              raise SystemExit('Module state preservation semantics must be documented')
+
+          print('Ultimate Commerce module management contract validated')
+          PY

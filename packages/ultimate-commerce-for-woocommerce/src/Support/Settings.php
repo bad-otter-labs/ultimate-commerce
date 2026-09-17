@@ -21,4 +21,28 @@ final class Settings
         $stored = get_option(self::MODULE_OPTION, array());
         return is_array($stored) ? $stored : array();
     }
+
+    /**
+     * Update explicit module preferences without discarding states for modules
+     * that are temporarily unregistered (for example, a deactivated extension).
+     *
+     * @param array<string, bool> $states Module key => enabled preference.
+     * @return array<string, bool>
+     */
+    public static function updateModuleStates(array $states): array
+    {
+        $stored = self::moduleStates();
+
+        foreach ($states as $key => $enabled) {
+            if (!is_string($key) || $key === '' || sanitize_key($key) !== $key) {
+                continue;
+            }
+            $stored[$key] = (bool) $enabled;
+        }
+
+        ksort($stored);
+        update_option(self::MODULE_OPTION, $stored, false);
+
+        return $stored;
+    }
 }
