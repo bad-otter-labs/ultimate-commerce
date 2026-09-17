@@ -71,6 +71,12 @@
         } ) || null;
     }
 
+    function nativeAttributeInput( form, attribute ) {
+        return Array.from( form.querySelectorAll( '[data-uc-native-attribute-input]' ) ).find( function ( input ) {
+            return input.getAttribute( 'data-uc-native-attribute-input' ) === attribute;
+        } ) || null;
+    }
+
     function setImage( form, media, fallbackSrc ) {
         const image = form.closest( '[data-uc-product-card="1"]' )?.querySelector( '.uc-product-card__image--primary' );
         if ( ! image ) {
@@ -176,10 +182,14 @@
         }
         const attribute = group.getAttribute( 'data-uc-attribute' ) || '';
         const input = attributeInput( form, attribute );
+        const nativeInput = nativeAttributeInput( form, attribute );
         if ( ! input ) {
             return;
         }
         input.value = option.getAttribute( 'data-uc-option' ) || '';
+        if ( nativeInput ) {
+            nativeInput.value = option.getAttribute( 'data-uc-request-value' ) || input.value;
+        }
         updateUi( form, option.getAttribute( 'data-uc-swatch-image' ) || '' );
     }
 
