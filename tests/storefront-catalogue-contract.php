@@ -181,6 +181,8 @@ uc_storefront_assert($variation['attributes'][0]['a11y']['role'] === 'radiogroup
 uc_storefront_assert($variation['attributes'][0]['options'][0]['a11y']['role'] === 'radio', 'option must expose accessible radio semantics');
 uc_storefront_assert($variation['attributes'][0]['options'][1]['available'] === false, 'unavailable option must be disabled against the selected state');
 uc_storefront_assert($variation['attributes'][2]['name'] === 'cut-style' && $variation['attributes'][2]['display'] === 'button', 'local/custom variation attribute must use baseline button selector state');
+uc_storefront_assert($variation['attributes'][2]['options'][0]['value'] === 'regular-fit', 'local/custom matching value must remain normalized');
+uc_storefront_assert($variation['attributes'][2]['options'][0]['request_value'] === 'Regular Fit', 'local/custom Woo request value must preserve its original case and spaces');
 
 $view = array(
     'id' => 10,
@@ -197,8 +199,10 @@ $view = array(
 $markup = ProductCardRenderer::render($view);
 uc_storefront_assert(str_contains($markup, 'data-uc-variation-form="1"'), 'variable card must render the public variation form contract');
 uc_storefront_assert(str_contains($markup, 'name="variation_id" value="11"'), 'variable card must hand the selected variation ID to Woo');
-uc_storefront_assert(str_contains($markup, 'name="attribute_pa_colour" value="navy"'), 'variable card must hand normalized taxonomy attributes to Woo');
-uc_storefront_assert(str_contains($markup, 'name="attribute_cut-style" value="regular-fit"'), 'variable card must hand local/custom attributes to Woo');
+uc_storefront_assert(str_contains($markup, 'name="attribute_pa_colour" value="navy"'), 'variable card must hand taxonomy slugs to Woo');
+uc_storefront_assert(str_contains($markup, 'value="regular-fit" data-uc-attribute-input="cut-style"'), 'local/custom matching input must remain normalized for the UC controller');
+uc_storefront_assert(str_contains($markup, 'name="attribute_cut-style" value="Regular Fit"'), 'native Woo form must preserve the original local/custom option value');
+uc_storefront_assert(str_contains($markup, 'data-uc-request-value="Regular Fit"'), 'rendered local/custom option must expose the Woo request value');
 uc_storefront_assert(str_contains($markup, 'role="radiogroup"') && str_contains($markup, 'role="radio"'), 'rendered controls must expose radio semantics');
 uc_storefront_assert(str_contains($markup, 'data-uc-variation-data="1"'), 'renderer must expose bounded variation state to the UC controller');
 uc_storefront_assert(isset($GLOBALS['uc_test_enqueued_scripts'][ProductCardRenderer::VARIATION_SCRIPT_HANDLE]), 'variation renderer must enqueue its reusable controller');
