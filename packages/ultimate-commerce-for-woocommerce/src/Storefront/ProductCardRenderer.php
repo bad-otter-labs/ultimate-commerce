@@ -136,10 +136,17 @@ final class ProductCardRenderer
             if ($attributeName === '') {
                 continue;
             }
+            $selectedValue = (string) ($attribute['selected'] ?? '');
+            $requestValue = $selectedValue;
             echo '<div class="uc-variation-control" role="radiogroup" aria-label="' . esc_attr((string) ($attribute['a11y']['label'] ?? $attribute['label'] ?? '')) . '" data-uc-attribute="' . esc_attr($attributeName) . '">';
             echo '<span class="uc-variation-control__label">' . esc_html((string) ($attribute['label'] ?? '')) . '</span>';
             foreach ((array) ($attribute['options'] ?? array()) as $option) {
-                echo '<button type="button" class="uc-variation-option uc-variation-option--' . esc_attr((string) ($attribute['display'] ?? 'button')) . '" role="radio" aria-checked="' . esc_attr((string) ($option['a11y']['aria_checked'] ?? 'false')) . '" aria-disabled="' . esc_attr((string) ($option['a11y']['aria_disabled'] ?? 'false')) . '" data-uc-option="' . esc_attr((string) ($option['value'] ?? '')) . '"';
+                $optionValue = (string) ($option['value'] ?? '');
+                $optionRequestValue = (string) ($option['request_value'] ?? $optionValue);
+                if (!empty($option['selected'])) {
+                    $requestValue = $optionRequestValue;
+                }
+                echo '<button type="button" class="uc-variation-option uc-variation-option--' . esc_attr((string) ($attribute['display'] ?? 'button')) . '" role="radio" aria-checked="' . esc_attr((string) ($option['a11y']['aria_checked'] ?? 'false')) . '" aria-disabled="' . esc_attr((string) ($option['a11y']['aria_disabled'] ?? 'false')) . '" data-uc-option="' . esc_attr($optionValue) . '" data-uc-request-value="' . esc_attr($optionRequestValue) . '"';
                 if (!empty($option['swatch']['color'])) {
                     echo ' data-uc-swatch-color="' . esc_attr((string) $option['swatch']['color']) . '"';
                 }
@@ -152,7 +159,8 @@ final class ProductCardRenderer
                 echo '><span class="uc-variation-option__label">' . esc_html((string) ($option['label'] ?? '')) . '</span></button>';
             }
             echo '</div>';
-            echo '<input type="hidden" name="attribute_' . esc_attr($attributeName) . '" value="' . esc_attr((string) ($attribute['selected'] ?? '')) . '" data-uc-attribute-input="' . esc_attr($attributeName) . '">';
+            echo '<input type="hidden" value="' . esc_attr($selectedValue) . '" data-uc-attribute-input="' . esc_attr($attributeName) . '">';
+            echo '<input type="hidden" name="attribute_' . esc_attr($attributeName) . '" value="' . esc_attr($requestValue) . '" data-uc-native-attribute-input="' . esc_attr($attributeName) . '">';
         }
         echo '</div>';
         echo '<input type="hidden" name="quantity" value="1">';
