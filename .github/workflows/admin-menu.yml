@@ -23,6 +23,7 @@ jobs:
           set -euo pipefail
           php -l packages/ultimate-commerce-for-woocommerce/src/Admin/AdminMenu.php
           php -l packages/ultimate-commerce-for-woocommerce/src/Admin/OverviewPage.php
+          php -l packages/ultimate-commerce-for-woocommerce/src/Admin/ModulesPage.php
           php -l packages/ultimate-commerce-for-woocommerce/src/Admin/DiagnosticsPage.php
           php -l tests/admin-menu-structure.php
           php tests/admin-menu-structure.php
@@ -33,6 +34,7 @@ jobs:
           root = Path('packages/ultimate-commerce-for-woocommerce')
           menu = (root / 'src/Admin/AdminMenu.php').read_text()
           diagnostics = (root / 'src/Admin/DiagnosticsPage.php').read_text()
+          modules = (root / 'src/Admin/ModulesPage.php').read_text()
           plugin = (root / 'src/Plugin.php').read_text()
 
           if "add_menu_page(" not in menu:
@@ -44,7 +46,11 @@ jobs:
           if "'woocommerce'" in menu or "add_submenu_page(\n            'woocommerce'" in diagnostics:
               raise SystemExit('Ultimate Commerce admin pages must not be nested under WooCommerce')
           if 'Capabilities::VIEW_DIAGNOSTICS' not in menu or 'Capabilities::VIEW_DIAGNOSTICS' not in diagnostics:
-              raise SystemExit('UC admin pages must preserve dedicated capability checks')
+              raise SystemExit('UC read-only admin pages must preserve dedicated diagnostics capability checks')
+          if 'ModulesPage::SLUG' not in menu or 'Capabilities::MANAGE_SETTINGS' not in menu:
+              raise SystemExit('UC Modules must be a dedicated settings-capability submenu')
+          if 'Capabilities::MANAGE_SETTINGS' not in modules:
+              raise SystemExit('UC Modules page callback must enforce the exact settings capability')
           if 'AdminMenu::hooks();' not in plugin:
               raise SystemExit('Plugin bootstrap must own admin navigation through AdminMenu')
           if 'DiagnosticsPage::hooks();' in plugin:

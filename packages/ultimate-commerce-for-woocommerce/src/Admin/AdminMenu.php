@@ -39,6 +39,15 @@ final class AdminMenu
 
         add_submenu_page(
             self::ROOT_SLUG,
+            __('Modules', 'ultimate-commerce-for-woocommerce'),
+            __('Modules', 'ultimate-commerce-for-woocommerce'),
+            Capabilities::MANAGE_SETTINGS,
+            ModulesPage::SLUG,
+            array(ModulesPage::class, 'render')
+        );
+
+        add_submenu_page(
+            self::ROOT_SLUG,
             __('Diagnostics', 'ultimate-commerce-for-woocommerce'),
             __('Diagnostics', 'ultimate-commerce-for-woocommerce'),
             Capabilities::VIEW_DIAGNOSTICS,

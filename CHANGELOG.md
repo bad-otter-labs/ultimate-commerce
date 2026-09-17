@@ -28,6 +28,7 @@
 - Keep `uc_product_view_model` and `uc_variation_view_model` as documented compatibility filters while introducing the supported Storefront API service surface.
 - Add Cart API v1 with variation-aware quick add and an accessible cart drawer backed exclusively by WooCommerce Store API cart/session/totals truth.
 - Add cart drawer extension slots/events, quantity/remove operations, loading/error states and native Woo link/form fallbacks without embedding customer nonces in cacheable markup.
+- Add capability-protected module enable/disable management with preserved extension preferences, dependency/runtime status visibility and shared Module API integration.
 
 ## 0.1.4 - 2026-09-15
 
