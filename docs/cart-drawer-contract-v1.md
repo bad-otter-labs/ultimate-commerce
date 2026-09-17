@@ -65,10 +65,12 @@ The existing `data-uc-variation-form` form remains a normal Woo POST fallback. W
 
 - selected Woo variation ID
 - quantity
-- global attribute slugs such as `pa_color`
-- case-sensitive local attribute labels such as `Size`
+- global attribute names/slugs such as `pa_color` + `blue`
+- case-sensitive local attribute names and original values such as `Logo` + `Yes`
 
-through `/cart/add-item`. Woo performs final purchasability, stock and cart validation. On a network-level failure the native form is submitted instead.
+The Storefront API keeps UC's normalized matching input separate from the named native Woo request input. Quick Add deliberately reads `data-uc-native-attribute-input`, not the normalized `data-uc-attribute-input`, so local/custom values preserve their original case and spacing exactly as Woo's Store API expects.
+
+The request goes through `/cart/add-item`. Woo performs final purchasability, stock and cart validation. On a network-level failure the native form is submitted instead.
 
 API/validation errors from Woo are shown in the drawer rather than silently bypassed through the fallback.
 
