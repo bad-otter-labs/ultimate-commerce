@@ -31,9 +31,9 @@ jobs:
         run: |
           set -euo pipefail
           rm -rf dist-development dist-development-repeat dev-check
-          output="$(python3 scripts/build-development-package.py --version 0.2.0-dev.3 --output-dir dist-development)"
+          output="$(python3 scripts/build-development-package.py --version 0.2.0-dev.4 --output-dir dist-development)"
           echo "$output"
-          python3 scripts/build-development-package.py --version 0.2.0-dev.3 --output-dir dist-development-repeat >/dev/null
+          python3 scripts/build-development-package.py --version 0.2.0-dev.4 --output-dir dist-development-repeat >/dev/null
           first="$(sha256sum dist-development/*.zip | awk '{print $1}')"
           second="$(sha256sum dist-development-repeat/*.zip | awk '{print $1}')"
           test "$first" = "$second"
@@ -70,7 +70,7 @@ jobs:
               raise SystemExit('Canonical Free source must not contain the development manifest')
 
           required = (
-              'Version: 0.2.0-dev.3',
+              'Version: 0.2.0-dev.4',
               'Update URI: https://badotter.io/ultimate-commerce-for-woocommerce-dev',
               "define('ULTIMATE_COMMERCE_DEVELOPMENT_BUILD', true);",
               'ManagedDevelopmentUpdates::hooks();',

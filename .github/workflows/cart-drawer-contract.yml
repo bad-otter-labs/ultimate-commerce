@@ -1,0 +1,58 @@
+name: Validate Free Cart Drawer Contract
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  cart-drawer-contract:
+    runs-on: [self-hosted, Linux, X64, badotter, ci]
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020
+        with:
+          node-version: '24'
+
+      - name: Validate PHP syntax
+        shell: bash
+        run: |
+          set -euo pipefail
+          php -l packages/ultimate-commerce-for-woocommerce/src/Storefront/CartDrawer.php >/dev/null
+          php -l packages/ultimate-commerce-for-woocommerce/src/Modules/Cart/CartModule.php >/dev/null
+          php -l packages/ultimate-commerce-for-woocommerce/ultimate-commerce-for-woocommerce.php >/dev/null
+          php -l tests/cart-drawer-contract.php >/dev/null
+
+      - name: Validate controller syntax
+        shell: bash
+        run: |
+          set -euo pipefail
+          node --check packages/ultimate-commerce-for-woocommerce/assets/js/cart-drawer.js
+
+      - name: Validate Woo-owned cart boundary
+        shell: bash
+        run: |
+          set -euo pipefail
+          php tests/cart-drawer-contract.php
+          if grep -RniE 'FishingClothing|fishingclothing\.co\.uk' \
+            packages/ultimate-commerce-for-woocommerce/src/Storefront/CartDrawer.php \
+            packages/ultimate-commerce-for-woocommerce/assets/js/cart-drawer.js \
+            packages/ultimate-commerce-for-woocommerce/assets/css/cart-drawer.css \
+            docs/cart-drawer-contract-v1.md; then
+            echo 'Store-specific references are forbidden in the reusable Cart contract.' >&2
+            exit 1
+          fi
+          if grep -RniE 'WC\(\)->cart|localStorage|sessionStorage|/ultimate-commerce/v1/.+cart' \
+            packages/ultimate-commerce-for-woocommerce/src/Storefront/CartDrawer.php \
+            packages/ultimate-commerce-for-woocommerce/assets/js/cart-drawer.js; then
+            echo 'UC must not create a second cart truth/session path.' >&2
+            exit 1
+          fi
