@@ -97,9 +97,11 @@ The `uc_swatch_color` and `uc_swatch_image_id` term-meta keys are the built-in F
 
 The default semantic renderer progressively enhances these states with `assets/js/variation-controls.js`. It owns reusable selection matching, option availability refresh, variation image/price switching, submit-state changes and radio-style arrow-key navigation. The controller is loaded only when the default renderer outputs variable-product controls.
 
+For variation options, `value` is UC's normalized matching value. `request_value` is the value that must be handed back to Woo. They are identical for global taxonomy attributes (the term slug), while local/custom attributes preserve the original option case and spacing in `request_value` (for example `Regular Fit`) even though the matching value is normalized (for example `regular-fit`). The default renderer therefore keeps a non-named normalized state input for UC matching and a separate named `attribute_*` input carrying the exact Woo request value.
+
 For its default rendered action, UC submits WooCommerce's native variable-product form fields (`add-to-cart`, `product_id`, `variation_id`, `attribute_*`, quantity) back to the product URL. WooCommerce therefore performs the authoritative stock/purchasability/cart validation on submission. UC does not create a second cart endpoint or mutate stock itself.
 
-Custom theme renderers may use the PHP state directly. If they adopt UC's semantic variation markup/data attributes, they can call `ProductCardRenderer::enqueueAssets()` to use the same controller. They may instead hand the supplied identifiers to WooCommerce Store API/native Woo APIs; the mutation must remain Woo-owned.
+Custom theme renderers may use the PHP state directly. If they adopt UC's semantic variation markup/data attributes, they can call `ProductCardRenderer::enqueueAssets()` to use the same controller. They may instead hand the supplied identifiers to WooCommerce Store API/native Woo APIs; for local/custom attributes they must use each selected option's `request_value` rather than its normalized matching `value`. The mutation must remain Woo-owned.
 
 The controller dispatches a bubbling `uc:variation-change` DOM event containing `productId`, normalized `selection`, the matched variation state and whether add-to-cart is enabled. This is presentation integration state only, not a second commerce truth.
 
