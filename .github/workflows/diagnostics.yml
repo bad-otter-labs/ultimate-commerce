@@ -1,0 +1,76 @@
+name: Validate Ultimate Commerce Diagnostics
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  diagnostics:
+    runs-on: [self-hosted, Linux, X64, badotter, ci]
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Validate diagnostics contract
+        shell: bash
+        run: |
+          set -euo pipefail
+          php -l packages/ultimate-commerce-for-woocommerce/src/Support/SystemStatus.php
+          php -l packages/ultimate-commerce-for-woocommerce/src/Admin/DiagnosticsPage.php
+          php -l tests/system-status-contract.php
+          php tests/system-status-contract.php
+
+          python3 - <<'PY'
+          from pathlib import Path
+
+          root = Path('packages/ultimate-commerce-for-woocommerce')
+          status = (root / 'src/Support/SystemStatus.php').read_text()
+          page = (root / 'src/Admin/DiagnosticsPage.php').read_text()
+
+          for marker in (
+              'public const SNAPSHOT_SCHEMA = 1;',
+              "'module_counts' => $counts",
+              "'cart_checkout_blocks_declared' => true",
+              "'hpos_active' => $hposActive",
+              'Settings::deleteDataOnUninstall()',
+          ):
+              if marker not in status:
+                  raise SystemExit(f'Diagnostics system-status marker missing: {marker}')
+
+          if 'Capabilities::VIEW_DIAGNOSTICS' not in page:
+              raise SystemExit('Diagnostics page must preserve the exact read-only diagnostics capability')
+          if 'SystemStatus::snapshot(Plugin::registry()->statuses())' not in page:
+              raise SystemExit('Diagnostics page must render the sanitized SystemStatus snapshot')
+          if 'SystemStatus::supportJson($snapshot)' not in page or 'readonly' not in page:
+              raise SystemExit('Diagnostics page must expose a read-only sanitized support snapshot')
+          if 'manage_options' in page:
+              raise SystemExit('Diagnostics page must not fall back to broad manage_options access')
+
+          forbidden = (
+              'uc_secret_store_v1',
+              'wc_get_orders',
+              'get_users(',
+              'home_url(',
+              'site_url(',
+              'ABSPATH .',
+              '$_SERVER',
+              'phpinfo(',
+          )
+          combined = status + '\n' + page
+          for marker in forbidden:
+              if marker in combined:
+                  raise SystemExit(f'Privacy-sensitive diagnostics source marker found: {marker}')
+
+          module_output = status[status.index("$modules[$key] = array("):status.index("ksort($modules)")]
+          for marker in ("'settings_schema'", "'assets'", "'compatibility'"):
+              if marker in module_output:
+                  raise SystemExit(f'Raw module metadata leaked into diagnostics output: {marker}')
+
+          print('Ultimate Commerce diagnostics source boundary validated')
+          PY
