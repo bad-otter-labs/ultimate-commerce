@@ -302,7 +302,7 @@
             title.href = String(item.permalink || '#');
             body.appendChild(title);
 
-            var itemVariation(item);
+            var variation = itemVariation(item);
             if (variation) {
                 body.appendChild(variation);
             }
