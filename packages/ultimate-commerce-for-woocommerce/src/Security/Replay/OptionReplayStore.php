@@ -22,10 +22,10 @@ final class OptionReplayStore implements ReplayStore
     public function claim(string $scope, string $eventId, int $ttlSeconds = 86400)
     {
         if (!self::validScope($scope) || !self::validEventId($eventId)) {
-            return self::error('uc_replay_key_invalid', 'Replay protection key is invalid.');
+            return self::error('uc_replay_key_invalid', __('Replay protection key is invalid.', 'ultimate-commerce-for-woocommerce'));
         }
         if ($ttlSeconds < self::MIN_TTL || $ttlSeconds > self::MAX_TTL) {
-            return self::error('uc_replay_ttl_invalid', 'Replay protection lifetime is outside the allowed range.');
+            return self::error('uc_replay_ttl_invalid', __('Replay protection lifetime is outside the allowed range.', 'ultimate-commerce-for-woocommerce'));
         }
 
         $name = self::optionName($scope, $eventId);
@@ -41,7 +41,7 @@ final class OptionReplayStore implements ReplayStore
         try {
             $lease = bin2hex(random_bytes(16));
         } catch (\Throwable $exception) {
-            return self::error('uc_replay_entropy', 'Replay protection entropy is unavailable.');
+            return self::error('uc_replay_entropy', __('Replay protection entropy is unavailable.', 'ultimate-commerce-for-woocommerce'));
         }
 
         $expires = $now + $ttlSeconds;
@@ -109,6 +109,6 @@ final class OptionReplayStore implements ReplayStore
 
     private static function error(string $code, string $message): \WP_Error
     {
-        return new \WP_Error($code, __($message, 'ultimate-commerce-for-woocommerce'));
+        return new \WP_Error($code, $message);
     }
 }

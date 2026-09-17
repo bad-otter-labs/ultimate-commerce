@@ -15,10 +15,10 @@ final class TransientRateLimiter implements RateLimiter
     public function hit(string $scope, string $subject, int $limit, int $windowSeconds)
     {
         if (!self::validScope($scope) || !self::validSubject($subject)) {
-            return self::error('uc_rate_limit_key_invalid', 'Rate-limit scope or subject is invalid.');
+            return self::error('uc_rate_limit_key_invalid', __('Rate-limit scope or subject is invalid.', 'ultimate-commerce-for-woocommerce'));
         }
         if ($limit < 1 || $limit > self::MAX_LIMIT || $windowSeconds < 1 || $windowSeconds > self::MAX_WINDOW) {
-            return self::error('uc_rate_limit_policy_invalid', 'Rate-limit policy is outside the allowed range.');
+            return self::error('uc_rate_limit_policy_invalid', __('Rate-limit policy is outside the allowed range.', 'ultimate-commerce-for-woocommerce'));
         }
 
         $now = time();
@@ -53,6 +53,6 @@ final class TransientRateLimiter implements RateLimiter
 
     private static function error(string $code, string $message): \WP_Error
     {
-        return new \WP_Error($code, __($message, 'ultimate-commerce-for-woocommerce'));
+        return new \WP_Error($code, $message);
     }
 }

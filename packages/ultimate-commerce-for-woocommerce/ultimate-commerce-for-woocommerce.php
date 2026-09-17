@@ -10,6 +10,7 @@
  * Author: Bad Otter Labs
  * Author URI: https://badotter.io
  * Text Domain: ultimate-commerce-for-woocommerce
+ * Domain Path: /languages
  * License: GPL v2 or later
  * License URI: https://www.gnu.org/licenses/gpl-2.0.html
  */

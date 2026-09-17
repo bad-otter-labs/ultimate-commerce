@@ -22,10 +22,10 @@ final class OptionLockStore implements LockStore
     public function acquire(string $scope, string $key, int $ttlSeconds = 300)
     {
         if (!self::validScope($scope) || !self::validKey($key)) {
-            return self::error('uc_lock_key_invalid', 'Lock scope or key is invalid.');
+            return self::error('uc_lock_key_invalid', __('Lock scope or key is invalid.', 'ultimate-commerce-for-woocommerce'));
         }
         if ($ttlSeconds < self::MIN_TTL || $ttlSeconds > self::MAX_TTL) {
-            return self::error('uc_lock_ttl_invalid', 'Lock lifetime is outside the allowed range.');
+            return self::error('uc_lock_ttl_invalid', __('Lock lifetime is outside the allowed range.', 'ultimate-commerce-for-woocommerce'));
         }
 
         $option = self::optionName($scope, $key);
@@ -41,7 +41,7 @@ final class OptionLockStore implements LockStore
         try {
             $lease = bin2hex(random_bytes(16));
         } catch (\Throwable $exception) {
-            return self::error('uc_lock_entropy', 'Lock entropy is unavailable.');
+            return self::error('uc_lock_entropy', __('Lock entropy is unavailable.', 'ultimate-commerce-for-woocommerce'));
         }
 
         $expires = $now + $ttlSeconds;
@@ -111,6 +111,6 @@ final class OptionLockStore implements LockStore
 
     private static function error(string $code, string $message): \WP_Error
     {
-        return new \WP_Error($code, __($message, 'ultimate-commerce-for-woocommerce'));
+        return new \WP_Error($code, $message);
     }
 }
