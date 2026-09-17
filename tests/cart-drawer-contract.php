@@ -32,6 +32,7 @@ $entry = uc_cart_test_read($package . '/ultimate-commerce-for-woocommerce.php');
 $module = uc_cart_test_read($package . '/src/Modules/Cart/CartModule.php');
 $drawer = uc_cart_test_read($package . '/src/Storefront/CartDrawer.php');
 $renderer = uc_cart_test_read($package . '/src/Storefront/ProductCardRenderer.php');
+$variationController = uc_cart_test_read($package . '/assets/js/variation-controls.js');
 $controller = uc_cart_test_read($package . '/assets/js/cart-drawer.js');
 $style = uc_cart_test_read($package . '/assets/css/cart-drawer.css');
 $docs = uc_cart_test_read($root . '/docs/cart-drawer-contract-v1.md');
@@ -60,6 +61,8 @@ uc_cart_assert_contains("headers.set('Nonce', nonce)", $controller, 'Controller 
 uc_cart_assert_contains("response.headers.get('Cart-Token')", $controller, 'Controller must understand Woo Cart-Token fallback.');
 uc_cart_assert_contains("credentials: 'same-origin'", $controller, 'Controller must preserve Woo customer session cookies.');
 uc_cart_assert_contains("cache: 'no-store'", $controller, 'Cart requests must bypass browser HTTP caches.');
+uc_cart_assert_contains("querySelectorAll('[data-uc-native-attribute-input]')", $controller, 'Store API quick add must read exact Woo request values rather than normalized matching values.');
+uc_cart_assert_not_contains("querySelectorAll('[data-uc-attribute-input]')", $controller, 'Cart request construction must not read normalized-only variation inputs.');
 uc_cart_assert_contains("window.location.assign(action.href)", $controller, 'Simple quick add needs native Woo fallback on network failure.');
 uc_cart_assert_contains('form.submit();', $controller, 'Variable quick add needs native Woo form fallback on network failure.');
 uc_cart_assert_contains("emit('uc:cart-updated'", $controller, 'Cart update browser event is missing.');
@@ -70,6 +73,9 @@ uc_cart_assert_contains("event.key !== 'Tab'", $controller, 'Focus-trap behavior
 
 uc_cart_assert_contains('data-uc-action="', $renderer, 'Product cards must expose simple quick-add action state.');
 uc_cart_assert_contains('data-uc-variation-form="1"', $renderer, 'Product cards must preserve variable form fallback markup.');
+uc_cart_assert_contains('data-uc-native-attribute-input=', $renderer, 'Renderer must expose exact Woo variation request inputs.');
+uc_cart_assert_contains('data-uc-request-value=', $renderer, 'Variation options must retain exact Woo request values.');
+uc_cart_assert_contains("nativeInput.value = option.getAttribute( 'data-uc-request-value' )", $variationController, 'Variation controller must keep the native Woo request input synchronized.');
 uc_cart_assert_contains('.uc-cart-drawer[hidden]', $style, 'Drawer hidden-state CSS is missing.');
 uc_cart_assert_contains('WooCommerce remains authoritative', $docs, 'Cart ownership boundary must be documented.');
 uc_cart_assert_contains('uc_cart_drawer_slot', $docs, 'Pro/third-party drawer slot must be documented.');
