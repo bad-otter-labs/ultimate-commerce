@@ -32,6 +32,7 @@ final class ProductCardRenderer
         self::slot('after_title', $view, $context);
         if (!empty($view['rating'])) {
             $ratingLabel = sprintf(
+                /* translators: 1: Average product rating, 2: Number of product reviews. */
                 __('Rated %1$s out of 5 from %2$d reviews.', 'ultimate-commerce-for-woocommerce'),
                 (string) $view['rating']['average'],
                 (int) $view['rating']['count']
