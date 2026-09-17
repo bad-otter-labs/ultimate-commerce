@@ -31,6 +31,7 @@ function wp_register_script($handle, $src, $deps = array(), $version = false, $i
     return true;
 }
 function wp_enqueue_script($handle): void { $GLOBALS['uc_test_enqueued_scripts'][$handle] = true; }
+function wp_set_script_translations($handle, $domain = 'default', $path = ''): bool { return true; }
 function wc_format_decimal($value, $decimals = 2): string { return number_format((float) $value, (int) $decimals, '.', ''); }
 function wc_get_price_decimals(): int { return 2; }
 function wc_attribute_taxonomy_name($name): string { return 'pa_' . sanitize_key($name); }
