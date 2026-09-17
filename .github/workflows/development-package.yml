@@ -1,0 +1,107 @@
+name: Validate Free Development Package
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  development-package:
+    runs-on: [self-hosted, Linux, X64, badotter, ci]
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Validate development overlay source
+        shell: bash
+        run: |
+          set -euo pipefail
+          php -l development/free-updater/BadOtterDevelopmentClient.php >/dev/null
+          php -l development/free-updater/ManagedDevelopmentUpdates.php >/dev/null
+          python3 -m py_compile scripts/build-development-package.py
+
+      - name: Build deterministic development package twice
+        id: package
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -rf dist-development dist-development-repeat dev-check
+          output="$(python3 scripts/build-development-package.py --version 0.2.0-dev.1 --output-dir dist-development)"
+          echo "$output"
+          python3 scripts/build-development-package.py --version 0.2.0-dev.1 --output-dir dist-development-repeat >/dev/null
+          first="$(sha256sum dist-development/*.zip | awk '{print $1}')"
+          second="$(sha256sum dist-development-repeat/*.zip | awk '{print $1}')"
+          test "$first" = "$second"
+          package="$(printf '%s\n' "$output" | sed -n 's/^PACKAGE=//p')"
+          test -n "$package"
+          unzip -t "dist-development/$package" >/dev/null
+          mkdir -p dev-check
+          unzip -q "dist-development/$package" -d dev-check
+          while IFS='=' read -r key value; do
+            case "$key" in PRODUCT|VERSION|PACKAGE|SHA256) echo "${key,,}=$value" >> "$GITHUB_OUTPUT";; esac
+          done <<< "$output"
+
+      - name: Validate development/canonical distribution boundary
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import json
+          import re
+          from pathlib import Path
+
+          canonical = Path('packages/ultimate-commerce-for-woocommerce/ultimate-commerce-for-woocommerce.php').read_text()
+          dev_root = Path('dev-check/ultimate-commerce-for-woocommerce')
+          dev = (dev_root / 'ultimate-commerce-for-woocommerce.php').read_text()
+          manifest = json.loads((dev_root / 'module.json').read_text())
+
+          forbidden = ('Update URI:', 'ULTIMATE_COMMERCE_DEVELOPMENT_BUILD', 'ManagedDevelopmentUpdates::hooks')
+          for marker in forbidden:
+              if marker in canonical:
+                  raise SystemExit(f'Canonical Free source leaked development marker: {marker}')
+          if Path('packages/ultimate-commerce-for-woocommerce/src/DevelopmentUpdates').exists():
+              raise SystemExit('Canonical Free source must not contain DevelopmentUpdates')
+          if Path('packages/ultimate-commerce-for-woocommerce/module.json').exists():
+              raise SystemExit('Canonical Free source must not contain the development manifest')
+
+          required = (
+              'Version: 0.2.0-dev.1',
+              'Update URI: https://badotter.io/ultimate-commerce-for-woocommerce-dev',
+              "define('ULTIMATE_COMMERCE_DEVELOPMENT_BUILD', true);",
+              'ManagedDevelopmentUpdates::hooks();',
+          )
+          for marker in required:
+              if marker not in dev:
+                  raise SystemExit(f'Development package missing marker: {marker}')
+          if manifest.get('product') != 'ultimate-commerce-for-woocommerce-dev':
+              raise SystemExit('Development manifest product identity mismatch')
+          if manifest.get('entitlement') is not None:
+              raise SystemExit('Free development distribution must not require an entitlement')
+          if 'licence-free-update-delivery' not in set(manifest.get('capabilities') or []):
+              raise SystemExit('Development manifest missing licence-free delivery capability')
+          for rel in (
+              'src/DevelopmentUpdates/BadOtterDevelopmentClient.php',
+              'src/DevelopmentUpdates/ManagedDevelopmentUpdates.php',
+          ):
+              if not (dev_root / rel).is_file():
+                  raise SystemExit(f'Development package missing {rel}')
+          for php in dev_root.rglob('*.php'):
+              if re.search(r'FishingClothing|fishingclothing\.co\.uk', php.read_text(errors='ignore'), re.I):
+                  raise SystemExit(f'Store-specific reference leaked into development package: {php}')
+          print('Development/canonical distribution boundary validated')
+          PY
+
+      - name: Upload installable development package
+        uses: actions/upload-artifact@v4
+        with:
+          name: ultimate-commerce-for-woocommerce-development-${{ github.sha }}
+          path: |
+            dist-development/*.zip
+            dist-development/*.sha256
+          if-no-files-found: error
+          retention-days: 30
