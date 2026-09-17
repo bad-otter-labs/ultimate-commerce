@@ -7,6 +7,7 @@ defined('ABSPATH') || exit;
 final class Settings
 {
     private const MODULE_OPTION = 'uc_modules';
+    public const UNINSTALL_DATA_OPTION = 'uc_delete_data_on_uninstall';
 
     public static function moduleEnabled(string $key): bool
     {
@@ -44,5 +45,15 @@ final class Settings
         update_option(self::MODULE_OPTION, $stored, false);
 
         return $stored;
+    }
+
+    public static function deleteDataOnUninstall(): bool
+    {
+        return (bool) get_option(self::UNINSTALL_DATA_OPTION, false);
+    }
+
+    public static function updateDeleteDataOnUninstall(bool $enabled): void
+    {
+        update_option(self::UNINSTALL_DATA_OPTION, $enabled, false);
     }
 }

@@ -4,6 +4,7 @@ namespace BadOtter\UltimateCommerce\Admin;
 
 use BadOtter\UltimateCommerce\Security\Capabilities;
 use BadOtter\UltimateCommerce\Security\Csrf;
+use BadOtter\UltimateCommerce\Support\Settings;
 use BadOtter\UltimateCommerce\Support\SettingsTransfer;
 
 defined('ABSPATH') || exit;
@@ -15,16 +16,19 @@ final class SettingsPage
     private const NONCE_FIELD = 'uc_settings_transfer_nonce';
     private const PURPOSE_EXPORT = 'settings_export';
     private const PURPOSE_IMPORT = 'settings_import';
+    private const PURPOSE_RETENTION = 'settings_retention';
 
     public static function hooks(): void
     {
         add_action('admin_post_uc_settings_export', array(__CLASS__, 'export'));
         add_action('admin_post_uc_settings_import', array(__CLASS__, 'import'));
+        add_action('admin_post_uc_settings_retention', array(__CLASS__, 'saveRetention'));
     }
 
     public static function render(): void
     {
         self::requireCapability();
+        $deleteDataOnUninstall = Settings::deleteDataOnUninstall();
         ?>
         <div class="wrap">
             <h1><?php echo esc_html__('Ultimate Commerce Settings', 'ultimate-commerce-for-woocommerce'); ?></h1>
@@ -63,6 +67,24 @@ final class SettingsPage
                     ?>
                 </p>
                 <?php submit_button(__('Import settings', 'ultimate-commerce-for-woocommerce'), 'primary', 'submit', false); ?>
+            </form>
+
+            <hr style="max-width:900px;margin:2rem 0">
+
+            <h2><?php echo esc_html__('Data retention', 'ultimate-commerce-for-woocommerce'); ?></h2>
+            <p><?php echo esc_html__('Ultimate Commerce keeps merchant configuration by default when the plugin is deleted, making a later reinstall recoverable. Short-lived runtime locks, replay records, idempotency records and rate-limit transients are always removed.', 'ultimate-commerce-for-woocommerce'); ?></p>
+            <form method="post" action="<?php echo esc_url(admin_url('admin-post.php')); ?>" style="max-width:900px">
+                <input type="hidden" name="action" value="uc_settings_retention">
+                <?php wp_nonce_field('uc_' . self::PURPOSE_RETENTION, self::NONCE_FIELD); ?>
+                <p>
+                    <label>
+                        <input type="checkbox" name="delete_data_on_uninstall" value="1" <?php checked($deleteDataOnUninstall); ?>>
+                        <strong><?php echo esc_html__('Delete Ultimate Commerce data when the plugin is deleted', 'ultimate-commerce-for-woocommerce'); ?></strong>
+                    </label>
+                </p>
+                <p class="description"><?php echo esc_html__('When enabled, deletion also removes stored module preferences and Ultimate Commerce encrypted secrets. WooCommerce products, stock, carts, orders, payments and other WooCommerce-owned data are never deleted by this cleanup.', 'ultimate-commerce-for-woocommerce'); ?></p>
+                <p class="description"><?php echo esc_html__('This destructive local preference is intentionally excluded from settings export/import.', 'ultimate-commerce-for-woocommerce'); ?></p>
+                <?php submit_button(__('Save data retention', 'ultimate-commerce-for-woocommerce'), 'secondary', 'submit', false); ?>
             </form>
         </div>
         <?php
@@ -104,6 +126,18 @@ final class SettingsPage
         }
 
         self::redirect('imported');
+    }
+
+    public static function saveRetention(): void
+    {
+        self::authorizeRequest(self::PURPOSE_RETENTION);
+
+        $enabled = isset($_POST['delete_data_on_uninstall'])
+            && is_scalar($_POST['delete_data_on_uninstall'])
+            && sanitize_text_field((string) wp_unslash($_POST['delete_data_on_uninstall'])) === '1';
+
+        Settings::updateDeleteDataOnUninstall($enabled);
+        self::redirect('retention-saved');
     }
 
     /** @return string|\WP_Error */
@@ -151,7 +185,7 @@ final class SettingsPage
     {
         if (!current_user_can(Capabilities::MANAGE_SETTINGS)) {
             wp_die(
-                esc_html__('You do not have permission to import or export Ultimate Commerce settings.', 'ultimate-commerce-for-woocommerce'),
+                esc_html__('You do not have permission to manage Ultimate Commerce settings.', 'ultimate-commerce-for-woocommerce'),
                 esc_html__('Access denied', 'ultimate-commerce-for-woocommerce'),
                 array('response' => 403)
             );
@@ -183,6 +217,11 @@ final class SettingsPage
     {
         if ($code === 'imported') {
             echo '<div class="notice notice-success is-dismissible"><p>' . esc_html__('Ultimate Commerce settings imported. The imported module preferences are now active.', 'ultimate-commerce-for-woocommerce') . '</p></div>';
+            return;
+        }
+
+        if ($code === 'retention-saved') {
+            echo '<div class="notice notice-success is-dismissible"><p>' . esc_html__('Ultimate Commerce data-retention preference saved.', 'ultimate-commerce-for-woocommerce') . '</p></div>';
             return;
         }
 

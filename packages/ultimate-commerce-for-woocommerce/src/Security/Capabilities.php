@@ -46,4 +46,19 @@ final class Capabilities
 
         update_option(self::VERSION_OPTION, self::VERSION, false);
     }
+
+    public static function remove(): void
+    {
+        foreach (array('administrator', 'shop_manager') as $roleName) {
+            $role = get_role($roleName);
+            if (!$role || !method_exists($role, 'remove_cap')) {
+                continue;
+            }
+            foreach (self::all() as $capability) {
+                $role->remove_cap($capability);
+            }
+        }
+
+        delete_option(self::VERSION_OPTION);
+    }
 }
