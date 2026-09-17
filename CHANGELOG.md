@@ -29,6 +29,7 @@
 - Add Cart API v1 with variation-aware quick add and an accessible cart drawer backed exclusively by WooCommerce Store API cart/session/totals truth.
 - Add cart drawer extension slots/events, quantity/remove operations, loading/error states and native Woo link/form fallbacks without embedding customer nonces in cacheable markup.
 - Add capability-protected module enable/disable management with preserved extension preferences, dependency/runtime status visibility and shared Module API integration.
+- Add bounded, schema-versioned settings import/export for merchant module preferences without exporting secrets, runtime metadata or arbitrary options.
 
 ## 0.1.4 - 2026-09-15
 

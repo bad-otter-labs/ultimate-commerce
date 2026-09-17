@@ -50,10 +50,12 @@ function ucAssert(bool $condition, string $message): void
 
 require_once __DIR__ . '/../packages/ultimate-commerce-for-woocommerce/src/Security/Capabilities.php';
 require_once __DIR__ . '/../packages/ultimate-commerce-for-woocommerce/src/Admin/ModulesPage.php';
+require_once __DIR__ . '/../packages/ultimate-commerce-for-woocommerce/src/Admin/SettingsPage.php';
 require_once __DIR__ . '/../packages/ultimate-commerce-for-woocommerce/src/Admin/AdminMenu.php';
 
 use BadOtter\UltimateCommerce\Admin\AdminMenu;
 use BadOtter\UltimateCommerce\Admin\ModulesPage;
+use BadOtter\UltimateCommerce\Admin\SettingsPage;
 use BadOtter\UltimateCommerce\Security\Capabilities;
 
 AdminMenu::hooks();
@@ -71,7 +73,7 @@ ucAssert($root['menuTitle'] === 'Ultimate Commerce', 'Top-level menu title must 
 ucAssert($root['capability'] === Capabilities::VIEW_DIAGNOSTICS, 'Top-level menu must use the UC diagnostics capability.');
 ucAssert($root['iconUrl'] === 'dashicons-store', 'Top-level menu must use the store icon.');
 
-ucAssert(count($ucTestSubmenus) === 3, 'Free must register Overview, Modules and Diagnostics submenus.');
+ucAssert(count($ucTestSubmenus) === 4, 'Free must register Overview, Modules, Settings and Diagnostics submenus.');
 foreach ($ucTestSubmenus as $submenu) {
     ucAssert($submenu['parentSlug'] === AdminMenu::ROOT_SLUG, 'All Free admin pages must live under the UC root menu.');
     ucAssert($submenu['parentSlug'] !== 'woocommerce', 'UC admin pages must not live under WooCommerce.');
@@ -81,8 +83,10 @@ ucAssert($ucTestSubmenus[0]['menuSlug'] === AdminMenu::ROOT_SLUG, 'Overview must
 ucAssert($ucTestSubmenus[0]['capability'] === Capabilities::VIEW_DIAGNOSTICS, 'Overview must remain readable through the diagnostics capability.');
 ucAssert($ucTestSubmenus[1]['menuSlug'] === ModulesPage::SLUG, 'Modules must use its stable UC submenu slug.');
 ucAssert($ucTestSubmenus[1]['capability'] === Capabilities::MANAGE_SETTINGS, 'Module management must require the exact UC settings capability.');
-ucAssert($ucTestSubmenus[2]['menuSlug'] === AdminMenu::DIAGNOSTICS_SLUG, 'Diagnostics must use its stable UC submenu slug.');
-ucAssert($ucTestSubmenus[2]['capability'] === Capabilities::VIEW_DIAGNOSTICS, 'Diagnostics must remain readable through the diagnostics capability.');
+ucAssert($ucTestSubmenus[2]['menuSlug'] === SettingsPage::SLUG, 'Settings transfer must use its stable UC submenu slug.');
+ucAssert($ucTestSubmenus[2]['capability'] === Capabilities::MANAGE_SETTINGS, 'Settings transfer must require the exact UC settings capability.');
+ucAssert($ucTestSubmenus[3]['menuSlug'] === AdminMenu::DIAGNOSTICS_SLUG, 'Diagnostics must use its stable UC submenu slug.');
+ucAssert($ucTestSubmenus[3]['capability'] === Capabilities::VIEW_DIAGNOSTICS, 'Diagnostics must remain readable through the diagnostics capability.');
 
 ucAssert(count($ucTestFiredActions) === 1, 'Admin extension action must fire once.');
 ucAssert($ucTestFiredActions[0][0] === 'uc_admin_menu', 'Public admin extension action is missing.');

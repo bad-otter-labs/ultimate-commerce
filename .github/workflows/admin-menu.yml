@@ -24,6 +24,7 @@ jobs:
           php -l packages/ultimate-commerce-for-woocommerce/src/Admin/AdminMenu.php
           php -l packages/ultimate-commerce-for-woocommerce/src/Admin/OverviewPage.php
           php -l packages/ultimate-commerce-for-woocommerce/src/Admin/ModulesPage.php
+          php -l packages/ultimate-commerce-for-woocommerce/src/Admin/SettingsPage.php
           php -l packages/ultimate-commerce-for-woocommerce/src/Admin/DiagnosticsPage.php
           php -l tests/admin-menu-structure.php
           php tests/admin-menu-structure.php
@@ -35,6 +36,7 @@ jobs:
           menu = (root / 'src/Admin/AdminMenu.php').read_text()
           diagnostics = (root / 'src/Admin/DiagnosticsPage.php').read_text()
           modules = (root / 'src/Admin/ModulesPage.php').read_text()
+          settings = (root / 'src/Admin/SettingsPage.php').read_text()
           plugin = (root / 'src/Plugin.php').read_text()
 
           if "add_menu_page(" not in menu:
@@ -47,10 +49,10 @@ jobs:
               raise SystemExit('Ultimate Commerce admin pages must not be nested under WooCommerce')
           if 'Capabilities::VIEW_DIAGNOSTICS' not in menu or 'Capabilities::VIEW_DIAGNOSTICS' not in diagnostics:
               raise SystemExit('UC read-only admin pages must preserve dedicated diagnostics capability checks')
-          if 'ModulesPage::SLUG' not in menu or 'Capabilities::MANAGE_SETTINGS' not in menu:
-              raise SystemExit('UC Modules must be a dedicated settings-capability submenu')
-          if 'Capabilities::MANAGE_SETTINGS' not in modules:
-              raise SystemExit('UC Modules page callback must enforce the exact settings capability')
+          if 'ModulesPage::SLUG' not in menu or 'SettingsPage::SLUG' not in menu or 'Capabilities::MANAGE_SETTINGS' not in menu:
+              raise SystemExit('UC merchant settings pages must be dedicated settings-capability submenus')
+          if 'Capabilities::MANAGE_SETTINGS' not in modules or 'Capabilities::MANAGE_SETTINGS' not in settings:
+              raise SystemExit('UC settings page callbacks must enforce the exact settings capability')
           if 'AdminMenu::hooks();' not in plugin:
               raise SystemExit('Plugin bootstrap must own admin navigation through AdminMenu')
           if 'DiagnosticsPage::hooks();' in plugin:
