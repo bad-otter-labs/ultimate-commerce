@@ -1,0 +1,101 @@
+name: Validate Storefront Catalogue Contract
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  storefront-contract:
+    # Repository is private during development. Move untrusted public PRs to an
+    # isolated/GitHub-hosted runner before changing visibility.
+    runs-on: [self-hosted, Linux, X64, badotter, ci]
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Validate storefront source and syntax
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -f packages/ultimate-commerce-for-woocommerce/src/Storefront/Catalog.php
+          test -f packages/ultimate-commerce-for-woocommerce/src/Storefront/CatalogQuery.php
+          test -f packages/ultimate-commerce-for-woocommerce/src/Storefront/CatalogFilterRegistry.php
+          test -f packages/ultimate-commerce-for-woocommerce/src/Storefront/ProductCardViewModel.php
+          test -f packages/ultimate-commerce-for-woocommerce/src/Storefront/ProductCardRenderer.php
+          test -f packages/ultimate-commerce-for-woocommerce/src/Storefront/VariationViewModel.php
+          test -f packages/ultimate-commerce-for-woocommerce/assets/js/variation-controls.js
+          test -f docs/storefront-catalogue-contract-v1.md
+          test -f tests/storefront-catalogue-contract.php
+          test -f tests/storefront-filter-extension-boundary.php
+          find packages/ultimate-commerce-for-woocommerce/src/Storefront -type f -name '*.php' -print0 | xargs -0 -n1 php -l
+          php -l tests/storefront-catalogue-contract.php
+          php -l tests/storefront-filter-extension-boundary.php
+          php tests/storefront-catalogue-contract.php
+          php tests/storefront-filter-extension-boundary.php
+
+      - name: Validate public contract and query boundaries
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          from pathlib import Path
+          root = Path('packages/ultimate-commerce-for-woocommerce')
+          entry = (root / 'ultimate-commerce-for-woocommerce.php').read_text()
+          query = (root / 'src/Storefront/CatalogQuery.php').read_text()
+          filters = (root / 'src/Storefront/CatalogFilterRegistry.php').read_text()
+          card = (root / 'src/Storefront/ProductCardViewModel.php').read_text()
+          variation = (root / 'src/Storefront/VariationViewModel.php').read_text()
+          renderer = (root / 'src/Storefront/ProductCardRenderer.php').read_text()
+          controller = (root / 'assets/js/variation-controls.js').read_text()
+          docs = Path('docs/storefront-catalogue-contract-v1.md').read_text()
+
+          if "ULTIMATE_COMMERCE_STOREFRONT_API_VERSION', '1.0.0'" not in entry:
+              raise SystemExit('Storefront API v1 constant is missing')
+          if 'StoreApi\\Utilities\\ProductQuery' not in query or 'get_results($request)' not in query:
+              raise SystemExit('Catalogue must delegate bounded product querying to Woo Store API ProductQuery')
+          if '$wpdb' in query or 'meta_query' in query:
+              raise SystemExit('UC catalogue query must not implement a direct SQL/product-meta query path')
+          if "'uc_catalog_public_cache_safe'" not in query or "'public_cache_safe' => $publicCacheSafe" not in query:
+              raise SystemExit('Public catalogue caching must remain explicit opt-in')
+          for marker in ('MAX_PER_PAGE = 48', 'MAX_PAGE = 500', 'MAX_SELECTED_PER_FILTER = 12'):
+              if marker not in filters:
+                  raise SystemExit(f'Missing filter/query bound: {marker}')
+          if "apply_filters('uc_catalog_filter_state'" not in filters or 'return self::validateState(' not in filters:
+              raise SystemExit('Public filter state must be revalidated after extension hooks')
+          if 'validateSortDefinitions' not in filters:
+              raise SystemExit('Extension sort definitions must remain bounded and normalized')
+          if 'post_parent__in' not in variation or 'MAX_VARIATIONS_PER_PAGE = 1000' not in variation:
+              raise SystemExit('Variation catalogue state must use one bounded batched child query')
+          if 'get_variation_attributes(' in variation:
+              raise SystemExit('Catalogue rendering must not use lazy per-product get_variation_attributes()')
+          if 'get_attributes()' not in variation or 'WC_Product_Attribute' not in variation:
+              raise SystemExit('Variation attributes must derive from parent WC_Product_Attribute declarations')
+          if 'sanitize_title($rawName)' not in variation:
+              raise SystemExit('Local/custom variation attribute keys must use Woo-compatible sanitized titles')
+          if "apply_filters('uc_variation_swatch_data'" not in variation:
+              raise SystemExit('Swatch state must expose the public adapter filter')
+          if 'availability_complete' not in variation or 'truncated' not in variation:
+              raise SystemExit('Bounded variation state must disclose incomplete availability')
+          if 'uc_product_view_model' not in card or 'uc_product_card_view_model' not in card:
+              raise SystemExit('Historical product bridge and new card hook must coexist')
+          if 'uc_variation_view_model' not in variation or 'uc_variation_product_state' not in variation:
+              raise SystemExit('Historical variation bridge and new product-state hook must coexist')
+          if 'radiogroup' not in renderer or 'aria-checked' not in renderer or 'aria-disabled' not in renderer:
+              raise SystemExit('Renderer must expose keyboard/screen-reader variation semantics')
+          for native_field in ('name="add-to-cart"', 'name="product_id"', 'name="variation_id"', 'name="quantity"'):
+              if native_field not in renderer:
+                  raise SystemExit(f'Variable renderer must hand off through Woo native form field {native_field}')
+          for marker in ('uc:variation-change', 'ArrowLeft', 'ArrowRight', 'variation_id'):
+              if marker not in controller:
+                  raise SystemExit(f'Progressive variation controller missing {marker}')
+          for required in ('Historical bridge migration', 'UC-disabled behaviour', 'WooCommerce Store API', 'progressively enhances', 'uc_variation_swatch_data', 'uc_catalog_public_cache_safe'):
+              if required not in docs:
+                  raise SystemExit(f'Documentation missing {required}')
+          print('Storefront catalogue public contract validated')
+          PY
