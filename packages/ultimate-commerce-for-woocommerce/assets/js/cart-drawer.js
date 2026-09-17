@@ -474,8 +474,8 @@
             var controls = Array.prototype.slice.call(form.querySelectorAll('[data-uc-attribute]'));
             var variation = [];
 
-            Array.prototype.forEach.call(form.querySelectorAll('[data-uc-attribute-input]'), function (input) {
-                var key = String(input.getAttribute('data-uc-attribute-input') || '').trim();
+            Array.prototype.forEach.call(form.querySelectorAll('[data-uc-native-attribute-input]'), function (input) {
+                var key = String(input.getAttribute('data-uc-native-attribute-input') || '').trim();
                 var value = String(input.value || '').trim();
                 if (!key || !value) {
                     return;
