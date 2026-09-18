@@ -68,12 +68,13 @@ final class ProductCardRenderer
             wp_register_script(
                 self::VARIATION_SCRIPT_HANDLE,
                 ULTIMATE_COMMERCE_URL . 'assets/js/variation-controls.js',
-                array(),
+                array('wp-i18n'),
                 ULTIMATE_COMMERCE_VERSION,
                 true
             );
         }
         wp_enqueue_script(self::VARIATION_SCRIPT_HANDLE);
+        wp_set_script_translations(self::VARIATION_SCRIPT_HANDLE, 'ultimate-commerce-for-woocommerce', ULTIMATE_COMMERCE_DIR . 'languages');
     }
 
     private static function media(array $view): void

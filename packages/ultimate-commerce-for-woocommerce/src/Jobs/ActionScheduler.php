@@ -17,20 +17,20 @@ final class ActionScheduler
     public static function schedule(string $job, array $args = array(), int $timestamp = 0, bool $unique = true)
     {
         if (!self::validJob($job)) {
-            return self::error('uc_job_name_invalid', 'Background job name is invalid.');
+            return self::error('uc_job_name_invalid', __('Background job name is invalid.', 'ultimate-commerce-for-woocommerce'));
         }
         $argsProblem = self::validateArgs($args);
         if ($argsProblem instanceof \WP_Error) {
             return $argsProblem;
         }
         if (!function_exists('as_schedule_single_action')) {
-            return self::error('uc_action_scheduler_unavailable', 'Action Scheduler is unavailable.');
+            return self::error('uc_action_scheduler_unavailable', __('Action Scheduler is unavailable.', 'ultimate-commerce-for-woocommerce'));
         }
 
         $now = time();
         $timestamp = $timestamp > 0 ? $timestamp : $now;
         if ($timestamp < $now - 60 || $timestamp > $now + self::MAX_SCHEDULE_AHEAD) {
-            return self::error('uc_job_schedule_invalid', 'Background job schedule is outside the allowed range.');
+            return self::error('uc_job_schedule_invalid', __('Background job schedule is outside the allowed range.', 'ultimate-commerce-for-woocommerce'));
         }
         $timestamp = max($now, $timestamp);
         $hook = self::hook($job);
@@ -41,7 +41,7 @@ final class ActionScheduler
 
         $actionId = as_schedule_single_action($timestamp, $hook, $args, self::GROUP, $unique);
         if (!is_int($actionId) || $actionId <= 0) {
-            return self::error('uc_job_schedule_failed', 'Background job could not be scheduled.');
+            return self::error('uc_job_schedule_failed', __('Background job could not be scheduled.', 'ultimate-commerce-for-woocommerce'));
         }
 
         return true;
@@ -54,7 +54,7 @@ final class ActionScheduler
     {
         $policy = $policy ?? new RetryPolicy();
         if (!$policy->canRetry($failedAttempt)) {
-            return self::error('uc_job_retry_exhausted', 'Background job retry limit has been reached.');
+            return self::error('uc_job_retry_exhausted', __('Background job retry limit has been reached.', 'ultimate-commerce-for-woocommerce'));
         }
 
         $args['uc_attempt'] = $failedAttempt + 1;
@@ -77,21 +77,21 @@ final class ActionScheduler
     private static function validateArgs(array $args)
     {
         if (count($args) > self::MAX_ARGS) {
-            return self::error('uc_job_args_too_large', 'Background job contains too many arguments.');
+            return self::error('uc_job_args_too_large', __('Background job contains too many arguments.', 'ultimate-commerce-for-woocommerce'));
         }
 
         foreach ($args as $key => $value) {
             if (!is_string($key) || !preg_match('/^[a-z][a-z0-9_]{0,63}$/', $key)) {
-                return self::error('uc_job_args_invalid', 'Background job argument name is invalid.');
+                return self::error('uc_job_args_invalid', __('Background job argument name is invalid.', 'ultimate-commerce-for-woocommerce'));
             }
             if (self::sensitiveOrPersonalKey($key)) {
-                return self::error('uc_job_args_sensitive', 'Background jobs must carry identifiers rather than credentials or personal-data snapshots.');
+                return self::error('uc_job_args_sensitive', __('Background jobs must carry identifiers rather than credentials or personal-data snapshots.', 'ultimate-commerce-for-woocommerce'));
             }
             if ($value !== null && !is_scalar($value)) {
-                return self::error('uc_job_args_invalid', 'Background job arguments must be scalar identifiers or flags.');
+                return self::error('uc_job_args_invalid', __('Background job arguments must be scalar identifiers or flags.', 'ultimate-commerce-for-woocommerce'));
             }
             if (is_string($value) && strlen($value) > self::MAX_STRING_ARG) {
-                return self::error('uc_job_args_too_large', 'Background job string argument is too large.');
+                return self::error('uc_job_args_too_large', __('Background job string argument is too large.', 'ultimate-commerce-for-woocommerce'));
             }
         }
 
@@ -105,6 +105,6 @@ final class ActionScheduler
 
     private static function error(string $code, string $message): \WP_Error
     {
-        return new \WP_Error($code, __($message, 'ultimate-commerce-for-woocommerce'));
+        return new \WP_Error($code, $message);
     }
 }

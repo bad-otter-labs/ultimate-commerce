@@ -1,0 +1,49 @@
+name: Validate Ultimate Commerce Translation Readiness
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  translation-readiness:
+    runs-on: [self-hosted, Linux, X64, badotter, ci]
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020
+        with:
+          node-version: '24'
+
+      - name: Validate PHP syntax
+        shell: bash
+        run: |
+          set -euo pipefail
+          find packages/ultimate-commerce-for-woocommerce/src -name '*.php' -print0 | xargs -0 -n1 php -l >/dev/null
+          php -l packages/ultimate-commerce-for-woocommerce/ultimate-commerce-for-woocommerce.php >/dev/null
+
+      - name: Validate storefront controller syntax
+        shell: bash
+        run: |
+          set -euo pipefail
+          node --check packages/ultimate-commerce-for-woocommerce/assets/js/cart-drawer.js
+          node --check packages/ultimate-commerce-for-woocommerce/assets/js/variation-controls.js
+
+      - name: Validate translation and integration contract
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 tests/translation-readiness.py
+          if grep -RniE 'FishingClothing|fishingclothing\.co\.uk' \
+            docs/theme-store-integration.md \
+            docs/translation-readiness.md; then
+            echo 'Store-specific references are forbidden in reusable translation/integration docs.' >&2
+            exit 1
+          fi

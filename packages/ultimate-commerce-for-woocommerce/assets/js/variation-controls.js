@@ -1,6 +1,8 @@
 ( function () {
     'use strict';
 
+    const __ = wp.i18n.__;
+
     const FORM_SELECTOR = '[data-uc-variation-form="1"]';
     const OPTION_SELECTOR = '.uc-variation-option';
 
@@ -154,8 +156,8 @@
         if ( submit ) {
             submit.disabled = ! usable;
             submit.textContent = usable
-                ? String( data.labels?.add_to_cart || 'Add to cart' )
-                : String( variation ? ( data.labels?.unavailable || 'Unavailable' ) : ( data.labels?.select_options || 'Select options' ) );
+                ? String( data.labels?.add_to_cart || __( 'Add to cart', 'ultimate-commerce-for-woocommerce' ) )
+                : String( variation ? ( data.labels?.unavailable || __( 'Unavailable', 'ultimate-commerce-for-woocommerce' ) ) : ( data.labels?.select_options || __( 'Select options', 'ultimate-commerce-for-woocommerce' ) ) );
         }
         updatePrice( price, variation );
         setImage( form, variation?.media || null, variation ? '' : swatchImage );

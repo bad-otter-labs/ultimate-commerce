@@ -15,7 +15,7 @@ final class EncryptedOptionSecretStore implements SecretStore
     public function get(string $key)
     {
         if (!self::validKey($key)) {
-            return self::error('uc_secret_key_invalid', 'Secret key is invalid.');
+            return self::error('uc_secret_key_invalid', __('Secret key is invalid.', 'ultimate-commerce-for-woocommerce'));
         }
 
         $values = get_option(self::OPTION, array());
@@ -23,7 +23,7 @@ final class EncryptedOptionSecretStore implements SecretStore
             return null;
         }
         if (!is_string($values[$key]) || $values[$key] === '') {
-            return self::error('uc_secret_corrupt', 'Stored secret data is invalid.');
+            return self::error('uc_secret_corrupt', __('Stored secret data is invalid.', 'ultimate-commerce-for-woocommerce'));
         }
 
         return $this->decrypt($key, $values[$key]);
@@ -33,10 +33,10 @@ final class EncryptedOptionSecretStore implements SecretStore
     public function put(string $key, string $value)
     {
         if (!self::validKey($key)) {
-            return self::error('uc_secret_key_invalid', 'Secret key is invalid.');
+            return self::error('uc_secret_key_invalid', __('Secret key is invalid.', 'ultimate-commerce-for-woocommerce'));
         }
         if ($value === '') {
-            return self::error('uc_secret_value_invalid', 'Secret value must not be empty.');
+            return self::error('uc_secret_value_invalid', __('Secret value must not be empty.', 'ultimate-commerce-for-woocommerce'));
         }
 
         $encrypted = $this->encrypt($key, $value);
@@ -53,7 +53,7 @@ final class EncryptedOptionSecretStore implements SecretStore
         if (!update_option(self::OPTION, $values, false)) {
             $stored = get_option(self::OPTION, array());
             if (!is_array($stored) || ($stored[$key] ?? null) !== $encrypted) {
-                return self::error('uc_secret_store_write_failed', 'The secret could not be stored.');
+                return self::error('uc_secret_store_write_failed', __('The secret could not be stored.', 'ultimate-commerce-for-woocommerce'));
             }
         }
 
@@ -100,15 +100,15 @@ final class EncryptedOptionSecretStore implements SecretStore
                 $tag = '';
                 $ciphertext = openssl_encrypt($value, 'aes-256-gcm', $material, OPENSSL_RAW_DATA, $nonce, $tag, $aad, 16);
                 if (!is_string($ciphertext) || strlen($tag) !== 16) {
-                    return self::error('uc_secret_crypto_failed', 'Secret encryption failed.');
+                    return self::error('uc_secret_crypto_failed', __('Secret encryption failed.', 'ultimate-commerce-for-woocommerce'));
                 }
                 return $this->encodeEnvelope('aes-256-gcm', $nonce, $tag . $ciphertext);
             }
         } catch (\Throwable $exception) {
-            return self::error('uc_secret_crypto_failed', 'Secret encryption failed.');
+            return self::error('uc_secret_crypto_failed', __('Secret encryption failed.', 'ultimate-commerce-for-woocommerce'));
         }
 
-        return self::error('uc_secret_crypto_unavailable', 'No supported secret encryption backend is available.');
+        return self::error('uc_secret_crypto_unavailable', __('No supported secret encryption backend is available.', 'ultimate-commerce-for-woocommerce'));
     }
 
     /** @return string|\WP_Error */
@@ -117,14 +117,14 @@ final class EncryptedOptionSecretStore implements SecretStore
         $decoded = base64_decode($stored, true);
         $envelope = is_string($decoded) ? json_decode($decoded, true) : null;
         if (!is_array($envelope) || (int) ($envelope['v'] ?? 0) !== self::VERSION) {
-            return self::error('uc_secret_corrupt', 'Stored secret data is invalid.');
+            return self::error('uc_secret_corrupt', __('Stored secret data is invalid.', 'ultimate-commerce-for-woocommerce'));
         }
 
         $algorithm = (string) ($envelope['alg'] ?? '');
         $nonce = base64_decode((string) ($envelope['nonce'] ?? ''), true);
         $ciphertext = base64_decode((string) ($envelope['ciphertext'] ?? ''), true);
         if (!is_string($nonce) || !is_string($ciphertext)) {
-            return self::error('uc_secret_corrupt', 'Stored secret data is invalid.');
+            return self::error('uc_secret_corrupt', __('Stored secret data is invalid.', 'ultimate-commerce-for-woocommerce'));
         }
 
         $material = $this->keyMaterial();
@@ -136,26 +136,26 @@ final class EncryptedOptionSecretStore implements SecretStore
         try {
             if ($algorithm === 'xchacha20poly1305' && function_exists('sodium_crypto_aead_xchacha20poly1305_ietf_decrypt')) {
                 if (strlen($nonce) !== SODIUM_CRYPTO_AEAD_XCHACHA20POLY1305_IETF_NPUBBYTES) {
-                    return self::error('uc_secret_corrupt', 'Stored secret nonce is invalid.');
+                    return self::error('uc_secret_corrupt', __('Stored secret nonce is invalid.', 'ultimate-commerce-for-woocommerce'));
                 }
                 $plain = sodium_crypto_aead_xchacha20poly1305_ietf_decrypt($ciphertext, $aad, $nonce, $material);
-                return is_string($plain) ? $plain : self::error('uc_secret_decrypt_failed', 'The secret could not be decrypted.');
+                return is_string($plain) ? $plain : self::error('uc_secret_decrypt_failed', __('The secret could not be decrypted.', 'ultimate-commerce-for-woocommerce'));
             }
 
             if ($algorithm === 'aes-256-gcm' && function_exists('openssl_decrypt')) {
                 if (strlen($nonce) !== 12 || strlen($ciphertext) < 17) {
-                    return self::error('uc_secret_corrupt', 'Stored secret data is invalid.');
+                    return self::error('uc_secret_corrupt', __('Stored secret data is invalid.', 'ultimate-commerce-for-woocommerce'));
                 }
                 $tag = substr($ciphertext, 0, 16);
                 $cipher = substr($ciphertext, 16);
                 $plain = openssl_decrypt($cipher, 'aes-256-gcm', $material, OPENSSL_RAW_DATA, $nonce, $tag, $aad);
-                return is_string($plain) ? $plain : self::error('uc_secret_decrypt_failed', 'The secret could not be decrypted.');
+                return is_string($plain) ? $plain : self::error('uc_secret_decrypt_failed', __('The secret could not be decrypted.', 'ultimate-commerce-for-woocommerce'));
             }
         } catch (\Throwable $exception) {
-            return self::error('uc_secret_decrypt_failed', 'The secret could not be decrypted.');
+            return self::error('uc_secret_decrypt_failed', __('The secret could not be decrypted.', 'ultimate-commerce-for-woocommerce'));
         }
 
-        return self::error('uc_secret_crypto_unavailable', 'The encryption backend for this secret is unavailable.');
+        return self::error('uc_secret_crypto_unavailable', __('The encryption backend for this secret is unavailable.', 'ultimate-commerce-for-woocommerce'));
     }
 
     /** @return string|\WP_Error */
@@ -163,7 +163,7 @@ final class EncryptedOptionSecretStore implements SecretStore
     {
         $salt = (string) wp_salt('secure_auth');
         if ($salt === '') {
-            return self::error('uc_secret_key_unavailable', 'WordPress secret key material is unavailable.');
+            return self::error('uc_secret_key_unavailable', __('WordPress secret key material is unavailable.', 'ultimate-commerce-for-woocommerce'));
         }
         return hash_hkdf('sha256', $salt, 32, 'ultimate-commerce-secret-store-v1');
     }
@@ -178,7 +178,7 @@ final class EncryptedOptionSecretStore implements SecretStore
             'ciphertext' => base64_encode($ciphertext),
         ));
         if (!is_string($json)) {
-            return self::error('uc_secret_crypto_failed', 'Secret encryption metadata could not be encoded.');
+            return self::error('uc_secret_crypto_failed', __('Secret encryption metadata could not be encoded.', 'ultimate-commerce-for-woocommerce'));
         }
         return base64_encode($json);
     }
@@ -190,6 +190,6 @@ final class EncryptedOptionSecretStore implements SecretStore
 
     private static function error(string $code, string $message): \WP_Error
     {
-        return new \WP_Error($code, __($message, 'ultimate-commerce-for-woocommerce'));
+        return new \WP_Error($code, $message);
     }
 }

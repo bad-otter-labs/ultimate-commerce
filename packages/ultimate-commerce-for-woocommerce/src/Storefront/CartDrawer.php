@@ -123,7 +123,7 @@ final class CartDrawer
             wp_register_script(
                 self::SCRIPT_HANDLE,
                 ULTIMATE_COMMERCE_URL . 'assets/js/cart-drawer.js',
-                array(),
+                array('wp-i18n'),
                 ULTIMATE_COMMERCE_VERSION,
                 true
             );
@@ -138,6 +138,7 @@ final class CartDrawer
         }
 
         wp_enqueue_script(self::SCRIPT_HANDLE);
+        wp_set_script_translations(self::SCRIPT_HANDLE, 'ultimate-commerce-for-woocommerce', ULTIMATE_COMMERCE_DIR . 'languages');
         wp_enqueue_style(self::STYLE_HANDLE);
     }
 

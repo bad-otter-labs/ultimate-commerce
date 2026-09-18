@@ -25,10 +25,10 @@ final class OptionIdempotencyStore implements IdempotencyStore
     public function claim(string $scope, string $key, int $ttlSeconds = 86400)
     {
         if (!self::validScope($scope) || !self::validKey($key)) {
-            return self::error('uc_idempotency_key_invalid', 'Idempotency scope or key is invalid.');
+            return self::error('uc_idempotency_key_invalid', __('Idempotency scope or key is invalid.', 'ultimate-commerce-for-woocommerce'));
         }
         if ($ttlSeconds < self::MIN_TTL || $ttlSeconds > self::MAX_TTL) {
-            return self::error('uc_idempotency_ttl_invalid', 'Idempotency lifetime is outside the allowed range.');
+            return self::error('uc_idempotency_ttl_invalid', __('Idempotency lifetime is outside the allowed range.', 'ultimate-commerce-for-woocommerce'));
         }
 
         $option = self::optionName($scope, $key);
@@ -44,7 +44,7 @@ final class OptionIdempotencyStore implements IdempotencyStore
         try {
             $lease = bin2hex(random_bytes(16));
         } catch (\Throwable $exception) {
-            return self::error('uc_idempotency_entropy', 'Idempotency entropy is unavailable.');
+            return self::error('uc_idempotency_entropy', __('Idempotency entropy is unavailable.', 'ultimate-commerce-for-woocommerce'));
         }
 
         $expires = $now + $ttlSeconds;
@@ -59,7 +59,7 @@ final class OptionIdempotencyStore implements IdempotencyStore
             if (is_array($raced) && (int) ($raced['expires'] ?? 0) > $now) {
                 return self::publicRecord($raced);
             }
-            return self::error('uc_idempotency_claim_failed', 'Idempotency claim could not be established.');
+            return self::error('uc_idempotency_claim_failed', __('Idempotency claim could not be established.', 'ultimate-commerce-for-woocommerce'));
         }
 
         if (function_exists('wp_schedule_single_event')) {
@@ -168,6 +168,6 @@ final class OptionIdempotencyStore implements IdempotencyStore
 
     private static function error(string $code, string $message): \WP_Error
     {
-        return new \WP_Error($code, __($message, 'ultimate-commerce-for-woocommerce'));
+        return new \WP_Error($code, $message);
     }
 }
