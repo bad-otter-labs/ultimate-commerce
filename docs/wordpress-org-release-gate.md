@@ -41,11 +41,21 @@ A passing Plugin Check job is necessary but not sufficient for release. Manual r
 
 The scanner is a targeted release safeguard, not a replacement for organisation-level secret scanning. Before public launch, GitHub/organisation secret-scanning controls should also be enabled where available.
 
-## WPCS / static analysis
+## WPCS, compatibility and static analysis
 
-Plugin Check's plugin-review PHPCS checks provide an immediate WordPress review baseline. A dedicated repository-level WPCS/PHPCompatibility/static-analysis toolchain remains a Phase 1 gate to add and pin before WordPress.org submission rather than allowing dependency versions to float silently in CI.
+The repository-level PHP quality toolchain is pinned by `composer.lock` and runs as a blocking pull-request/main gate:
 
-Until that toolchain is pinned, this document must not be interpreted as saying the complete Phase 1 WordPress.org engineering gate is finished.
+- WPCS 3.4.1 on PHPCS 3.13.6 using a review-focused `WordPress-Extra` ruleset;
+- PHPCompatibilityWP 2.1.8 with the declared PHP support range `8.1-`;
+- PHPStan 2.2.14 at level 2 with WordPress/WooCommerce stubs;
+- `composer audit --locked` for the exact development dependency graph;
+- `scripts/check-quality-dependency-licenses.py` for dependency licence and runtime-package dependency boundaries.
+
+The WPCS ruleset deliberately excludes repository-wide mechanical formatting/naming churn such as tabs, snake_case local variables and brace layout. WordPress security, database, i18n, escaping, API and other review-oriented sniffs remain blocking.
+
+Two admin handlers use the shared `Csrf::require()` contract rather than the nonce helper patterns PHPCS can infer statically; those paths have dedicated request-security regressions. Base64 exclusions are limited to the signed-token/encrypted-secret implementations where base64 is transport encoding rather than obfuscation.
+
+See `docs/php-quality-gate.md` for the exact boundary.
 
 ## Public-repository runner transition
 
@@ -70,7 +80,7 @@ Before the first WordPress.org submission/release:
 - plugin/readme/version/stable-tag metadata is aligned;
 - Plugin Check is green on the exact release package;
 - pinned WPCS/PHPCompatibility/static analysis is green;
-- dependency/secret scans are green;
+- locked dependency advisory/licence checks and package secret scans are green;
 - HPOS and claimed Cart/Checkout Blocks compatibility is tested;
 - realistic upgrade from the 0.1.x migration fixture is tested;
 - no duplicate active plugin copy is created during identity migration;
