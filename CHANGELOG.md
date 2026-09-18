@@ -36,6 +36,7 @@
 - Document the supported theme/store integration boundary, public Storefront/Cart contracts and UC-disabled WooCommerce fallbacks without promoting internal classes or theme overrides to stable APIs.
 - Add Wishlist API v1 with bounded signed-in persistence, browser-local guest state, authenticated merge, Woo Store API-backed display, privacy export/erase and explicit uninstall purge integration.
 - Add Recently Viewed API v1 with bounded browser-local product-ID history, cache-safe single-product tracking, live Woo Store API rendering and clear-history controls.
+- Add Account/Order API v1 with authenticated account summaries, HPOS-safe Woo order view models, strict customer ownership and public extension hooks.
 
 ## 0.1.4 - 2026-09-15
 

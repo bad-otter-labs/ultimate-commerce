@@ -80,6 +80,12 @@ Wishlist API v1 is documented in `docs/wishlist-contract-v1.md`. Themes may rend
 
 Recently Viewed API v1 (`ULTIMATE_COMMERCE_RECENTLY_VIEWED_API_VERSION`) is documented in `docs/recently-viewed-contract-v1.md`. Merchants may place `[ultimate_commerce_recently_viewed]`; the controller stores only bounded Woo product IDs in browser local storage and resolves display data live from WooCommerce Store API. The browser event `uc:recently-viewed-updated` exposes the current ID list to presentation integrations without creating server-side browsing history.
 
+## Account and orders
+
+Account API v1 (`ULTIMATE_COMMERCE_ACCOUNT_API_VERSION`) is documented in `docs/account-order-contract-v1.md`. Themes and extensions may consume `AccountViewModel::forCurrentUser()` and `OrderViewModel::fromOrder()` only for authenticated customer context. Order access is re-authorised server-side on every model build and remains backed by WooCommerce CRUD/query APIs.
+
+Presentation integrations may extend `uc_account_view_model` and `uc_order_view_model`, or consume the corresponding `*_ready` actions emitted on WooCommerce account surfaces. Do not cache these models publicly or infer guest-order ownership.
+
 ## Module and admin extensions
 
 Reusable extensions register modules through Module API v1 and `uc_register_modules`; see `docs/module-extension-contract-v1.md`.

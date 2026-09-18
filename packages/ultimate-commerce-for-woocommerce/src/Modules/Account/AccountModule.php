@@ -2,6 +2,7 @@
 
 namespace BadOtter\UltimateCommerce\Modules\Account;
 
+use BadOtter\UltimateCommerce\Account\AccountHooks;
 use BadOtter\UltimateCommerce\Contracts\AbstractModule;
 use BadOtter\UltimateCommerce\Contracts\Module;
 
@@ -31,6 +32,7 @@ final class AccountModule extends AbstractModule
 
     public function register(): void
     {
+        AccountHooks::hooks();
         do_action('uc_account_ready', $this);
     }
 }

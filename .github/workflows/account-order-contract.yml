@@ -1,0 +1,34 @@
+name: Validate Ultimate Commerce Account and Order Contract
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  account-order-contract:
+    runs-on: [self-hosted, Linux, X64, badotter, ci]
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Validate account/order PHP syntax
+        shell: bash
+        run: |
+          set -euo pipefail
+          php -l packages/ultimate-commerce-for-woocommerce/src/Account/OrderViewModel.php >/dev/null
+          php -l packages/ultimate-commerce-for-woocommerce/src/Account/AccountViewModel.php >/dev/null
+          php -l packages/ultimate-commerce-for-woocommerce/src/Account/AccountHooks.php >/dev/null
+          php -l packages/ultimate-commerce-for-woocommerce/src/Modules/Account/AccountModule.php >/dev/null
+          php -l tests/account-order-contract.php >/dev/null
+
+      - name: Validate ownership and HPOS-safe presentation contract
+        shell: bash
+        run: |
+          set -euo pipefail
+          php tests/account-order-contract.php
