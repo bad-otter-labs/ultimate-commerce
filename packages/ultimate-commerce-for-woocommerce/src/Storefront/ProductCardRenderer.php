@@ -81,7 +81,8 @@ final class ProductCardRenderer
     {
         $primary = $view['media']['primary'] ?? null;
         $secondary = $view['media']['secondary'] ?? null;
-        echo '<a class="uc-product-card__media" href="' . esc_url((string) $view['url']) . '">';
+        $mediaLabel = (string) ($view['name'] ?? __('View product', 'ultimate-commerce-for-woocommerce'));
+        echo '<a class="uc-product-card__media" href="' . esc_url((string) $view['url']) . '" aria-label="' . esc_attr($mediaLabel) . '">';
         if (is_array($primary) && !empty($primary['src'])) {
             echo '<img class="uc-product-card__image uc-product-card__image--primary" src="' . esc_url((string) $primary['src']) . '" alt="' . esc_attr((string) ($primary['alt'] ?? '')) . '" loading="lazy"';
             if (!empty($primary['srcset'])) {
@@ -142,13 +143,29 @@ final class ProductCardRenderer
             $requestValue = $selectedValue;
             echo '<div class="uc-variation-control" role="radiogroup" aria-label="' . esc_attr((string) ($attribute['a11y']['label'] ?? $attribute['label'] ?? '')) . '" data-uc-attribute="' . esc_attr($attributeName) . '">';
             echo '<span class="uc-variation-control__label">' . esc_html((string) ($attribute['label'] ?? '')) . '</span>';
+            $tabStopValue = '';
+            foreach ((array) ($attribute['options'] ?? array()) as $candidate) {
+                if (empty($candidate['available'])) {
+                    continue;
+                }
+                $candidateValue = (string) ($candidate['value'] ?? '');
+                if (!empty($candidate['selected'])) {
+                    $tabStopValue = $candidateValue;
+                    break;
+                }
+                if ($tabStopValue === '') {
+                    $tabStopValue = $candidateValue;
+                }
+            }
+
             foreach ((array) ($attribute['options'] ?? array()) as $option) {
                 $optionValue = (string) ($option['value'] ?? '');
                 $optionRequestValue = (string) ($option['request_value'] ?? $optionValue);
                 if (!empty($option['selected'])) {
                     $requestValue = $optionRequestValue;
                 }
-                echo '<button type="button" class="uc-variation-option uc-variation-option--' . esc_attr((string) ($attribute['display'] ?? 'button')) . '" role="radio" aria-checked="' . esc_attr((string) ($option['a11y']['aria_checked'] ?? 'false')) . '" aria-disabled="' . esc_attr((string) ($option['a11y']['aria_disabled'] ?? 'false')) . '" data-uc-option="' . esc_attr($optionValue) . '" data-uc-request-value="' . esc_attr($optionRequestValue) . '"';
+                $tabIndex = $optionValue !== '' && $optionValue === $tabStopValue ? '0' : '-1';
+                echo '<button type="button" class="uc-variation-option uc-variation-option--' . esc_attr((string) ($attribute['display'] ?? 'button')) . '" role="radio" aria-checked="' . esc_attr((string) ($option['a11y']['aria_checked'] ?? 'false')) . '" aria-disabled="' . esc_attr((string) ($option['a11y']['aria_disabled'] ?? 'false')) . '" tabindex="' . esc_attr($tabIndex) . '" data-uc-option="' . esc_attr($optionValue) . '" data-uc-request-value="' . esc_attr($optionRequestValue) . '"';
                 if (!empty($option['swatch']['color'])) {
                     echo ' data-uc-swatch-color="' . esc_attr((string) $option['swatch']['color']) . '"';
                 }

@@ -58,6 +58,18 @@ Two admin handlers use the shared `Csrf::require()` contract rather than the non
 
 See `docs/php-quality-gate.md` for the exact boundary.
 
+## Accessibility baseline
+
+The blocking storefront accessibility workflow runs a real WordPress/WooCommerce browser fixture with pinned Playwright/axe tooling. It requires:
+
+- zero scoped axe violations for WCAG 2.0/2.1/2.2 A/AA tags on UC-owned storefront surfaces;
+- keyboard-operable variable-product radio controls with a roving tab stop;
+- modal cart initial focus, focus trapping, Escape close and focus restoration;
+- accessible Wishlist pressed state and dynamic Recently Viewed controls;
+- a committed npm lockfile, high-severity npm advisory audit and exact browser-tool licence/version validation.
+
+The baseline is automated release evidence, not a statement of full WCAG certification. See `docs/accessibility-baseline.md`.
+
 ## Public-repository runner transition
 
 Pull-request validation uses trust-aware runner routing. Same-repository branches, which require repository write access, may use the controlled Bad Otter validation runner. Any cross-repository/fork pull request is forced to the GitHub-hosted `ubuntu-latest` baseline and therefore cannot reach the persistent Bad Otter runner.
@@ -85,6 +97,7 @@ Before the first WordPress.org submission/release:
 - live compatibility matrix is green for WordPress 6.6.4 / WooCommerce 9.8.5 / PHP 8.1 and WordPress 7.1.1 / WooCommerce 11.1.0 / PHP 8.3;
 - HPOS is enabled through WooCommerce CLI in both matrix cases and claimed Cart/Checkout Blocks compatibility is confirmed through WooCommerce's feature registry;
 - a real Woo product/order and UC Account/Order view-model read path pass under HPOS, and the Woo Store API product route responds successfully;
+- live storefront accessibility baseline is green for scoped axe WCAG A/AA rules plus keyboard/focus interaction tests;
 - deterministic 0.1.4-to-canonical option/data migration fixture is green;
 - after the WordPress.org slug is accepted, the real plugin-basename handoff is tested on an installed 0.1.4 fixture;
 - no duplicate active plugin copy is created during that live identity migration;

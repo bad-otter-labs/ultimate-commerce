@@ -425,7 +425,7 @@
                 trigger.setAttribute('aria-expanded', 'true');
             });
             window.requestAnimationFrame(function () {
-                var close = drawer.querySelector('[data-uc-cart-close="1"]');
+                var close = drawer.querySelector('button[data-uc-cart-close="1"]');
                 (close || panel).focus();
             });
             loadCart(false).catch(function (error) {

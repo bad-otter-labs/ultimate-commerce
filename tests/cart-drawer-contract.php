@@ -39,6 +39,8 @@ $docs = uc_cart_test_read($root . '/docs/cart-drawer-contract-v1.md');
 
 uc_cart_assert_contains("define('ULTIMATE_COMMERCE_CART_API_VERSION', '1.0.0')", $entry, 'Cart API v1 marker is missing.');
 uc_cart_assert_contains('CartDrawer::hooks();', $module, 'Free Cart module must register the public drawer.');
+uc_cart_assert_contains("add_action('wp_enqueue_scripts', array(__CLASS__, 'maybeEnqueueAssets'), 20);", $drawer, 'Auto-rendered drawer assets must be enqueued before footer script printing.');
+uc_cart_assert_contains('self::enqueueAssets();', $drawer, 'Auto-render asset hook must enqueue the public controller/styles.');
 uc_cart_assert_contains("apply_filters('uc_cart_drawer_auto_render'", $drawer, 'Auto-render must be replaceable.');
 uc_cart_assert_contains("apply_filters('uc_cart_drawer_context'", $drawer, 'Drawer context extension filter is missing.');
 uc_cart_assert_contains("do_action('uc_cart_drawer_slot'", $drawer, 'Drawer slot action is missing.');
@@ -70,12 +72,14 @@ uc_cart_assert_contains("document.addEventListener('uc:cart-open'", $controller,
 uc_cart_assert_contains("document.addEventListener('uc:cart-refresh'", $controller, 'Public cart-refresh browser event is missing.');
 uc_cart_assert_contains("event.key === 'Escape'", $controller, 'Escape-to-close behavior is missing.');
 uc_cart_assert_contains("event.key !== 'Tab'", $controller, 'Focus-trap behavior is missing.');
+uc_cart_assert_contains("querySelector('button[data-uc-cart-close=\"1\"]')", $controller, 'Drawer initial focus must target the focusable close button, not the overlay.');
 
 uc_cart_assert_contains('data-uc-action="', $renderer, 'Product cards must expose simple quick-add action state.');
 uc_cart_assert_contains('data-uc-variation-form="1"', $renderer, 'Product cards must preserve variable form fallback markup.');
 uc_cart_assert_contains('data-uc-native-attribute-input=', $renderer, 'Renderer must expose exact Woo variation request inputs.');
 uc_cart_assert_contains('data-uc-request-value=', $renderer, 'Variation options must retain exact Woo request values.');
 uc_cart_assert_contains("nativeInput.value = option.getAttribute( 'data-uc-request-value' )", $variationController, 'Variation controller must keep the native Woo request input synchronized.');
+uc_cart_assert_contains('option.tabIndex = option === tabStop ? 0 : -1;', $variationController, 'Variation radios must use a roving tab stop.');
 uc_cart_assert_contains('.uc-cart-drawer[hidden]', $style, 'Drawer hidden-state CSS is missing.');
 uc_cart_assert_contains('WooCommerce remains authoritative', $docs, 'Cart ownership boundary must be documented.');
 uc_cart_assert_contains('uc_cart_drawer_slot', $docs, 'Pro/third-party drawer slot must be documented.');

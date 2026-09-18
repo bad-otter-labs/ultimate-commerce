@@ -13,7 +13,17 @@ final class CartDrawer
 
     public static function hooks(): void
     {
+        add_action('wp_enqueue_scripts', array(__CLASS__, 'maybeEnqueueAssets'), 20);
         add_action('wp_footer', array(__CLASS__, 'maybeRender'), 30);
+    }
+
+    public static function maybeEnqueueAssets(): void
+    {
+        if (is_admin() || !(bool) apply_filters('uc_cart_drawer_auto_render', true)) {
+            return;
+        }
+
+        self::enqueueAssets();
     }
 
     public static function maybeRender(): void

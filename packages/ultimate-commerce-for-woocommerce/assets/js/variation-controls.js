@@ -134,13 +134,28 @@
 
         form.querySelectorAll( '[data-uc-attribute]' ).forEach( function ( group ) {
             const attribute = group.getAttribute( 'data-uc-attribute' ) || '';
-            group.querySelectorAll( OPTION_SELECTOR ).forEach( function ( option ) {
+            const options = Array.from( group.querySelectorAll( OPTION_SELECTOR ) );
+            let firstAvailable = null;
+            let selectedAvailable = null;
+
+            options.forEach( function ( option ) {
                 const value = option.getAttribute( 'data-uc-option' ) || '';
                 const selected = String( selection[ attribute ] || '' ) === value;
                 const available = optionAvailable( data, selection, attribute, value );
                 option.setAttribute( 'aria-checked', selected ? 'true' : 'false' );
                 option.setAttribute( 'aria-disabled', available ? 'false' : 'true' );
                 option.disabled = ! available;
+                if ( available && ! firstAvailable ) {
+                    firstAvailable = option;
+                }
+                if ( available && selected ) {
+                    selectedAvailable = option;
+                }
+            } );
+
+            const tabStop = selectedAvailable || firstAvailable;
+            options.forEach( function ( option ) {
+                option.tabIndex = option === tabStop ? 0 : -1;
             } );
         } );
 
