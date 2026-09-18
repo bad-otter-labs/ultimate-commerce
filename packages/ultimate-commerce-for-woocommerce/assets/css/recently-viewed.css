@@ -1,0 +1,29 @@
+.uc-recently-viewed__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+}
+
+.uc-recently-viewed__items {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr));
+    gap: 1rem;
+}
+
+.uc-recently-viewed-item__link {
+    display: grid;
+    gap: .5rem;
+    color: inherit;
+    text-decoration: none;
+}
+
+.uc-recently-viewed-item__image {
+    display: block;
+    width: 100%;
+    height: auto;
+}
+
+.uc-recently-viewed__status:empty {
+    display: none;
+}

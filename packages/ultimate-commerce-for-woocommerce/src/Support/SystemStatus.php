@@ -59,6 +59,7 @@ final class SystemStatus
                 'storefront' => self::constant('ULTIMATE_COMMERCE_STOREFRONT_API_VERSION'),
                 'cart' => self::constant('ULTIMATE_COMMERCE_CART_API_VERSION'),
                 'wishlist' => self::constant('ULTIMATE_COMMERCE_WISHLIST_API_VERSION'),
+                'recently_viewed' => self::constant('ULTIMATE_COMMERCE_RECENTLY_VIEWED_API_VERSION'),
             ),
             'environment' => array(
                 'wordpress' => $wordpressVersion,

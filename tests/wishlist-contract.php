@@ -110,6 +110,7 @@ $docs = uc_wishlist_read($root . '/docs/wishlist-contract-v1.md');
 
 foreach (array(
     "define('ULTIMATE_COMMERCE_WISHLIST_API_VERSION', '1.0.0')" => $entry,
+    "use BadOtter\\UltimateCommerce\\Modules\\Wishlist\\WishlistModule;" => $config,
     'WishlistModule::class' => $config,
     "return 'wishlist';" => $module,
     "RouteRegistrar::register('/wishlist'" => $rest,
