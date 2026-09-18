@@ -51,6 +51,23 @@ ultimate_commerce_modules        -> uc_modules
 
 Legacy values are intentionally not deleted during Phase 0. This makes rollback and migration verification safer. A later cleanup may remove obsolete keys only after the migration path is established and tested.
 
+## Deterministic 0.1.4 data-upgrade fixture
+
+The repository now carries `tests/free-identity-upgrade-fixture.php` as a blocking regression around the released private 0.1.4 option state.
+
+The fixture proves that:
+
+1. the three legacy `ultimate_commerce_*` options are copied only when the corresponding canonical `uc_*` value is absent;
+2. module preferences survive byte-for-byte at the PHP value level;
+3. existing canonical values win and are never overwritten by stale legacy state;
+4. legacy options remain available for rollback/recovery;
+5. rerunning migration performs no additional writes;
+6. migrated canonical options are created with autoload disabled;
+7. WooCommerce-owned options are not read as migration targets, copied, overwritten or deleted;
+8. the canonical Free package has no third-party `Update URI` or legacy updater while the frozen 0.1.4 fixture retains its historical managed-update identity.
+
+This is the pre-release **data migration** fixture. It deliberately does not claim that WordPress can safely switch the active plugin basename before the directory slug and final handoff mechanism exist.
+
 ## Installed-plugin migration still to prove
 
 Changing the plugin directory/main file changes the WordPress plugin basename. The final transition for an installed private 0.1.4 copy therefore requires an explicit, tested bridge; source renaming alone is not sufficient.
