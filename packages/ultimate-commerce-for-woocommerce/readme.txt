@@ -69,6 +69,13 @@ WooCommerce product, cart, customer and order truth remains in WooCommerce. Them
 
 The public source, architecture documents and release tooling are maintained at https://github.com/bad-otter-labs/ultimate-commerce. WordPress.org users should use the plugin listing's support forum for installation support once the listing is live.
 
+== Screenshots ==
+
+1. Ultimate Commerce Overview shows Free module health, diagnostics access and the restrained optional Pro companion notice.
+2. Modules lets merchants enable or disable registered Free modules while seeing dependencies and runtime state.
+3. Live storefront controls show WooCommerce-backed variable-product selection, Wishlist and Recently Viewed enhancements.
+4. The accessible cart drawer reads and mutates the customer cart through WooCommerce Store API while preserving normal cart and checkout links.
+
 == Privacy ==
 
 Ultimate Commerce Free does not send usage telemetry.

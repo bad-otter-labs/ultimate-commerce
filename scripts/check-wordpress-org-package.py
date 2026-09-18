@@ -128,6 +128,7 @@ def main() -> int:
             'Description',
             'Installation',
             'Frequently Asked Questions',
+            'Screenshots',
             'Privacy',
             'External services',
             'Source and development',

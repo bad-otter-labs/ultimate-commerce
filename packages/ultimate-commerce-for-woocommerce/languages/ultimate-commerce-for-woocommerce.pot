@@ -343,6 +343,18 @@ msgstr ""
 msgid "View diagnostics"
 msgstr ""
 
+#: src/Admin/OverviewPage.php:54
+msgid "Documentation"
+msgstr ""
+
+#: src/Admin/OverviewPage.php:60
+msgid "Ultimate Commerce Pro"
+msgstr ""
+
+#: src/Admin/OverviewPage.php:62
+msgid "Ultimate Commerce Pro is an optional paid companion for advanced conversion, merchandising, customer and retail-operations modules. Ultimate Commerce Free remains usable without Pro, a Bad Otter account or a hosted Bad Otter service."
+msgstr ""
+
 #: src/Admin/SettingsPage.php:34
 msgid "Ultimate Commerce Settings"
 msgstr ""

@@ -36,6 +36,7 @@ See `docs/free-identity-migration.md` for the migration contract.
 - `docs/account-order-contract-v1.md` — authenticated Account/Order API v1 view models, ownership rules and HPOS-safe WooCommerce integration contract.
 - `docs/compatibility-matrix.md` — live minimum/current WordPress, WooCommerce, PHP, HPOS, Blocks declaration and Store API compatibility evidence.
 - `docs/accessibility-baseline.md` — live browser accessibility evidence for UC storefront controls, axe scanning and keyboard/focus behavior.
+- `docs/wordpress-org-assets.md` — staged WordPress.org screenshot assets, captions and SVN `/assets/` mapping.
 
 ## Product family
 

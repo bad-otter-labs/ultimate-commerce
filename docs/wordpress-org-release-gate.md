@@ -70,6 +70,16 @@ The blocking storefront accessibility workflow runs a real WordPress/WooCommerce
 
 The baseline is automated release evidence, not a statement of full WCAG certification. See `docs/accessibility-baseline.md`.
 
+## WordPress.org directory assets
+
+Repository-staged directory images live under `wordpress-org-assets/`. They are **not** copied into the plugin ZIP. After WordPress.org assigns the SVN repository, these files map to the SVN top-level `/assets/` directory, alongside `trunk/` and `tags/`.
+
+Screenshot filenames and `readme.txt` captions must remain one-to-one. The committed screenshots are captured from a disposable real WordPress/WooCommerce site through `scripts/capture-wordpress-org-screenshots.sh`; do not replace them with composited marketing mockups.
+
+`scripts/check-wordpress-org-assets.py` enforces the four staged screenshot files, sequential readme captions, PNG integrity/dimensions, the WordPress.org 10 MB per-screenshot ceiling and the boundary that directory screenshots never enter the installable plugin source/package.
+
+Banner/icon artwork remains a separate brand-design task and should not be fabricated from generic assets. WordPress.org can generate a default icon until approved brand assets exist.
+
 ## Public-repository runner transition
 
 Pull-request validation uses trust-aware runner routing. Same-repository branches, which require repository write access, may use the controlled Bad Otter validation runner. Any cross-repository/fork pull request is forced to the GitHub-hosted `ubuntu-latest` baseline and therefore cannot reach the persistent Bad Otter runner.
@@ -103,6 +113,8 @@ Before the first WordPress.org submission/release:
 - no duplicate active plugin copy is created during that live identity migration;
 - WordPress.org owns Free update delivery after migration;
 - source/build instructions and human-readable source are present;
+- WordPress.org screenshot captions match real staged screenshots from the current plugin UI;
+- Pro discovery is limited to the plugin's own Overview page and does not nag outside Ultimate Commerce;
 - pinned official WP-CLI translation-template regeneration is green;
 - no private updater, Pro implementation, credentials, test fixtures or nested release archives ship.
 

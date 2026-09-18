@@ -50,6 +50,16 @@ final class OverviewPage
                 <a class="button button-secondary" href="<?php echo esc_url($diagnosticsUrl); ?>">
                     <?php echo esc_html__('View diagnostics', 'ultimate-commerce-for-woocommerce'); ?>
                 </a>
+                <a class="button button-secondary" href="<?php echo esc_url('https://github.com/bad-otter-labs/ultimate-commerce/tree/main/docs'); ?>" target="_blank" rel="noopener noreferrer">
+                    <?php echo esc_html__('Documentation', 'ultimate-commerce-for-woocommerce'); ?>
+                </a>
+            </p>
+
+            <hr style="max-width:900px;margin:2rem 0">
+
+            <h2><?php echo esc_html__('Ultimate Commerce Pro', 'ultimate-commerce-for-woocommerce'); ?></h2>
+            <p style="max-width:900px">
+                <?php echo esc_html__('Ultimate Commerce Pro is an optional paid companion for advanced conversion, merchandising, customer and retail-operations modules. Ultimate Commerce Free remains usable without Pro, a Bad Otter account or a hosted Bad Otter service.', 'ultimate-commerce-for-woocommerce'); ?>
             </p>
 
             <?php
