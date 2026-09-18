@@ -414,6 +414,14 @@
             });
         }
 
+        function focusInitialControl() {
+            var close = drawer.querySelector('button[data-uc-cart-close="1"]');
+            var target = close || panel;
+            if (target && typeof target.focus === 'function') {
+                target.focus({ preventScroll: true });
+            }
+        }
+
         function openDrawer() {
             if (!drawer.hidden) {
                 return;
@@ -424,12 +432,19 @@
             Array.prototype.forEach.call(document.querySelectorAll('[data-uc-cart-toggle="1"]'), function (trigger) {
                 trigger.setAttribute('aria-expanded', 'true');
             });
-            window.requestAnimationFrame(function () {
-                var close = drawer.querySelector('button[data-uc-cart-close="1"]');
-                (close || panel).focus();
-            });
-            loadCart(false).catch(function (error) {
+
+            focusInitialControl();
+            window.requestAnimationFrame(focusInitialControl);
+
+            loadCart(false).then(function () {
+                if (!drawer.hidden && !drawer.contains(document.activeElement)) {
+                    focusInitialControl();
+                }
+            }).catch(function (error) {
                 showMutationError(error);
+                if (!drawer.hidden && !drawer.contains(document.activeElement)) {
+                    focusInitialControl();
+                }
             });
             emit('uc:cart-opened', { cart: currentCart });
         }

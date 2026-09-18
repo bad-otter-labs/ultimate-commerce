@@ -72,6 +72,10 @@ uc_cart_assert_contains("document.addEventListener('uc:cart-open'", $controller,
 uc_cart_assert_contains("document.addEventListener('uc:cart-refresh'", $controller, 'Public cart-refresh browser event is missing.');
 uc_cart_assert_contains("event.key === 'Escape'", $controller, 'Escape-to-close behavior is missing.');
 uc_cart_assert_contains("event.key !== 'Tab'", $controller, 'Focus-trap behavior is missing.');
+uc_cart_assert_contains('function focusInitialControl()', $controller, 'Drawer must have a deterministic initial focus helper.');
+uc_cart_assert_contains('focusInitialControl();', $controller, 'Drawer must move focus into the modal synchronously.');
+uc_cart_assert_contains('window.requestAnimationFrame(focusInitialControl);', $controller, 'Drawer must reinforce initial focus after paint.');
+uc_cart_assert_contains("!drawer.contains(document.activeElement)", $controller, 'Drawer must recover focus if asynchronous cart loading lets it escape.');
 uc_cart_assert_contains("querySelector('button[data-uc-cart-close=\"1\"]')", $controller, 'Drawer initial focus must target the focusable close button, not the overlay.');
 
 uc_cart_assert_contains('data-uc-action="', $renderer, 'Product cards must expose simple quick-add action state.');
