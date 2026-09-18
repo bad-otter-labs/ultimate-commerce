@@ -28,6 +28,8 @@ Every canonical Free release candidate must be built through `scripts/build-word
 
 The package audit runs against the ZIP that would be submitted, not only against the source tree.
 
+After the exact package and official Plugin Check are green, CI retains that validated ZIP and its `.sha256` sidecar for 30 days. The retained artifact is a review/install candidate, not a publication event and not a substitute for WordPress.org delivery.
+
 ## Official Plugin Check
 
 CI uses the official `wordpress/plugin-check-action@v1` action and points it at the unpacked deterministic package. Experimental checks are disabled for the blocking baseline until deliberately adopted; normal Plugin Check errors/warnings remain visible rather than being globally suppressed.
@@ -102,6 +104,7 @@ Before the first WordPress.org submission/release:
 - `Contributors` contains valid WordPress.org usernames;
 - plugin/readme/version/stable-tag metadata is aligned;
 - Plugin Check is green on the exact release package;
+- the exact validated WordPress.org candidate ZIP and SHA-256 are retained from the successful package-review job;
 - pinned WPCS/PHPCompatibility/static analysis is green;
 - locked dependency advisory/licence checks and package secret scans are green;
 - live compatibility matrix is green for WordPress 6.6.4 / WooCommerce 9.8.5 / PHP 8.1 and WordPress 7.1.1 / WooCommerce 11.1.0 / PHP 8.3;

@@ -44,6 +44,7 @@
 - Add a committed deterministic WordPress.org POT generated from PHP/JavaScript with a pinned official WP-CLI i18n toolchain.
 - Add a live minimum/current WordPress/WooCommerce compatibility matrix covering PHP floor/current runtime, HPOS, Blocks declarations, Woo CRUD, UC Account/Order models and Store API.
 - Harden cart-drawer initial focus so asynchronous Store API refreshes cannot leave keyboard focus outside the open modal.
+- Retain the exact WordPress.org candidate ZIP and SHA-256 as a 30-day CI artifact only after package review and Plugin Check succeed.
 - Add a live Playwright/axe storefront accessibility gate and fix media-link naming, cart asset/focus behavior, REST query URLs and variation radio tab order.
 - Add restrained Pro discovery on the Ultimate Commerce Overview and stage real WordPress.org screenshots from the live plugin UI.
 
