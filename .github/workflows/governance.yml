@@ -11,9 +11,7 @@ permissions:
 
 jobs:
   governance:
-    # Repository remains private during Phase 0/1. Before public visibility,
-    # move untrusted pull_request jobs off persistent self-hosted runners.
-    runs-on: [self-hosted, Linux, X64, badotter, ci]
+    runs-on: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name != github.repository && 'ubuntu-latest' || 'badotter' }}
     timeout-minutes: 10
     steps:
       - name: Checkout

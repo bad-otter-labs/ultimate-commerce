@@ -1,0 +1,24 @@
+name: Validate Public CI Trust Boundary
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  ci-trust-boundary:
+    runs-on: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name != github.repository && 'ubuntu-latest' || 'badotter' }}
+    timeout-minutes: 5
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Validate untrusted and trusted runner boundaries
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 tests/ci-trust-boundary.py

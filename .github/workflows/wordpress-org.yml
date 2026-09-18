@@ -11,9 +11,7 @@ permissions:
 
 jobs:
   package-review:
-    # Repository is still private. Before public visibility, move untrusted PR
-    # execution to GitHub-hosted or isolated ephemeral runners.
-    runs-on: [self-hosted, Linux, X64, badotter, ci]
+    runs-on: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name != github.repository && 'ubuntu-latest' || 'badotter' }}
     timeout-minutes: 20
     steps:
       - name: Checkout
