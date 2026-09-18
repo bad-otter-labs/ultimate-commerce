@@ -54,3 +54,13 @@ jobs:
           # Plugin Check cannot infer that provenance once the literal crosses the
           # helper boundary. Keep this one narrow false-positive exemption visible.
           ignore-codes: 'WordPress.WP.I18n.NonSingularStringLiteralText'
+
+      - name: Retain exact validated WordPress.org candidate
+        uses: actions/upload-artifact@v4
+        with:
+          name: ultimate-commerce-for-woocommerce-wporg-${{ github.sha }}
+          path: |
+            dist-wporg/*.zip
+            dist-wporg/*.sha256
+          if-no-files-found: error
+          retention-days: 30

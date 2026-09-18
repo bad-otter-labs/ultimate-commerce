@@ -1,6 +1,16 @@
 # WordPress.org release gate
 
-Status: **Phase 1 release-engineering baseline**
+Status: **Phase 4 repository-side release candidate; external submission blockers remain**
+
+The repository-side engineering gates are implemented and must remain green on the exact submission candidate. This status is not WordPress.org approval and does not authorize a repository-visibility change by itself.
+
+External/release actions still required before Free 1.0 can complete Phase 4:
+
+- confirm that `badotterlabs` is the WordPress.org account that should receive contributor credit;
+- have WordPress.org accept/assign the planned `ultimate-commerce-for-woocommerce` slug;
+- after that slug exists, test the real installed-plugin basename handoff from the private 0.1.4 package without leaving duplicate active copies;
+- deliberately make the source repository public/reviewable as part of the approved release transition;
+- submit to WordPress.org and resolve reviewer feedback without weakening the architecture or security boundary.
 
 The canonical Free product is built from:
 
@@ -27,6 +37,8 @@ Every canonical Free release candidate must be built through `scripts/build-word
 11. committed deterministic translation template at `languages/ultimate-commerce-for-woocommerce.pot`.
 
 The package audit runs against the ZIP that would be submitted, not only against the source tree.
+
+After the exact package and official Plugin Check are green, CI retains that validated ZIP and its `.sha256` sidecar for 30 days. The retained artifact is a review/install candidate, not a publication event and not a substitute for WordPress.org delivery.
 
 ## Official Plugin Check
 
@@ -102,6 +114,7 @@ Before the first WordPress.org submission/release:
 - `Contributors` contains valid WordPress.org usernames;
 - plugin/readme/version/stable-tag metadata is aligned;
 - Plugin Check is green on the exact release package;
+- the exact validated WordPress.org candidate ZIP and SHA-256 are retained from the successful package-review job;
 - pinned WPCS/PHPCompatibility/static analysis is green;
 - locked dependency advisory/licence checks and package secret scans are green;
 - live compatibility matrix is green for WordPress 6.6.4 / WooCommerce 9.8.5 / PHP 8.1 and WordPress 7.1.1 / WooCommerce 11.1.0 / PHP 8.3;
