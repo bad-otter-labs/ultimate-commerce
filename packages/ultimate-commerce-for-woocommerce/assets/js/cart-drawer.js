@@ -394,6 +394,7 @@
                 countNode.textContent = count > 0 ? String(count) : '';
                 countNode.setAttribute('aria-label', sprintf(_n('%d item in cart', '%d items in cart', count, 'ultimate-commerce-for-woocommerce'), count));
             });
+            emit('uc:cart-state', { cart: cart });
         }
 
         function showMutationError(error) {

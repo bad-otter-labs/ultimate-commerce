@@ -37,7 +37,7 @@ $controller = uc_cart_test_read($package . '/assets/js/cart-drawer.js');
 $style = uc_cart_test_read($package . '/assets/css/cart-drawer.css');
 $docs = uc_cart_test_read($root . '/docs/cart-drawer-contract-v1.md');
 
-uc_cart_assert_contains("define('ULTIMATE_COMMERCE_CART_API_VERSION', '1.0.0')", $entry, 'Cart API v1 marker is missing.');
+uc_cart_assert_contains("define('ULTIMATE_COMMERCE_CART_API_VERSION', '1.1.0')", $entry, 'Cart API 1.1 marker is missing.');
 uc_cart_assert_contains('CartDrawer::hooks();', $module, 'Free Cart module must register the public drawer.');
 uc_cart_assert_contains("add_action('wp_enqueue_scripts', array(__CLASS__, 'maybeEnqueueAssets'), 20);", $drawer, 'Auto-rendered drawer assets must be enqueued before footer script printing.');
 uc_cart_assert_contains('self::enqueueAssets();', $drawer, 'Auto-render asset hook must enqueue the public controller/styles.');
@@ -67,6 +67,7 @@ uc_cart_assert_contains("querySelectorAll('[data-uc-native-attribute-input]')", 
 uc_cart_assert_not_contains("querySelectorAll('[data-uc-attribute-input]')", $controller, 'Cart request construction must not read normalized-only variation inputs.');
 uc_cart_assert_contains("window.location.assign(action.href)", $controller, 'Simple quick add needs native Woo fallback on network failure.');
 uc_cart_assert_contains('form.submit();', $controller, 'Variable quick add needs native Woo form fallback on network failure.');
+uc_cart_assert_contains("emit('uc:cart-state', { cart: cart })", $controller, 'Cart state browser event is missing.');
 uc_cart_assert_contains("emit('uc:cart-updated'", $controller, 'Cart update browser event is missing.');
 uc_cart_assert_contains("document.addEventListener('uc:cart-open'", $controller, 'Public cart-open browser event is missing.');
 uc_cart_assert_contains("document.addEventListener('uc:cart-refresh'", $controller, 'Public cart-refresh browser event is missing.');
@@ -87,5 +88,6 @@ uc_cart_assert_contains('option.tabIndex = option === tabStop ? 0 : -1;', $varia
 uc_cart_assert_contains('.uc-cart-drawer[hidden]', $style, 'Drawer hidden-state CSS is missing.');
 uc_cart_assert_contains('WooCommerce remains authoritative', $docs, 'Cart ownership boundary must be documented.');
 uc_cart_assert_contains('uc_cart_drawer_slot', $docs, 'Pro/third-party drawer slot must be documented.');
+uc_cart_assert_contains('uc:cart-state', $docs, 'Initial/mutation cart-state event must be documented.');
 
 print "Cart drawer contract v1 validated\n";

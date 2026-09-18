@@ -7,7 +7,7 @@ Ultimate Commerce Free provides a progressive quick-add/cart-drawer layer over W
 ## Public API marker
 
 ```php
-ULTIMATE_COMMERCE_CART_API_VERSION === '1.0.0'
+ULTIMATE_COMMERCE_CART_API_VERSION === '1.1.0'
 ```
 
 Public class:
@@ -121,10 +121,11 @@ Browser events:
 - dispatch `uc:cart-refresh` on `document` to rehydrate from Woo
 - `uc:cart-opened`
 - `uc:cart-closed`
-- `uc:cart-updated` with `{ cart }`
+- `uc:cart-state` with `{ cart }` after every rendered Woo cart state, including the initial Store API load and later mutations
+- `uc:cart-updated` with `{ cart }` after a successful cart mutation
 - `uc:cart-error` with the safe client error shape
 
-These are the supported seams for later Pro conversion modules such as delivery-progress, recommendations and incentive messaging. Pro should extend slots/events rather than fork cart truth.
+These are the supported seams for later Pro conversion modules such as delivery-progress, recommendations and incentive messaging. Consumers that need current cart values should use `uc:cart-state`; they must not issue a duplicate cart request merely to discover totals. Pro should extend slots/events rather than fork cart truth.
 
 ## Theme example
 
