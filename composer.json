@@ -2,7 +2,7 @@
   "name": "bad-otter-labs/ultimate-commerce-quality",
   "description": "Pinned development quality toolchain for Ultimate Commerce.",
   "type": "project",
-  "license": "proprietary",
+  "license": "GPL-2.0-or-later",
   "require-dev": {
     "dealerdirect/phpcodesniffer-composer-installer": "1.2.1",
     "php-stubs/woocommerce-stubs": "11.1.0",

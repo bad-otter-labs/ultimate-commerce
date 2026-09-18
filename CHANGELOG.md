@@ -39,6 +39,7 @@
 - Add Account/Order API v1 with authenticated account summaries, HPOS-safe Woo order view models, strict customer ownership and public extension hooks.
 - Route cross-repository pull requests to GitHub-hosted validation while retaining the controlled runner for trusted same-repository development and publishing.
 - Expand the WordPress.org readme with installation, privacy, external-service, source/build and support disclosures, enforced against the release ZIP.
+- Add a pinned PHP quality gate with review-focused WPCS, PHPCompatibilityWP, PHPStan, locked dependency advisories and dependency licence validation.
 
 ## 0.1.4 - 2026-09-15
 

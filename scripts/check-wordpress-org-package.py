@@ -126,35 +126,8 @@ def main() -> int:
             'Changelog',
         )
         for section in required_sections:
-            if not re.search(rf'^==\s*{re.escape(section)}\s*==\s*            composer = json.loads(decode(zf, COMPOSER))
-            if composer.get('license') != 'GPL-2.0-or-later':
-                fail('Packaged composer.json must remain GPL-2.0-or-later')
-
-        for info in infos:
-            name = info.filename
-            if name.endswith('/') or PurePosixPath(name).suffix.lower() not in TEXT_SUFFIXES:
-                continue
-            raw = zf.read(name)
-            if len(raw) > 2 * 1024 * 1024:
-                fail(f'Unexpected oversized text file in package: {name}')
-            try:
-                text = raw.decode('utf-8')
-            except UnicodeDecodeError:
-                fail(f'Package text file is not UTF-8: {name}')
-            for label, pattern in BOUNDARY_PATTERNS.items():
-                if pattern.search(text):
-                    fail(f'Package boundary violation ({label}) in {name}')
-            for label, pattern in SECRET_PATTERNS.items():
-                if pattern.search(text):
-                    fail(f'Potential embedded secret ({label}) in {name}')
-
-    print(f'WordPress.org package boundary validated: {args.package}')
-    return 0
-
-
-if __name__ == '__main__':
-    raise SystemExit(main())
-, readme, re.I | re.M):
+            pattern = '^==\\s*' + re.escape(section) + '\\s*==\\s*$'
+            if not re.search(pattern, readme, re.I | re.M):
                 fail(f'readme.txt is missing required submission section: {section}')
 
         for marker in (
