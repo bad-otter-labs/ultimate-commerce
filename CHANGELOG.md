@@ -41,6 +41,7 @@
 - Expand the WordPress.org readme with installation, privacy, external-service, source/build and support disclosures, enforced against the release ZIP.
 - Add a pinned PHP quality gate with review-focused WPCS, PHPCompatibilityWP, PHPStan, locked dependency advisories and dependency licence validation.
 - Add a deterministic released-0.1.4 data-upgrade fixture proving idempotent option migration, rollback preservation and zero WooCommerce-owned data writes.
+- Add a committed deterministic WordPress.org POT generated from PHP/JavaScript with a pinned official WP-CLI i18n toolchain.
 
 ## 0.1.4 - 2026-09-15
 

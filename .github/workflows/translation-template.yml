@@ -1,0 +1,48 @@
+name: Validate Translation Template
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  translation-template:
+    runs-on: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name != github.repository && 'ubuntu-latest' || 'badotter' }}
+    timeout-minutes: 20
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install pinned Composer
+        shell: bash
+        run: |
+          set -euo pipefail
+          php -r "copy('https://getcomposer.org/download/2.10.3/composer.phar', 'composer.phar');"
+          echo "7a2d379d5b8ffdaa028580ef26494c36d2feef4b178d3dd1473a4dbc5e17c8d6  composer.phar" | sha256sum -c -
+          php composer.phar --version
+
+      - name: Install locked WP-CLI i18n toolchain
+        shell: bash
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          php composer.phar config --global github-oauth.github.com "$GITHUB_TOKEN"
+          php composer.phar --working-dir=tools/i18n validate --strict
+          php composer.phar --working-dir=tools/i18n install --no-interaction --no-progress --prefer-dist
+          php composer.phar --working-dir=tools/i18n audit --locked
+          python3 scripts/check-i18n-toolchain.py
+          tools/i18n/vendor/bin/wp --info
+
+      - name: Regenerate and compare POT
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -rf translation-check
+          mkdir -p translation-check
+          tools/i18n/vendor/bin/wp i18n make-pot             packages/ultimate-commerce-for-woocommerce             translation-check/ultimate-commerce-for-woocommerce.pot             --domain=ultimate-commerce-for-woocommerce             --package-name="Ultimate Commerce for WooCommerce"             --headers='{"POT-Creation-Date":"","Report-Msgid-Bugs-To":"https://github.com/bad-otter-labs/ultimate-commerce/issues"}'
+          cmp             packages/ultimate-commerce-for-woocommerce/languages/ultimate-commerce-for-woocommerce.pot             translation-check/ultimate-commerce-for-woocommerce.pot
