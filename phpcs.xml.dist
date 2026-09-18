@@ -43,7 +43,9 @@
 
     <rule ref="WordPress.WP.I18n">
         <properties>
-            <property name="text_domain" type="array" value="ultimate-commerce-for-woocommerce"/>
+            <property name="text_domain" type="array">
+                <element value="ultimate-commerce-for-woocommerce"/>
+            </property>
         </properties>
     </rule>
 

@@ -4,9 +4,17 @@ on:
   push:
     branches:
       - phase4/php-quality-toolchain
+    paths:
+      - composer.json
+      - phpcs.xml.dist
+      - phpcompatibility.xml.dist
+      - phpstan.neon
+      - phpstan-bootstrap.php
+      - packages/ultimate-commerce-for-woocommerce/**
+      - .github/workflows/php-quality-bootstrap.yml
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   bootstrap-quality:
@@ -35,6 +43,20 @@ jobs:
           php composer.phar update --no-interaction --no-progress --prefer-dist
           php composer.phar validate --strict
           php composer.phar show --direct
+
+      - name: Commit generated lockfile
+        shell: bash
+        run: |
+          set -euo pipefail
+          git add composer.lock
+          if git diff --cached --quiet; then
+            echo "composer.lock is unchanged"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "build(quality): lock PHP analysis dependencies"
+          git push origin "HEAD:${GITHUB_REF_NAME}"
 
       - name: Capture WPCS report
         shell: bash
