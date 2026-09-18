@@ -31,6 +31,7 @@ See `docs/free-identity-migration.md` for the migration contract.
 
 - `docs/theme-store-integration.md` — supported public theme/store integration contracts, extension points and WooCommerce fallbacks.
 - `docs/translation-readiness.md` — canonical text-domain rules plus PHP/JavaScript translation-readiness requirements ahead of the WordPress.org translation-template release step.
+- `docs/wishlist-contract-v1.md` — Wishlist API v1 storage, privacy, guest-state and theme integration contract.
 
 ## Product family
 

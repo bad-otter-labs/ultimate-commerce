@@ -11,5 +11,6 @@ return array(
     ProductDisplayModule::class,
     VariationsModule::class,
     CartModule::class,
+    WishlistModule::class,
     AccountModule::class,
 );

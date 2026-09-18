@@ -34,6 +34,7 @@
 - Add mature read-only diagnostics with environment/compatibility/API/module health plus a privacy-minimised copyable support snapshot.
 - Make current PHP and storefront JavaScript strings translation-ready with extractor-visible literals, WordPress `wp-i18n` script translations/plurals and the canonical `/languages` domain path.
 - Document the supported theme/store integration boundary, public Storefront/Cart contracts and UC-disabled WooCommerce fallbacks without promoting internal classes or theme overrides to stable APIs.
+- Add Wishlist API v1 with bounded signed-in persistence, browser-local guest state, authenticated merge, Woo Store API-backed display, privacy export/erase and explicit uninstall purge integration.
 
 ## 0.1.4 - 2026-09-15
 

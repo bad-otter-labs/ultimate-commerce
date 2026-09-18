@@ -1,0 +1,46 @@
+name: Validate Ultimate Commerce Wishlist Contract
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  wishlist-contract:
+    runs-on: [self-hosted, Linux, X64, badotter, ci]
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020
+        with:
+          node-version: '24'
+
+      - name: Validate Wishlist PHP syntax
+        shell: bash
+        run: |
+          set -euo pipefail
+          php -l packages/ultimate-commerce-for-woocommerce/src/Wishlist/WishlistStore.php >/dev/null
+          php -l packages/ultimate-commerce-for-woocommerce/src/Wishlist/WishlistRestController.php >/dev/null
+          php -l packages/ultimate-commerce-for-woocommerce/src/Wishlist/WishlistBootstrap.php >/dev/null
+          php -l packages/ultimate-commerce-for-woocommerce/src/Storefront/WishlistControls.php >/dev/null
+          php -l packages/ultimate-commerce-for-woocommerce/src/Modules/Wishlist/WishlistModule.php >/dev/null
+          php -l tests/wishlist-contract.php >/dev/null
+
+      - name: Validate Wishlist browser controller syntax
+        shell: bash
+        run: |
+          set -euo pipefail
+          node --check packages/ultimate-commerce-for-woocommerce/assets/js/wishlist.js
+
+      - name: Validate Wishlist ownership and privacy contract
+        shell: bash
+        run: |
+          set -euo pipefail
+          php tests/wishlist-contract.php
