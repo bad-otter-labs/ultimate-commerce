@@ -1071,11 +1071,11 @@ msgid_plural "%d items in cart"
 msgstr[0] ""
 msgstr[1] ""
 
-#: assets/js/cart-drawer.js:400
+#: assets/js/cart-drawer.js:401
 msgid "The cart could not be updated."
 msgstr ""
 
-#: assets/js/cart-drawer.js:470
+#: assets/js/cart-drawer.js:471
 msgid "Adding to cart…"
 msgstr ""
 

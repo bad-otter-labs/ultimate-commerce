@@ -45,6 +45,7 @@
 - Add a live minimum/current WordPress/WooCommerce compatibility matrix covering PHP floor/current runtime, HPOS, Blocks declarations, Woo CRUD, UC Account/Order models and Store API.
 - Harden cart-drawer initial focus so asynchronous Store API refreshes cannot leave keyboard focus outside the open modal.
 - Retain the exact WordPress.org candidate ZIP and SHA-256 as a 30-day CI artifact only after package review and Plugin Check succeed.
+- Extend Cart API to 1.1.0 with a `uc:cart-state` browser event after every rendered Woo cart state so Pro/third-party conversion UI can consume totals without duplicate cart requests.
 - Add a live Playwright/axe storefront accessibility gate and fix media-link naming, cart asset/focus behavior, REST query URLs and variation radio tab order.
 - Add restrained Pro discovery on the Ultimate Commerce Overview and stage real WordPress.org screenshots from the live plugin UI.
 
