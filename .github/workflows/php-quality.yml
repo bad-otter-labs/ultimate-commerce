@@ -17,12 +17,14 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Set up pinned PHP and Composer
-        uses: shivammathur/setup-php@f3e473d116dcccaddc5834248c87452386958240
-        with:
-          php-version: '8.3'
-          tools: composer:2.10.3
-          coverage: none
+      - name: Verify PHP baseline and install pinned Composer
+        shell: bash
+        run: |
+          set -euo pipefail
+          php -r 'if (version_compare(PHP_VERSION, "8.1.0", "<")) { fwrite(STDERR, "PHP 8.1+ is required for the quality gate.\\n"); exit(1); } echo "PHP " . PHP_VERSION . "\\n";'
+          php -r "copy('https://getcomposer.org/download/2.10.3/composer.phar', 'composer.phar');"
+          echo "7a2d379d5b8ffdaa028580ef26494c36d2feef4b178d3dd1473a4dbc5e17c8d6  composer.phar" | sha256sum -c -
+          php composer.phar --version
 
       - name: Install locked quality dependencies
         shell: bash
@@ -30,16 +32,16 @@ jobs:
           GITHUB_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
-          composer config --global github-oauth.github.com "$GITHUB_TOKEN"
-          composer validate --strict
-          composer install --no-interaction --no-progress --prefer-dist
-          composer show --direct
+          php composer.phar config --global github-oauth.github.com "$GITHUB_TOKEN"
+          php composer.phar validate --strict
+          php composer.phar install --no-interaction --no-progress --prefer-dist
+          php composer.phar show --direct
 
       - name: Audit dependencies and licences
         shell: bash
         run: |
           set -euo pipefail
-          composer audit --locked
+          php composer.phar audit --locked
           python3 scripts/check-quality-dependency-licenses.py
 
       - name: Run review-focused WPCS

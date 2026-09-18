@@ -17,7 +17,7 @@ The pinned direct tools are:
 - WooCommerce stubs 11.1.0
 - PHPCS Composer installer 1.2.1
 
-CI installs exactly the lockfile and runs `composer audit --locked`; dependency versions must not float during a release review.
+CI requires the runner to provide PHP 8.1 or newer. It then downloads Composer 2.10.3 directly from getcomposer.org, verifies SHA-256 `7a2d379d5b8ffdaa028580ef26494c36d2feef4b178d3dd1473a4dbc5e17c8d6`, installs exactly the committed lockfile and runs `composer audit --locked`. Dependency versions must not float during a release review.
 
 ## WPCS boundary
 
