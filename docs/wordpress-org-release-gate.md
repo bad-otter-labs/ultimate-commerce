@@ -82,8 +82,9 @@ Before the first WordPress.org submission/release:
 - pinned WPCS/PHPCompatibility/static analysis is green;
 - locked dependency advisory/licence checks and package secret scans are green;
 - HPOS and claimed Cart/Checkout Blocks compatibility is tested;
-- realistic upgrade from the 0.1.x migration fixture is tested;
-- no duplicate active plugin copy is created during identity migration;
+- deterministic 0.1.4-to-canonical option/data migration fixture is green;
+- after the WordPress.org slug is accepted, the real plugin-basename handoff is tested on an installed 0.1.4 fixture;
+- no duplicate active plugin copy is created during that live identity migration;
 - WordPress.org owns Free update delivery after migration;
 - source/build instructions and human-readable source are present;
 - no private updater, Pro implementation, credentials, test fixtures or nested release archives ship.

@@ -1,0 +1,31 @@
+name: Validate Free Upgrade Fixture
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  free-upgrade-fixture:
+    runs-on: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name != github.repository && 'ubuntu-latest' || 'badotter' }}
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Validate upgrade fixture syntax
+        shell: bash
+        run: |
+          set -euo pipefail
+          php -l packages/ultimate-commerce-for-woocommerce/src/Support/OptionMigrator.php >/dev/null
+          php -l tests/free-identity-upgrade-fixture.php >/dev/null
+
+      - name: Validate released 0.1.4 data migration
+        shell: bash
+        run: |
+          set -euo pipefail
+          php tests/free-identity-upgrade-fixture.php
