@@ -1,20 +1,17 @@
-name: Bootstrap Live Compatibility Matrix
+name: Validate WordPress WooCommerce Compatibility Matrix
 
 on:
+  pull_request:
   push:
     branches:
-      - phase4/compatibility-matrix
-    paths:
-      - scripts/run-compatibility-case.sh
-      - tests/live-compatibility-smoke.php
-      - .github/workflows/compatibility-matrix-bootstrap.yml
+      - main
 
 permissions:
   contents: read
 
 jobs:
   live-compatibility:
-    runs-on: [self-hosted, Linux, X64, badotter, ci]
+    runs-on: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name != github.repository && 'ubuntu-latest' || 'badotter' }}
     timeout-minutes: 30
     strategy:
       fail-fast: false
