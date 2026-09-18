@@ -26,8 +26,11 @@ jobs:
 
       - name: Resolve pinned quality dependencies
         shell: bash
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
+          php composer.phar config --global github-oauth.github.com "$GITHUB_TOKEN"
           php composer.phar validate --strict --no-check-lock
           php composer.phar update --no-interaction --no-progress --prefer-dist
           php composer.phar validate --strict
