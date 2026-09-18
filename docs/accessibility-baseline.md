@@ -27,6 +27,7 @@ The browser tests also verify behavior automated rule engines do not fully cover
 - radio-style variation controls use a single roving tab stop;
 - disabled options do not enter the radio tab sequence;
 - opening the cart moves focus to the actual Close control;
+- initial focus is reasserted after the asynchronous Store API refresh if focus escapes the open drawer;
 - Tab and Shift+Tab wrap inside the modal drawer;
 - Escape closes the drawer and restores focus to the invoking trigger;
 - Wishlist toggles update `aria-pressed` and their accessible label;
