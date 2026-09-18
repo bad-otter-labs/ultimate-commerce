@@ -30,6 +30,7 @@ namespace {
     define('ULTIMATE_COMMERCE_STOREFRONT_API_VERSION', '1.0.0');
     define('ULTIMATE_COMMERCE_CART_API_VERSION', '1.0.0');
     define('ULTIMATE_COMMERCE_WISHLIST_API_VERSION', '1.0.0');
+    define('ULTIMATE_COMMERCE_RECENTLY_VIEWED_API_VERSION', '1.0.0');
 
     $ucOptions = array('uc_delete_data_on_uninstall' => false);
 
@@ -134,6 +135,7 @@ namespace {
     ucAssert(($snapshot['plugin']['version'] ?? '') === '0.2.0', 'Plugin version must be reported.');
     ucAssert(($snapshot['apis']['cart'] ?? '') === '1.0.0', 'Public API versions must be reported.');
     ucAssert(($snapshot['apis']['wishlist'] ?? '') === '1.0.0', 'Wishlist API version must be reported.');
+    ucAssert(($snapshot['apis']['recently_viewed'] ?? '') === '1.0.0', 'Recently Viewed API version must be reported.');
     ucAssert(($snapshot['environment']['wordpress'] ?? '') === '6.8.2', 'WordPress version must be reported.');
     ucAssert(($snapshot['environment']['woocommerce'] ?? '') === '10.1.2', 'WooCommerce version must be reported.');
     ucAssert(($snapshot['environment']['wp_debug_log'] ?? null) === true, 'Debug-log state must be boolean only.');

@@ -26,10 +26,12 @@ for path in php_files:
 cart_php = (PACKAGE / 'src/Storefront/CartDrawer.php').read_text()
 variation_php = (PACKAGE / 'src/Storefront/ProductCardRenderer.php').read_text()
 wishlist_php = (PACKAGE / 'src/Storefront/WishlistControls.php').read_text()
+recently_viewed_php = (PACKAGE / 'src/Storefront/RecentlyViewed.php').read_text()
 for label, text, handle in (
     ('cart drawer', cart_php, 'self::SCRIPT_HANDLE'),
     ('variation controls', variation_php, 'self::VARIATION_SCRIPT_HANDLE'),
     ('wishlist', wishlist_php, 'self::SCRIPT_HANDLE'),
+    ('recently viewed', recently_viewed_php, 'self::SCRIPT_HANDLE'),
 ):
     if "array('wp-i18n')" not in text:
         raise SystemExit(f'{label} script must depend on wp-i18n.')
@@ -40,12 +42,15 @@ for label, text, handle in (
 cart_js = (PACKAGE / 'assets/js/cart-drawer.js').read_text()
 variation_js = (PACKAGE / 'assets/js/variation-controls.js').read_text()
 wishlist_js = (PACKAGE / 'assets/js/wishlist.js').read_text()
+recently_viewed_js = (PACKAGE / 'assets/js/recently-viewed.js').read_text()
 if 'wp.i18n.__' not in cart_js or 'wp.i18n._n' not in cart_js or 'wp.i18n.sprintf' not in cart_js:
     raise SystemExit('Cart drawer must use WordPress JS i18n helpers.')
 if 'wp.i18n.__' not in variation_js:
     raise SystemExit('Variation controller must use WordPress JS i18n helpers for fallback labels.')
 if 'wp.i18n.__' not in wishlist_js or 'wp.i18n._n' not in wishlist_js or 'wp.i18n.sprintf' not in wishlist_js:
     raise SystemExit('Wishlist controller must use WordPress JS i18n helpers.')
+if 'wp.i18n.__' not in recently_viewed_js or 'wp.i18n._n' not in recently_viewed_js or 'wp.i18n.sprintf' not in recently_viewed_js:
+    raise SystemExit('Recently Viewed controller must use WordPress JS i18n helpers.')
 
 cart_messages = (
     'Cart request failed.',
@@ -84,6 +89,7 @@ for marker in (
     'ULTIMATE_COMMERCE_CART_API_VERSION',
     'uc_cart_drawer_auto_render',
     'uc:variation-change',
+    'ULTIMATE_COMMERCE_RECENTLY_VIEWED_API_VERSION',
     'WooCommerce remains authoritative',
 ):
     if marker not in integration_text:

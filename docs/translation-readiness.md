@@ -15,6 +15,7 @@ Storefront scripts that produce user-facing text depend on WordPress's `wp-i18n`
 - `ultimate-commerce-cart-drawer` uses `__()`, `_n()` and `sprintf()` for loading/mutation/error/accessibility text.
 - `ultimate-commerce-variation-controls` uses `__()` for its fallback action labels; normal labels are also supplied from translated PHP state.
 - `ultimate-commerce-wishlist` uses `__()`, `_n()` and `sprintf()` for saved-state, error and accessibility copy.
+- `ultimate-commerce-recently-viewed` uses `__()`, `_n()` and `sprintf()` for empty/loading/count/clear copy.
 
 Do not introduce a parallel JSON/localization dictionary for translatable copy. Use the WordPress i18n runtime so WordPress.org language packs can supply JavaScript translations.
 
