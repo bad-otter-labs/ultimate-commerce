@@ -36,6 +36,7 @@ trap cleanup EXIT
 rm -rf "$root"
 mkdir -p "$plugins"
 chmod -R 0777 "$root"
+printf 'memory_limit=512M\n' > "$root/uc-cli-memory.ini"
 
 docker network create "$network" >/dev/null
 
