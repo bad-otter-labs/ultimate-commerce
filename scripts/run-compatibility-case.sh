@@ -18,6 +18,7 @@ slug="wp-${WP_VERSION//./-}-wc-${WC_VERSION//./-}-php-${PHP_VERSION//./-}"
 root="${RUNNER_TEMP:-/tmp}/ultimate-commerce-compat-${run_id}-${attempt}-${slug}"
 html="$root/html"
 plugins="$html/wp-content/plugins"
+memory_ini="$root/uc-cli-memory.ini"
 network="uc-compat-${run_id}-${attempt}-${WP_VERSION//./-}-${WC_VERSION//./-}"
 db="${network}-db"
 cli_image="wordpress:cli-php${PHP_VERSION}"
@@ -36,11 +37,25 @@ trap cleanup EXIT
 rm -rf "$root"
 mkdir -p "$plugins"
 chmod -R 0777 "$root"
-printf 'memory_limit=512M\n' > "$root/uc-cli-memory.ini"
+printf 'memory_limit=512M\n' > "$memory_ini"
+
+docker run --rm \
+  -v "$memory_ini:/usr/local/etc/php/conf.d/zz-uc-memory.ini:ro" \
+  "$cli_image" \
+  php -r 'if (ini_get("memory_limit") !== "512M") { fwrite(STDERR, "CLI memory override failed: " . ini_get("memory_limit") . PHP_EOL); exit(1); } echo "WP-CLI PHP memory_limit=512M" . PHP_EOL;'
 
 docker network create "$network" >/dev/null
 
-docker run -d   --name "$db"   --network "$network"   -e MARIADB_DATABASE=wordpress   -e MARIADB_USER=wordpress   -e MARIADB_PASSWORD=wordpress   -e MARIADB_ROOT_PASSWORD=root   "$db_image"   --character-set-server=utf8mb4   --collation-server=utf8mb4_unicode_ci >/dev/null
+docker run -d \
+  --name "$db" \
+  --network "$network" \
+  -e MARIADB_DATABASE=wordpress \
+  -e MARIADB_USER=wordpress \
+  -e MARIADB_PASSWORD=wordpress \
+  -e MARIADB_ROOT_PASSWORD=root \
+  "$db_image" \
+  --character-set-server=utf8mb4 \
+  --collation-server=utf8mb4_unicode_ci >/dev/null
 
 ready=0
 for _ in $(seq 1 60); do
@@ -57,15 +72,34 @@ if [[ "$ready" != "1" ]]; then
 fi
 
 wpcli() {
-  docker run --rm     --network "$network"     -v "$html:/var/www/html"     -v "$workspace:/workspace:ro"     "$cli_image"     wp "$@"
+  docker run --rm \
+    --network "$network" \
+    -v "$html:/var/www/html" \
+    -v "$workspace:/workspace:ro" \
+    -v "$memory_ini:/usr/local/etc/php/conf.d/zz-uc-memory.ini:ro" \
+    "$cli_image" \
+    wp "$@"
 }
 
 wpcli core download --version="$WP_VERSION" --force
-wpcli config create --dbname=wordpress --dbuser=wordpress --dbpass=wordpress --dbhost="$db:3306" --skip-check
-wpcli core install   --url="http://uc-compat.test"   --title="Ultimate Commerce Compatibility"   --admin_user=admin   --admin_password="matrix-admin-password"   --admin_email="matrix-admin@example.test"   --skip-email
+wpcli config create \
+  --dbname=wordpress \
+  --dbuser=wordpress \
+  --dbpass=wordpress \
+  --dbhost="$db:3306" \
+  --skip-check
+wpcli core install \
+  --url="http://uc-compat.test" \
+  --title="Ultimate Commerce Compatibility" \
+  --admin_user=admin \
+  --admin_password="matrix-admin-password" \
+  --admin_email="matrix-admin@example.test" \
+  --skip-email
 
 wc_zip="$root/woocommerce.zip"
-curl -fL   "https://github.com/woocommerce/woocommerce/releases/download/${WC_VERSION}/woocommerce.zip"   -o "$wc_zip"
+curl -fL \
+  "https://github.com/woocommerce/woocommerce/releases/download/${WC_VERSION}/woocommerce.zip" \
+  -o "$wc_zip"
 echo "$WC_SHA256  $wc_zip" | sha256sum -c -
 unzip -q "$wc_zip" -d "$plugins"
 
@@ -74,7 +108,16 @@ cp -R "$workspace/packages/ultimate-commerce-for-woocommerce" "$plugins/ultimate
 wpcli plugin activate woocommerce ultimate-commerce-for-woocommerce
 wpcli wc hpos enable --user=admin
 
-docker run --rm   --network "$network"   -e UC_EXPECT_WORDPRESS="$WP_VERSION"   -e UC_EXPECT_WOOCOMMERCE="$WC_VERSION"   -e UC_EXPECT_PHP="$PHP_VERSION"   -v "$html:/var/www/html"   -v "$workspace:/workspace:ro"   "$cli_image"   wp eval-file /workspace/tests/live-compatibility-smoke.php
+docker run --rm \
+  --network "$network" \
+  -e UC_EXPECT_WORDPRESS="$WP_VERSION" \
+  -e UC_EXPECT_WOOCOMMERCE="$WC_VERSION" \
+  -e UC_EXPECT_PHP="$PHP_VERSION" \
+  -v "$html:/var/www/html" \
+  -v "$workspace:/workspace:ro" \
+  -v "$memory_ini:/usr/local/etc/php/conf.d/zz-uc-memory.ini:ro" \
+  "$cli_image" \
+  wp eval-file /workspace/tests/live-compatibility-smoke.php
 
 wpcli plugin status woocommerce
 wpcli plugin status ultimate-commerce-for-woocommerce
