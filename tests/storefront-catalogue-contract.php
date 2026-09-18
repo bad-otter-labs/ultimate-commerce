@@ -206,6 +206,9 @@ uc_storefront_assert(str_contains($markup, 'value="regular-fit" data-uc-attribut
 uc_storefront_assert(str_contains($markup, 'name="attribute_cut-style" value="Regular Fit"'), 'native Woo form must preserve the original local/custom option value');
 uc_storefront_assert(str_contains($markup, 'data-uc-request-value="Regular Fit"'), 'rendered local/custom option must expose the Woo request value');
 uc_storefront_assert(str_contains($markup, 'role="radiogroup"') && str_contains($markup, 'role="radio"'), 'rendered controls must expose radio semantics');
+uc_storefront_assert(str_contains($markup, 'aria-label="Example Jacket"'), 'product media link must retain an accessible name even without an image');
+uc_storefront_assert(str_contains($markup, 'role="radio" aria-checked="true" aria-disabled="false" tabindex="0"'), 'selected available variation option must be the radiogroup tab stop');
+uc_storefront_assert(str_contains($markup, 'aria-disabled="true" tabindex="-1"'), 'unavailable variation options must stay out of the radiogroup tab sequence');
 uc_storefront_assert(str_contains($markup, 'data-uc-variation-data="1"'), 'renderer must expose bounded variation state to the UC controller');
 uc_storefront_assert(isset($GLOBALS['uc_test_enqueued_scripts'][ProductCardRenderer::VARIATION_SCRIPT_HANDLE]), 'variation renderer must enqueue its reusable controller');
 

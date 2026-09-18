@@ -187,6 +187,20 @@
         return article;
     }
 
+    function productQueryUrl(endpoint, productIds) {
+        try {
+            var url = new URL(endpoint, window.location.href);
+            url.searchParams.set('include', productIds.join(','));
+            url.searchParams.set('per_page', String(productIds.length));
+            return url.toString();
+        } catch (error) {
+            var separator = endpoint.indexOf('?') === -1 ? '?' : '&';
+            return endpoint + separator
+                + 'include=' + encodeURIComponent(productIds.join(','))
+                + '&per_page=' + encodeURIComponent(String(productIds.length));
+        }
+    }
+
     function renderLists() {
         var lists = document.querySelectorAll('[data-uc-wishlist-list="1"]');
         if (!lists.length) {
@@ -213,8 +227,7 @@
             return;
         }
 
-        var query = '?include=' + encodeURIComponent(ids.join(',')) + '&per_page=' + encodeURIComponent(String(ids.length));
-        fetch(endpoint + query, { credentials: 'same-origin', cache: 'no-store' })
+        fetch(productQueryUrl(endpoint, ids), { credentials: 'same-origin', cache: 'no-store' })
             .then(function (response) {
                 if (!response.ok) {
                     throw new Error(__('Saved products could not be loaded.', 'ultimate-commerce-for-woocommerce'));

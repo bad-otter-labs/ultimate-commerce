@@ -43,6 +43,8 @@ foreach (array(
     "window.localStorage.setItem(LOCAL_KEY, JSON.stringify(ids))" => $controller,
     "'uc:recently-viewed-updated'" => $controller,
     "cache: 'no-store'" => $controller,
+    "new URL(endpoint, window.location.href)" => $controller,
+    "url.searchParams.set('include'" => $controller,
     "'recently_viewed' => self::constant('ULTIMATE_COMMERCE_RECENTLY_VIEWED_API_VERSION')" => $diagnostics,
     'WooCommerce remains authoritative' => $docs,
 ) as $needle => $haystack) {

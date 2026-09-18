@@ -133,6 +133,8 @@ foreach (array(
     "'storageKey' =>" => $controls,
     "String(config.bootstrapUrl || '')" => $controller,
     "String(config.storageKey || 'uc_wishlist_v1')" => $controller,
+    "new URL(endpoint, window.location.href)" => $controller,
+    "url.searchParams.set('include'" => $controller,
     'use BadOtter\\UltimateCommerce\\Wishlist\\WishlistStore;' => $uninstall,
     "WishlistStore::metaKey()" => $uninstall,
     "'wishlist' => self::constant('ULTIMATE_COMMERCE_WISHLIST_API_VERSION')" => $diagnostics,

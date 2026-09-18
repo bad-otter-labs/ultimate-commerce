@@ -591,7 +591,7 @@ msgid "Account"
 msgstr ""
 
 #: src/Modules/Cart/CartModule.php:20
-#: src/Storefront/CartDrawer.php:108
+#: src/Storefront/CartDrawer.php:118
 msgid "Cart"
 msgstr ""
 
@@ -818,27 +818,27 @@ msgstr ""
 msgid "Webhook signature verification failed."
 msgstr ""
 
-#: src/Storefront/CartDrawer.php:65
+#: src/Storefront/CartDrawer.php:75
 msgid "Your cart"
 msgstr ""
 
-#: src/Storefront/CartDrawer.php:66
+#: src/Storefront/CartDrawer.php:76
 msgid "Close cart"
 msgstr ""
 
-#: src/Storefront/CartDrawer.php:74
+#: src/Storefront/CartDrawer.php:84
 msgid "Your cart is empty."
 msgstr ""
 
-#: src/Storefront/CartDrawer.php:80
+#: src/Storefront/CartDrawer.php:90
 msgid "Total"
 msgstr ""
 
-#: src/Storefront/CartDrawer.php:88
+#: src/Storefront/CartDrawer.php:98
 msgid "View cart"
 msgstr ""
 
-#: src/Storefront/CartDrawer.php:89
+#: src/Storefront/CartDrawer.php:99
 msgid "Checkout"
 msgstr ""
 
@@ -889,26 +889,27 @@ msgstr ""
 msgid "Rated %1$s out of 5 from %2$d reviews."
 msgstr ""
 
-#: src/Storefront/ProductCardRenderer.php:104
+#: src/Storefront/ProductCardRenderer.php:84
+#: src/Storefront/ProductCardRenderer.php:105
 #: src/Storefront/ProductCardViewModel.php:138
 msgid "View product"
 msgstr ""
 
-#: src/Storefront/ProductCardRenderer.php:123
+#: src/Storefront/ProductCardRenderer.php:124
 #: src/Storefront/VariationViewModel.php:167
-#: assets/js/variation-controls.js:159
+#: assets/js/variation-controls.js:174
 msgid "Add to cart"
 msgstr ""
 
-#: src/Storefront/ProductCardRenderer.php:124
-#: src/Storefront/ProductCardRenderer.php:172
+#: src/Storefront/ProductCardRenderer.php:125
+#: src/Storefront/ProductCardRenderer.php:189
 #: src/Storefront/VariationViewModel.php:167
-#: assets/js/variation-controls.js:160
+#: assets/js/variation-controls.js:175
 msgid "Select options"
 msgstr ""
 
-#: src/Storefront/ProductCardRenderer.php:125
-#: assets/js/variation-controls.js:160
+#: src/Storefront/ProductCardRenderer.php:126
+#: assets/js/variation-controls.js:175
 msgid "Unavailable"
 msgstr ""
 
@@ -995,7 +996,7 @@ msgid "This product cannot be added to the wishlist."
 msgstr ""
 
 #: src/Wishlist/WishlistStore.php:60
-#: assets/js/wishlist.js:275
+#: assets/js/wishlist.js:288
 msgid "The wishlist has reached its item limit."
 msgstr ""
 
@@ -1066,28 +1067,28 @@ msgstr ""
 msgid "Adding to cart…"
 msgstr ""
 
-#: assets/js/recently-viewed.js:116
+#: assets/js/recently-viewed.js:130
 msgid "No recently viewed products."
 msgstr ""
 
-#: assets/js/recently-viewed.js:129
-#: assets/js/recently-viewed.js:163
+#: assets/js/recently-viewed.js:142
+#: assets/js/recently-viewed.js:176
 msgid "Recently viewed products could not be loaded."
 msgstr ""
 
-#: assets/js/recently-viewed.js:158
+#: assets/js/recently-viewed.js:171
 #, js-format
 msgid "%d recently viewed product."
 msgid_plural "%d recently viewed products."
 msgstr[0] ""
 msgstr[1] ""
 
-#: assets/js/recently-viewed.js:191
+#: assets/js/recently-viewed.js:204
 msgid "Recently viewed products cleared."
 msgstr ""
 
 #: assets/js/wishlist.js:76
-#: assets/js/wishlist.js:304
+#: assets/js/wishlist.js:317
 msgid "The wishlist could not be updated."
 msgstr ""
 
@@ -1109,26 +1110,26 @@ msgstr ""
 msgid "Saved"
 msgstr ""
 
-#: assets/js/wishlist.js:207
+#: assets/js/wishlist.js:221
 msgid "No saved products."
 msgstr ""
 
-#: assets/js/wishlist.js:220
-#: assets/js/wishlist.js:254
+#: assets/js/wishlist.js:233
+#: assets/js/wishlist.js:267
 msgid "Saved products could not be loaded."
 msgstr ""
 
-#: assets/js/wishlist.js:248
+#: assets/js/wishlist.js:261
 #, js-format
 msgid "%d saved product."
 msgid_plural "%d saved products."
 msgstr[0] ""
 msgstr[1] ""
 
-#: assets/js/wishlist.js:301
+#: assets/js/wishlist.js:314
 msgid "Removed from wishlist."
 msgstr ""
 
-#: assets/js/wishlist.js:302
+#: assets/js/wishlist.js:315
 msgid "Added to wishlist."
 msgstr ""

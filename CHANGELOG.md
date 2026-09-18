@@ -43,6 +43,7 @@
 - Add a deterministic released-0.1.4 data-upgrade fixture proving idempotent option migration, rollback preservation and zero WooCommerce-owned data writes.
 - Add a committed deterministic WordPress.org POT generated from PHP/JavaScript with a pinned official WP-CLI i18n toolchain.
 - Add a live minimum/current WordPress/WooCommerce compatibility matrix covering PHP floor/current runtime, HPOS, Blocks declarations, Woo CRUD, UC Account/Order models and Store API.
+- Add a live Playwright/axe storefront accessibility gate and fix media-link naming, cart asset/focus behavior, REST query URLs and variation radio tab order.
 
 ## 0.1.4 - 2026-09-15
 

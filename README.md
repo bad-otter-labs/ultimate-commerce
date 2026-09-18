@@ -35,6 +35,7 @@ See `docs/free-identity-migration.md` for the migration contract.
 - `docs/recently-viewed-contract-v1.md` — browser-local Recently Viewed API v1 tracking, privacy and live Woo product rendering contract.
 - `docs/account-order-contract-v1.md` — authenticated Account/Order API v1 view models, ownership rules and HPOS-safe WooCommerce integration contract.
 - `docs/compatibility-matrix.md` — live minimum/current WordPress, WooCommerce, PHP, HPOS, Blocks declaration and Store API compatibility evidence.
+- `docs/accessibility-baseline.md` — live browser accessibility evidence for UC storefront controls, axe scanning and keyboard/focus behavior.
 
 ## Product family
 
