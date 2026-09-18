@@ -71,7 +71,7 @@ unzip -q "$wc_zip" -d "$plugins"
 cp -R "$workspace/packages/ultimate-commerce-for-woocommerce" "$plugins/ultimate-commerce-for-woocommerce"
 
 wpcli plugin activate woocommerce ultimate-commerce-for-woocommerce
-wpcli wc hpos enable --for-new-shop --user=admin
+wpcli wc hpos enable --user=admin
 
 docker run --rm   --network "$network"   -e UC_EXPECT_WORDPRESS="$WP_VERSION"   -e UC_EXPECT_WOOCOMMERCE="$WC_VERSION"   -e UC_EXPECT_PHP="$PHP_VERSION"   -v "$html:/var/www/html"   -v "$workspace:/workspace:ro"   "$cli_image"   wp eval-file /workspace/tests/live-compatibility-smoke.php
 
