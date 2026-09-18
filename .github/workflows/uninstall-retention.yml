@@ -11,7 +11,7 @@ permissions:
 
 jobs:
   uninstall-retention:
-    runs-on: [self-hosted, Linux, X64, badotter, ci]
+    runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
       - name: Checkout
