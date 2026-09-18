@@ -94,9 +94,7 @@ final class SystemStatus
     public static function supportJson(array $snapshot): string
     {
         $flags = JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES;
-        $json = function_exists('wp_json_encode')
-            ? wp_json_encode($snapshot, $flags)
-            : json_encode($snapshot, $flags);
+        $json = wp_json_encode($snapshot, $flags);
 
         return is_string($json) ? $json : '{}';
     }

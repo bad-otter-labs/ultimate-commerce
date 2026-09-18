@@ -8,6 +8,7 @@ parameters:
         - packages/ultimate-commerce-for-woocommerce/ultimate-commerce-for-woocommerce.php
         - packages/ultimate-commerce-for-woocommerce/uninstall.php
     bootstrapFiles:
+        - phpstan-bootstrap.php
         - vendor/php-stubs/woocommerce-stubs/woocommerce-stubs.php
         - vendor/php-stubs/woocommerce-stubs/woocommerce-packages-stubs.php
     treatPhpDocTypesAsCertain: false

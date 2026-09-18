@@ -156,6 +156,7 @@ final class SettingsPage
             return new \WP_Error('uc_settings_upload_invalid', __('The uploaded settings file could not be accepted.', 'ultimate-commerce-for-woocommerce'));
         }
 
+        // phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents -- Reading a locally validated uploaded file, not a remote URL.
         $contents = file_get_contents($tmpName, false, null, 0, SettingsTransfer::MAX_BYTES + 1);
         if (!is_string($contents) || $contents === '' || strlen($contents) > SettingsTransfer::MAX_BYTES) {
             return new \WP_Error('uc_settings_upload_read', __('The uploaded settings file is empty, unreadable or too large.', 'ultimate-commerce-for-woocommerce'));
