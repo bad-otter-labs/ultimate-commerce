@@ -26,7 +26,10 @@ db_image="mariadb:11.4"
 cleanup() {
   docker rm -f "$db" >/dev/null 2>&1 || true
   docker network rm "$network" >/dev/null 2>&1 || true
-  rm -rf "$root"
+  if [[ -d "$root" ]]; then
+    docker run --rm -u 0:0 -v "$root:/cleanup" "$cli_image" sh -c 'rm -rf /cleanup/* /cleanup/.[!.]* /cleanup/..?*' >/dev/null 2>&1 || true
+    rm -rf "$root" >/dev/null 2>&1 || true
+  fi
 }
 trap cleanup EXIT
 
@@ -66,7 +69,6 @@ echo "$WC_SHA256  $wc_zip" | sha256sum -c -
 unzip -q "$wc_zip" -d "$plugins"
 
 cp -R "$workspace/packages/ultimate-commerce-for-woocommerce" "$plugins/ultimate-commerce-for-woocommerce"
-chmod -R a+rwX "$html"
 
 wpcli plugin activate woocommerce ultimate-commerce-for-woocommerce
 wpcli wc hpos enable --for-new-shop --user=admin
