@@ -1,0 +1,45 @@
+name: Validate Ultimate Commerce Stock Presentation
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  stock-presentation:
+    runs-on: [self-hosted, Linux, X64, badotter, ci]
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020
+        with:
+          node-version: 24
+          check-latest: false
+
+      - name: Validate stock presentation contract
+        shell: bash
+        run: |
+          set -euo pipefail
+          php -l packages/ultimate-commerce-for-woocommerce/src/Storefront/ProductCardViewModel.php >/dev/null
+          php -l packages/ultimate-commerce-for-woocommerce/src/Storefront/VariationViewModel.php >/dev/null
+          php -l packages/ultimate-commerce-for-woocommerce/src/Storefront/ProductCardRenderer.php >/dev/null
+          php -l tests/stock-presentation-contract.php >/dev/null
+          node --check packages/ultimate-commerce-for-woocommerce/assets/js/variation-controls.js
+          php tests/stock-presentation-contract.php
+
+          if grep -RniE 'FishingClothing|fishingclothing\.co\.uk' \
+            packages/ultimate-commerce-for-woocommerce/src/Storefront/ProductCardViewModel.php \
+            packages/ultimate-commerce-for-woocommerce/src/Storefront/VariationViewModel.php \
+            packages/ultimate-commerce-for-woocommerce/src/Storefront/ProductCardRenderer.php \
+            packages/ultimate-commerce-for-woocommerce/assets/js/variation-controls.js \
+            docs/storefront-catalogue-contract-v1.md; then
+            echo 'Store-specific references are forbidden in reusable stock presentation.' >&2
+            exit 1
+          fi

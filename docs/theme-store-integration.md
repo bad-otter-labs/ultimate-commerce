@@ -41,6 +41,8 @@ For local/custom variation attributes, use each option's `request_value` when ha
 
 The variation controller emits the bubbling `uc:variation-change` event for presentation integrations. It does not create a second stock or variation truth.
 
+For stock copy, consume `availability.stock_html` (or a selected variation's `stock_html`) from Storefront API v1. UC sources that markup from WooCommerce `wc_get_stock_html()`; themes may style the semantic `[data-uc-stock]` region but should not reconstruct stock quantities/status labels or maintain a separate inventory state.
+
 ## Cart drawer and Quick Add
 
 Cart API v1 is documented in `docs/cart-drawer-contract-v1.md`.

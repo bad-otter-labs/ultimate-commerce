@@ -78,6 +78,7 @@ final class ProductCardViewModel
                 'stock_status' => $product->get_stock_status(),
                 'stock_quantity' => $product->get_stock_quantity(),
                 'low_stock' => self::isLowStock($product),
+                'stock_html' => self::stockHtml($product),
             ),
             'variation' => $variationState,
             'action' => $action,
@@ -105,7 +106,7 @@ final class ProductCardViewModel
         $data = apply_filters('uc_product_card_view_model', $data, $product);
         $data = is_array($data) ? $data : array();
         $legacy = apply_filters('uc_product_view_model', $data, $product);
-        return is_array($legacy) ? $legacy : $data;
+        return self::sanitizeStockState(is_array($legacy) ? $legacy : $data);
     }
 
     /** @return array<string, mixed>|null */
@@ -147,6 +148,32 @@ final class ProductCardViewModel
             ) : null,
             'stock_truth' => 'woocommerce',
         );
+    }
+
+    /** @param array<string, mixed> $data @return array<string, mixed> */
+    private static function sanitizeStockState(array $data): array
+    {
+        if (
+            isset($data['availability'])
+            && is_array($data['availability'])
+            && array_key_exists('stock_html', $data['availability'])
+        ) {
+            $data['availability']['stock_html'] = function_exists('wp_kses_post')
+                ? wp_kses_post((string) $data['availability']['stock_html'])
+                : '';
+        }
+
+        return $data;
+    }
+
+    private static function stockHtml(\WC_Product $product): string
+    {
+        if (!function_exists('wc_get_stock_html') || !function_exists('wp_kses_post')) {
+            return '';
+        }
+
+        $html = wc_get_stock_html($product);
+        return is_string($html) ? wp_kses_post($html) : '';
     }
 
     private static function isLowStock(\WC_Product $product): bool

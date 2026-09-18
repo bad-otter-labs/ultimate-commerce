@@ -40,6 +40,7 @@ final class ProductCardRenderer
             echo '<div class="uc-product-card__rating" aria-label="' . esc_attr($ratingLabel) . '">' . esc_html((string) $view['rating']['average']) . '/5</div>';
         }
         echo '<div class="uc-product-card__price" data-uc-price="1">' . wp_kses_post((string) ($view['price']['html'] ?? '')) . '</div>';
+        echo '<div class="uc-product-card__stock" data-uc-stock="1" aria-live="polite" aria-atomic="true">' . wp_kses_post((string) ($view['availability']['stock_html'] ?? '')) . '</div>';
         self::slot('after_price', $view, $context);
         self::slot('before_action', $view, $context);
         if (!empty($view['variation']['variable'])) {

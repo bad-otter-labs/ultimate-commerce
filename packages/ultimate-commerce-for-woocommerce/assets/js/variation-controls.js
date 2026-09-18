@@ -125,6 +125,20 @@
         price.innerHTML = price.dataset.ucOriginalHtml || '';
     }
 
+    function updateStock( stock, variation ) {
+        if ( ! stock ) {
+            return;
+        }
+        if ( ! Object.prototype.hasOwnProperty.call( stock.dataset, 'ucOriginalHtml' ) ) {
+            stock.dataset.ucOriginalHtml = stock.innerHTML;
+        }
+        if ( variation && typeof variation.stock_html === 'string' ) {
+            stock.innerHTML = variation.stock_html;
+            return;
+        }
+        stock.innerHTML = stock.dataset.ucOriginalHtml || '';
+    }
+
     function updateUi( form, swatchImage ) {
         const data = parseData( form );
         if ( ! data ) {
@@ -148,6 +162,7 @@
         const variationInput = form.querySelector( '[name="variation_id"]' );
         const submit = form.querySelector( '[data-uc-variation-submit="1"]' );
         const price = form.closest( '[data-uc-product-card="1"]' )?.querySelector( '[data-uc-price="1"]' );
+        const stock = form.closest( '[data-uc-product-card="1"]' )?.querySelector( '[data-uc-stock="1"]' );
         const usable = Boolean( variation && variation.purchasable && variation.in_stock );
 
         if ( variationInput ) {
@@ -160,6 +175,7 @@
                 : String( variation ? ( data.labels?.unavailable || __( 'Unavailable', 'ultimate-commerce-for-woocommerce' ) ) : ( data.labels?.select_options || __( 'Select options', 'ultimate-commerce-for-woocommerce' ) ) );
         }
         updatePrice( price, variation );
+        updateStock( stock, variation );
         setImage( form, variation?.media || null, variation ? '' : swatchImage );
 
         form.dispatchEvent( new CustomEvent( 'uc:variation-change', {

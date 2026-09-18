@@ -55,7 +55,7 @@ The result contains no cart token, nonce or customer identity. UC conservatively
 - Woo `product_brand` where available
 - current/regular/sale price and Woo price HTML
 - genuine Woo average rating/count when reviews exist
-- stock/purchasability/low-stock presentation state
+- Woo stock/purchasability/low-stock state plus sanitized Woo stock HTML in `availability.stock_html`
 - baseline variable-product state
 - Woo cart handoff metadata
 - semantic classes and extension slots
@@ -89,13 +89,15 @@ If variation limits are exceeded, `variation.truncated` is true and `variation.a
 - option availability based on the bounded Woo variation set
 - selected matching variation
 - variation-specific image and price
-- stock status and low-stock state
+- stock status, low-stock state and sanitized Woo stock HTML in `stock_html`
 - `radiogroup`/`radio`, `aria-checked`, `aria-disabled` semantics
 - Woo Store API add-item handoff metadata only when a complete selected variation is purchasable and in stock
 
 The `uc_swatch_color` and `uc_swatch_image_id` term-meta keys are the built-in Free storage convention, not a requirement for external swatch systems. `uc_variation_swatch_data` receives the default `{color, image_id}` payload, the Woo term and taxonomy; an integration may map an existing swatch provider into the same public state without changing catalogue/product-card code. UC validates the returned colour and attachment ID again after the filter.
 
-The default semantic renderer progressively enhances these states with `assets/js/variation-controls.js`. It owns reusable selection matching, option availability refresh, variation image/price switching, submit-state changes and radio-style arrow-key navigation. The controller is loaded only when the default renderer outputs variable-product controls.
+The default semantic renderer progressively enhances these states with `assets/js/variation-controls.js`. It owns reusable selection matching, option availability refresh, variation image/price/stock-presentation switching, submit-state changes and radio-style arrow-key navigation. The controller is loaded only when the default renderer outputs variable-product controls.
+
+Stock presentation remains WooCommerce-owned. UC obtains customer-facing stock markup from WooCommerce's `wc_get_stock_html()`, sanitizes it with `wp_kses_post()`, exposes it as presentation state only, and renders it in the semantic `[data-uc-stock]` region. The variation controller swaps that Woo-generated markup when a concrete variation is selected and restores the parent product markup for incomplete selection. UC does not calculate, persist or mutate stock quantities/statuses.
 
 For variation options, `value` is UC's normalized matching value. `request_value` is the value that must be handed back to Woo. They are identical for global taxonomy attributes (the term slug), while local/custom attributes preserve the original option case and spacing in `request_value` (for example `Regular Fit`) even though the matching value is normalized (for example `regular-fit`). The default renderer therefore keeps a non-named normalized state input for UC matching and a separate named `attribute_*` input carrying the exact Woo request value.
 

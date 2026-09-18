@@ -214,6 +214,7 @@ final class VariationViewModel
             'stock_status' => $variation->get_stock_status(),
             'stock_quantity' => $variation->get_stock_quantity(),
             'low_stock' => self::isLowStock($variation),
+            'stock_html' => self::stockHtml($variation),
             'price' => array(
                 'current' => (string) $variation->get_price(),
                 'regular' => (string) $variation->get_regular_price(),
@@ -227,7 +228,7 @@ final class VariationViewModel
         $state = apply_filters('uc_variation_state', $state, $variation);
         $state = is_array($state) ? $state : array();
         $legacy = apply_filters('uc_variation_view_model', $state, $variation);
-        return is_array($legacy) ? $legacy : $state;
+        return self::sanitizeStockState(is_array($legacy) ? $legacy : $state);
     }
 
     /** @param array<int, \WC_Product_Variable> $products @return array<string, array<string, array<string, mixed>>> */
@@ -418,6 +419,28 @@ final class VariationViewModel
     private static function attributeKey(string $key): string
     {
         return sanitize_key(str_starts_with($key, 'attribute_') ? substr($key, 10) : $key);
+    }
+
+    /** @param array<string, mixed> $state @return array<string, mixed> */
+    private static function sanitizeStockState(array $state): array
+    {
+        if (array_key_exists('stock_html', $state)) {
+            $state['stock_html'] = function_exists('wp_kses_post')
+                ? wp_kses_post((string) $state['stock_html'])
+                : '';
+        }
+
+        return $state;
+    }
+
+    private static function stockHtml(\WC_Product $product): string
+    {
+        if (!function_exists('wc_get_stock_html') || !function_exists('wp_kses_post')) {
+            return '';
+        }
+
+        $html = wc_get_stock_html($product);
+        return is_string($html) ? wp_kses_post($html) : '';
     }
 
     private static function isLowStock(\WC_Product $product): bool
