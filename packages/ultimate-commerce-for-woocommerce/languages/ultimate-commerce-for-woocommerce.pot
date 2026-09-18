@@ -1075,7 +1075,7 @@ msgstr[1] ""
 msgid "The cart could not be updated."
 msgstr ""
 
-#: assets/js/cart-drawer.js:455
+#: assets/js/cart-drawer.js:470
 msgid "Adding to cart…"
 msgstr ""
 
