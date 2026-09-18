@@ -10,6 +10,11 @@ TRUSTED_PUBLISHERS = {
     "development-release.yml",
     "release.yml",
 }
+SAFE_RUNNER = (
+    "runs-on: ${{ github.event_name == 'pull_request' "
+    "&& github.event.pull_request.head.repo.full_name != github.repository "
+    "&& 'ubuntu-latest' || 'badotter' }}"
+)
 
 workflow_paths = sorted(
     list(WORKFLOWS.glob("*.yml")) + list(WORKFLOWS.glob("*.yaml"))
@@ -29,14 +34,15 @@ for path in workflow_paths:
     if "pull_request:" not in text:
         continue
 
-    if "self-hosted" in text:
+    if SAFE_RUNNER not in text:
         raise SystemExit(
-            f"{path.name}: pull-request code must not execute on a persistent self-hosted runner."
+            f"{path.name}: pull-request runner must route cross-repository heads to ubuntu-latest "
+            "and reserve the Bad Otter runner for same-repository branches."
         )
 
-    if "runs-on: ubuntu-latest" not in text:
+    if re.search(r"(?m)^\s*uses:\s*[^#\n]+@(main|master|HEAD)\s*$", text):
         raise SystemExit(
-            f"{path.name}: pull-request validation must use the isolated GitHub-hosted baseline."
+            f"{path.name}: pull-request workflow contains an unpinned mutable action branch."
         )
 
     if "permissions:" not in text or not re.search(
@@ -65,7 +71,7 @@ for name in TRUSTED_PUBLISHERS:
         raise SystemExit(
             f"{name}: trusted publishing must never execute from a pull-request event."
         )
-    if "self-hosted" not in text:
+    if "self-hosted" not in text or "badotter" not in text:
         raise SystemExit(
             f"{name}: trusted publisher unexpectedly left the controlled release runner."
         )
