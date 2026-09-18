@@ -11,9 +11,7 @@ permissions:
 
 jobs:
   storefront-contract:
-    # Repository is private during development. Move untrusted public PRs to an
-    # isolated/GitHub-hosted runner before changing visibility.
-    runs-on: [self-hosted, Linux, X64, badotter, ci]
+    runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
       - name: Checkout
