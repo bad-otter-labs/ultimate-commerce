@@ -1,0 +1,55 @@
+name: Rebuild Translation Tool Lock
+
+on:
+  push:
+    branches:
+      - phase4/translation-template
+    paths:
+      - tools/i18n/composer.json
+      - .github/workflows/translation-lock-bootstrap.yml
+
+permissions:
+  contents: write
+
+jobs:
+  rebuild-lock:
+    runs-on: [self-hosted, Linux, X64, badotter, ci]
+    timeout-minutes: 20
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install pinned Composer
+        shell: bash
+        run: |
+          set -euo pipefail
+          php -r "copy('https://getcomposer.org/download/2.10.3/composer.phar', 'composer.phar');"
+          echo "7a2d379d5b8ffdaa028580ef26494c36d2feef4b178d3dd1473a4dbc5e17c8d6  composer.phar" | sha256sum -c -
+          php composer.phar --version
+
+      - name: Re-resolve i18n lock for PHP 8.1 floor
+        shell: bash
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          php composer.phar config --global github-oauth.github.com "$GITHUB_TOKEN"
+          php composer.phar --working-dir=tools/i18n validate --strict --no-check-lock
+          php composer.phar --working-dir=tools/i18n update --no-interaction --no-progress --prefer-dist
+          php composer.phar --working-dir=tools/i18n validate --strict
+          php composer.phar --working-dir=tools/i18n audit --locked
+          tools/i18n/vendor/bin/wp --info
+
+      - name: Commit regenerated lockfile
+        shell: bash
+        run: |
+          set -euo pipefail
+          git add tools/i18n/composer.lock
+          if git diff --cached --quiet; then
+            echo "i18n lockfile unchanged"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "build(i18n): lock extractor for PHP 8.1"
+          git push origin "HEAD:${GITHUB_REF_NAME}"
