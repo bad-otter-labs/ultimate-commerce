@@ -23,7 +23,8 @@ Every canonical Free release candidate must be built through `scripts/build-word
 7. embedded-secret signature scan;
 8. forbidden development/artifact file scan;
 9. official WordPress Plugin Check against the built package.
-10. WordPress.org readme submission sections, privacy/external-service disclosure and public source/build references.
+10. WordPress.org readme submission sections, privacy/external-service disclosure and public source/build references;
+11. committed deterministic translation template at `languages/ultimate-commerce-for-woocommerce.pot`.
 
 The package audit runs against the ZIP that would be submitted, not only against the source tree.
 
@@ -87,6 +88,7 @@ Before the first WordPress.org submission/release:
 - no duplicate active plugin copy is created during that live identity migration;
 - WordPress.org owns Free update delivery after migration;
 - source/build instructions and human-readable source are present;
+- pinned official WP-CLI translation-template regeneration is green;
 - no private updater, Pro implementation, credentials, test fixtures or nested release archives ship.
 
 A green CI build is evidence for release readiness; it is not itself a release or submission.

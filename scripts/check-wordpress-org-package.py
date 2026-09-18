@@ -12,6 +12,7 @@ SLUG = 'ultimate-commerce-for-woocommerce'
 MAIN = f'{SLUG}/{SLUG}.php'
 README = f'{SLUG}/readme.txt'
 COMPOSER = f'{SLUG}/composer.json'
+POT = f'{SLUG}/languages/{SLUG}.pot'
 
 FORBIDDEN_EXACT = {
     f'{SLUG}/module.json',
@@ -86,8 +87,8 @@ def main() -> int:
             fail('Package contains an unsafe archive path')
         if any(not name.startswith(SLUG + '/') for name in names):
             fail('Package contains files outside the canonical plugin root')
-        if MAIN not in names or README not in names:
-            fail('Package is missing its canonical main file or readme.txt')
+        if MAIN not in names or README not in names or POT not in names:
+            fail('Package is missing its canonical main file, readme.txt or translation template')
         if FORBIDDEN_EXACT.intersection(names):
             fail(f'Package contains private distribution files: {sorted(FORBIDDEN_EXACT.intersection(names))}')
 
@@ -106,6 +107,7 @@ def main() -> int:
 
         plugin = decode(zf, MAIN)
         readme = decode(zf, README)
+        pot = decode(zf, POT)
         version = header(plugin, 'Version')
         if stable_tag(readme) != version:
             fail(f'Plugin Version {version} does not match readme Stable tag {stable_tag(readme)}')
@@ -115,6 +117,12 @@ def main() -> int:
             fail('Canonical text domain changed unexpectedly')
         if re.search(r'^\s*\*\s*Update URI:', plugin, re.M):
             fail('WordPress.org Free package must not define Update URI')
+        if '"X-Domain: ultimate-commerce-for-woocommerce\\n"' not in pot:
+            fail('Packaged POT must declare the canonical translation domain')
+        if '"POT-Creation-Date: \\n"' not in pot:
+            fail('Packaged POT creation date must remain blank for deterministic regeneration')
+        if 'msgid "Ultimate Commerce"' not in pot:
+            fail('Packaged POT does not contain expected extracted runtime strings')
 
         required_sections = (
             'Description',

@@ -1,0 +1,1134 @@
+# Copyright (C) 2026 Bad Otter Labs
+# This file is distributed under the GPL v2 or later.
+msgid ""
+msgstr ""
+"Project-Id-Version: Ultimate Commerce for WooCommerce 0.2.0\n"
+"Report-Msgid-Bugs-To: https://github.com/bad-otter-labs/ultimate-commerce/issues\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"X-Generator: WP-CLI 2.12.0\n"
+"X-Domain: ultimate-commerce-for-woocommerce\n"
+
+#. Plugin Name of the plugin
+#: ultimate-commerce-for-woocommerce.php:3
+msgid "Ultimate Commerce for WooCommerce"
+msgstr ""
+
+#. Plugin URI of the plugin
+#: ultimate-commerce-for-woocommerce.php:4
+msgid "https://badotter.io/ultimate-commerce"
+msgstr ""
+
+#. Description of the plugin
+#: ultimate-commerce-for-woocommerce.php:5
+msgid "A modular commerce experience enhancement platform for WooCommerce."
+msgstr ""
+
+#. Author of the plugin
+#: ultimate-commerce-for-woocommerce.php:10
+msgid "Bad Otter Labs"
+msgstr ""
+
+#. Author URI of the plugin
+#: ultimate-commerce-for-woocommerce.php:11
+msgid "https://badotter.io"
+msgstr ""
+
+#: src/Account/AccountViewModel.php:26
+msgid "Customer account not found."
+msgstr ""
+
+#: src/Account/OrderViewModel.php:29
+msgid "Order not found."
+msgstr ""
+
+#: src/Admin/AdminMenu.php:22
+#: src/Admin/AdminMenu.php:23
+#: src/Admin/OverviewPage.php:35
+msgid "Ultimate Commerce"
+msgstr ""
+
+#: src/Admin/AdminMenu.php:33
+#: src/Admin/AdminMenu.php:34
+#: src/Admin/OverviewPage.php:38
+msgid "Overview"
+msgstr ""
+
+#: src/Admin/AdminMenu.php:42
+#: src/Admin/AdminMenu.php:43
+#: src/Admin/DiagnosticsPage.php:101
+msgid "Modules"
+msgstr ""
+
+#: src/Admin/AdminMenu.php:51
+#: src/Admin/AdminMenu.php:52
+msgid "Settings"
+msgstr ""
+
+#: src/Admin/AdminMenu.php:60
+#: src/Admin/AdminMenu.php:61
+msgid "Diagnostics"
+msgstr ""
+
+#: src/Admin/DiagnosticsPage.php:16
+#: src/Admin/OverviewPage.php:15
+msgid "You do not have permission to view this page."
+msgstr ""
+
+#: src/Admin/DiagnosticsPage.php:28
+msgid "Ultimate Commerce Diagnostics"
+msgstr ""
+
+#: src/Admin/DiagnosticsPage.php:29
+msgid "Read-only system state for Ultimate Commerce, WooCommerce compatibility and registered modules."
+msgstr ""
+
+#: src/Admin/DiagnosticsPage.php:31
+msgid "System summary"
+msgstr ""
+
+#: src/Admin/DiagnosticsPage.php:35
+msgid "Overall status"
+msgstr ""
+
+#: src/Admin/DiagnosticsPage.php:39
+msgid "Ultimate Commerce version"
+msgstr ""
+
+#: src/Admin/DiagnosticsPage.php:43
+msgid "Schema version"
+msgstr ""
+
+#: src/Admin/DiagnosticsPage.php:47
+msgid "Development build"
+msgstr ""
+
+#: src/Admin/DiagnosticsPage.php:51
+#: src/Admin/OverviewPage.php:42
+msgid "Registered modules"
+msgstr ""
+
+#: src/Admin/DiagnosticsPage.php:55
+#: src/Admin/OverviewPage.php:43
+msgid "Active modules"
+msgstr ""
+
+#: src/Admin/DiagnosticsPage.php:59
+#: src/Admin/OverviewPage.php:44
+msgid "Blocked modules"
+msgstr ""
+
+#: src/Admin/DiagnosticsPage.php:65
+msgid "Environment"
+msgstr ""
+
+#: src/Admin/DiagnosticsPage.php:68
+msgid "WordPress"
+msgstr ""
+
+#: src/Admin/DiagnosticsPage.php:69
+msgid "WooCommerce"
+msgstr ""
+
+#: src/Admin/DiagnosticsPage.php:70
+msgid "PHP"
+msgstr ""
+
+#: src/Admin/DiagnosticsPage.php:71
+msgid "WordPress memory limit"
+msgstr ""
+
+#: src/Admin/DiagnosticsPage.php:72
+msgid "WordPress max memory limit"
+msgstr ""
+
+#: src/Admin/DiagnosticsPage.php:73
+msgid "Multisite"
+msgstr ""
+
+#: src/Admin/DiagnosticsPage.php:74
+msgid "External object cache"
+msgstr ""
+
+#: src/Admin/DiagnosticsPage.php:75
+msgid "WP_DEBUG"
+msgstr ""
+
+#: src/Admin/DiagnosticsPage.php:76
+msgid "Debug logging enabled"
+msgstr ""
+
+#: src/Admin/DiagnosticsPage.php:77
+msgid "WP-Cron disabled"
+msgstr ""
+
+#: src/Admin/DiagnosticsPage.php:81
+msgid "WooCommerce compatibility"
+msgstr ""
+
+#: src/Admin/DiagnosticsPage.php:84
+msgid "HPOS compatibility declared"
+msgstr ""
+
+#: src/Admin/DiagnosticsPage.php:85
+msgid "HPOS active"
+msgstr ""
+
+#: src/Admin/DiagnosticsPage.php:86
+msgid "Cart/Checkout Blocks compatibility declared"
+msgstr ""
+
+#: src/Admin/DiagnosticsPage.php:87
+msgid "Action Scheduler available"
+msgstr ""
+
+#: src/Admin/DiagnosticsPage.php:91
+msgid "Public API versions"
+msgstr ""
+
+#: src/Admin/DiagnosticsPage.php:93
+msgid "API"
+msgstr ""
+
+#: src/Admin/DiagnosticsPage.php:93
+#: src/Admin/OverviewPage.php:41
+msgid "Version"
+msgstr ""
+
+#: src/Admin/DiagnosticsPage.php:105
+#: src/Admin/ModulesPage.php:50
+msgid "Module"
+msgstr ""
+
+#: src/Admin/DiagnosticsPage.php:106
+#: src/Admin/ModulesPage.php:51
+msgid "Product / tier"
+msgstr ""
+
+#: src/Admin/DiagnosticsPage.php:107
+#: src/Admin/ModulesPage.php:52
+msgid "Dependencies"
+msgstr ""
+
+#: src/Admin/DiagnosticsPage.php:108
+msgid "State"
+msgstr ""
+
+#: src/Admin/DiagnosticsPage.php:109
+msgid "Issue"
+msgstr ""
+
+#: src/Admin/DiagnosticsPage.php:114
+msgid "No Ultimate Commerce modules are registered."
+msgstr ""
+
+#: src/Admin/DiagnosticsPage.php:121
+#: src/Admin/ModulesPage.php:80
+msgid "None"
+msgstr ""
+
+#: src/Admin/DiagnosticsPage.php:130
+msgid "Support snapshot"
+msgstr ""
+
+#: src/Admin/DiagnosticsPage.php:131
+msgid "Copy this JSON when asking for support. It excludes site URLs, filesystem paths, credentials, secrets, customer/order data and module settings payloads."
+msgstr ""
+
+#: src/Admin/DiagnosticsPage.php:132
+msgid "Ultimate Commerce support snapshot"
+msgstr ""
+
+#: src/Admin/DiagnosticsPage.php:141
+msgid "Yes"
+msgstr ""
+
+#: src/Admin/DiagnosticsPage.php:142
+msgid "No"
+msgstr ""
+
+#: src/Admin/DiagnosticsPage.php:148
+msgid "Healthy"
+msgstr ""
+
+#: src/Admin/DiagnosticsPage.php:149
+msgid "Attention needed"
+msgstr ""
+
+#: src/Admin/ModulesPage.php:38
+msgid "Ultimate Commerce Modules"
+msgstr ""
+
+#: src/Admin/ModulesPage.php:39
+msgid "Enable or disable registered Ultimate Commerce modules. WooCommerce remains the source of truth for products, stock, cart, totals, orders and payments."
+msgstr ""
+
+#: src/Admin/ModulesPage.php:53
+msgid "Runtime state"
+msgstr ""
+
+#: src/Admin/ModulesPage.php:54
+#: src/Admin/ModulesPage.php:104
+msgid "Enabled"
+msgstr ""
+
+#: src/Admin/ModulesPage.php:60
+msgid "No Ultimate Commerce modules are currently registered."
+msgstr ""
+
+#: src/Admin/ModulesPage.php:93
+msgid "Effective state is currently overridden by code."
+msgstr ""
+
+#: src/Admin/ModulesPage.php:113
+msgid "Dependency failures are shown as blocked states. Saving does not silently change other module preferences."
+msgstr ""
+
+#: src/Admin/ModulesPage.php:114
+msgid "Save module settings"
+msgstr ""
+
+#: src/Admin/ModulesPage.php:147
+#: src/Admin/SettingsPage.php:179
+msgid "Request rejected"
+msgstr ""
+
+#: src/Admin/ModulesPage.php:157
+msgid "You do not have permission to manage Ultimate Commerce modules."
+msgstr ""
+
+#: src/Admin/ModulesPage.php:158
+#: src/Admin/SettingsPage.php:190
+msgid "Access denied"
+msgstr ""
+
+#: src/Admin/ModulesPage.php:190
+msgid "Module settings saved."
+msgstr ""
+
+#: src/Admin/ModulesPage.php:197
+msgid "Active"
+msgstr ""
+
+#: src/Admin/ModulesPage.php:199
+msgid "Disabled"
+msgstr ""
+
+#: src/Admin/ModulesPage.php:201
+msgid "Blocked"
+msgstr ""
+
+#: src/Admin/ModulesPage.php:203
+msgid "Starting"
+msgstr ""
+
+#: src/Admin/ModulesPage.php:205
+msgid "Registered"
+msgstr ""
+
+#: src/Admin/OverviewPage.php:36
+msgid "Commerce experience and retail operations foundations for WooCommerce."
+msgstr ""
+
+#: src/Admin/OverviewPage.php:45
+msgid "Disabled modules"
+msgstr ""
+
+#: src/Admin/OverviewPage.php:51
+msgid "View diagnostics"
+msgstr ""
+
+#: src/Admin/SettingsPage.php:34
+msgid "Ultimate Commerce Settings"
+msgstr ""
+
+#: src/Admin/SettingsPage.php:35
+msgid "Export or import portable Ultimate Commerce merchant settings. Runtime metadata, secrets and caches are never part of this file."
+msgstr ""
+
+#: src/Admin/SettingsPage.php:39
+msgid "Export settings"
+msgstr ""
+
+#: src/Admin/SettingsPage.php:40
+msgid "Download a JSON file containing supported merchant configuration. The current format includes stored module preferences, including temporarily unavailable extension modules."
+msgstr ""
+
+#: src/Admin/SettingsPage.php:44
+msgid "Download settings file"
+msgstr ""
+
+#: src/Admin/SettingsPage.php:49
+#: src/Admin/SettingsPage.php:69
+msgid "Import settings"
+msgstr ""
+
+#: src/Admin/SettingsPage.php:50
+msgid "Import a JSON file previously exported by Ultimate Commerce. Declared module preferences are merged with existing settings, so omitted extension preferences are preserved."
+msgstr ""
+
+#: src/Admin/SettingsPage.php:55
+msgid "Settings JSON file"
+msgstr ""
+
+#. translators: %s: Maximum settings file size.
+#: src/Admin/SettingsPage.php:63
+#, php-format
+msgid "Maximum file size: %s KB. Imported settings take effect on the next request."
+msgstr ""
+
+#: src/Admin/SettingsPage.php:74
+msgid "Data retention"
+msgstr ""
+
+#: src/Admin/SettingsPage.php:75
+msgid "Ultimate Commerce keeps merchant configuration by default when the plugin is deleted, making a later reinstall recoverable. Short-lived runtime locks, replay records, idempotency records and rate-limit transients are always removed."
+msgstr ""
+
+#: src/Admin/SettingsPage.php:82
+msgid "Delete Ultimate Commerce data when the plugin is deleted"
+msgstr ""
+
+#: src/Admin/SettingsPage.php:85
+msgid "When enabled, deletion also removes stored module preferences and Ultimate Commerce encrypted secrets. WooCommerce products, stock, carts, orders, payments and other WooCommerce-owned data are never deleted by this cleanup."
+msgstr ""
+
+#: src/Admin/SettingsPage.php:86
+msgid "This destructive local preference is intentionally excluded from settings export/import."
+msgstr ""
+
+#: src/Admin/SettingsPage.php:87
+msgid "Save data retention"
+msgstr ""
+
+#: src/Admin/SettingsPage.php:101
+msgid "Settings export failed"
+msgstr ""
+
+#: src/Admin/SettingsPage.php:147
+msgid "Choose an Ultimate Commerce settings file to import."
+msgstr ""
+
+#: src/Admin/SettingsPage.php:156
+msgid "The uploaded settings file could not be accepted."
+msgstr ""
+
+#: src/Admin/SettingsPage.php:162
+msgid "The uploaded settings file is empty, unreadable or too large."
+msgstr ""
+
+#: src/Admin/SettingsPage.php:189
+msgid "You do not have permission to manage Ultimate Commerce settings."
+msgstr ""
+
+#: src/Admin/SettingsPage.php:220
+msgid "Ultimate Commerce settings imported. The imported module preferences are now active."
+msgstr ""
+
+#: src/Admin/SettingsPage.php:225
+msgid "Ultimate Commerce data-retention preference saved."
+msgstr ""
+
+#: src/Admin/SettingsPage.php:230
+msgid "The settings file was not imported. Use a valid Ultimate Commerce settings export and try again."
+msgstr ""
+
+#: src/Audit/AuditEvent.php:54
+msgid "Audit action is invalid."
+msgstr ""
+
+#: src/Audit/AuditEvent.php:57
+msgid "Audit actor type is invalid."
+msgstr ""
+
+#: src/Audit/AuditEvent.php:60
+msgid "Audit actor identifier is invalid."
+msgstr ""
+
+#: src/Audit/AuditEvent.php:63
+msgid "User audit actor must use a numeric WordPress user ID."
+msgstr ""
+
+#: src/Audit/AuditEvent.php:66
+msgid "Audit target is invalid."
+msgstr ""
+
+#: src/Audit/AuditEvent.php:69
+msgid "Audit reason code is invalid."
+msgstr ""
+
+#: src/Audit/AuditEvent.php:79
+msgid "Audit event identifier could not be generated."
+msgstr ""
+
+#: src/Audit/AuditEvent.php:107
+msgid "A logged-in user is required for this audit event."
+msgstr ""
+
+#: src/Audit/AuditEvent.php:166
+msgid "Audit context contains too many fields."
+msgstr ""
+
+#: src/Audit/AuditEvent.php:171
+msgid "Audit context field name is invalid."
+msgstr ""
+
+#: src/Audit/AuditEvent.php:174
+msgid "Credentials and authentication material must not be placed in audit context."
+msgstr ""
+
+#: src/Audit/AuditEvent.php:177
+msgid "Audit context values must be scalar."
+msgstr ""
+
+#: src/Audit/AuditEvent.php:180
+msgid "Audit context string value is too large."
+msgstr ""
+
+#: src/Concurrency/OptionLockStore.php:25
+msgid "Lock scope or key is invalid."
+msgstr ""
+
+#: src/Concurrency/OptionLockStore.php:28
+msgid "Lock lifetime is outside the allowed range."
+msgstr ""
+
+#: src/Concurrency/OptionLockStore.php:44
+msgid "Lock entropy is unavailable."
+msgstr ""
+
+#: src/Http/ProviderHttp.php:21
+msgid "Provider HTTP method is not allowed."
+msgstr ""
+
+#: src/Http/ProviderHttp.php:29
+msgid "Provider URL failed WordPress safety validation."
+msgstr ""
+
+#: src/Http/ProviderHttp.php:68
+msgid "Provider URLs must use HTTPS."
+msgstr ""
+
+#: src/Http/ProviderHttp.php:71
+msgid "Provider URLs must not contain credentials or fragments."
+msgstr ""
+
+#: src/Http/ProviderHttp.php:76
+msgid "Provider URLs must use an allowlisted DNS host."
+msgstr ""
+
+#: src/Http/ProviderHttp.php:80
+msgid "Provider URL port is invalid."
+msgstr ""
+
+#: src/Http/ProviderHttp.php:92
+msgid "Provider host is not allowlisted."
+msgstr ""
+
+#: src/Idempotency/OptionIdempotencyStore.php:28
+msgid "Idempotency scope or key is invalid."
+msgstr ""
+
+#: src/Idempotency/OptionIdempotencyStore.php:31
+msgid "Idempotency lifetime is outside the allowed range."
+msgstr ""
+
+#: src/Idempotency/OptionIdempotencyStore.php:47
+msgid "Idempotency entropy is unavailable."
+msgstr ""
+
+#: src/Idempotency/OptionIdempotencyStore.php:62
+msgid "Idempotency claim could not be established."
+msgstr ""
+
+#: src/Jobs/ActionScheduler.php:20
+msgid "Background job name is invalid."
+msgstr ""
+
+#: src/Jobs/ActionScheduler.php:27
+msgid "Action Scheduler is unavailable."
+msgstr ""
+
+#: src/Jobs/ActionScheduler.php:33
+msgid "Background job schedule is outside the allowed range."
+msgstr ""
+
+#: src/Jobs/ActionScheduler.php:44
+msgid "Background job could not be scheduled."
+msgstr ""
+
+#: src/Jobs/ActionScheduler.php:57
+msgid "Background job retry limit has been reached."
+msgstr ""
+
+#: src/Jobs/ActionScheduler.php:80
+msgid "Background job contains too many arguments."
+msgstr ""
+
+#: src/Jobs/ActionScheduler.php:85
+msgid "Background job argument name is invalid."
+msgstr ""
+
+#: src/Jobs/ActionScheduler.php:88
+msgid "Background jobs must carry identifiers rather than credentials or personal-data snapshots."
+msgstr ""
+
+#: src/Jobs/ActionScheduler.php:91
+msgid "Background job arguments must be scalar identifiers or flags."
+msgstr ""
+
+#: src/Jobs/ActionScheduler.php:94
+msgid "Background job string argument is too large."
+msgstr ""
+
+#: src/Modules/Account/AccountModule.php:20
+msgid "Account"
+msgstr ""
+
+#: src/Modules/Cart/CartModule.php:20
+#: src/Storefront/CartDrawer.php:108
+msgid "Cart"
+msgstr ""
+
+#: src/Modules/ProductDisplay/ProductDisplayModule.php:19
+msgid "Product Display"
+msgstr ""
+
+#: src/Modules/RecentlyViewed/RecentlyViewedModule.php:20
+msgid "Recently Viewed"
+msgstr ""
+
+#: src/Modules/Variations/VariationsModule.php:20
+msgid "Variants & Swatches"
+msgstr ""
+
+#: src/Modules/Wishlist/WishlistModule.php:23
+#: src/Storefront/WishlistControls.php:52
+msgid "Wishlist"
+msgstr ""
+
+#: src/Plugin.php:88
+msgid "Ultimate Commerce for WooCommerce requires WooCommerce to be installed and active."
+msgstr ""
+
+#: src/Privacy/PersonalDataRegistry.php:54
+msgid "Personal-data handler key is invalid."
+msgstr ""
+
+#: src/Privacy/PersonalDataRegistry.php:57
+msgid "Personal-data handler name is invalid."
+msgstr ""
+
+#: src/Privacy/PersonalDataRegistry.php:60
+msgid "Personal-data retention class is invalid."
+msgstr ""
+
+#: src/Privacy/PersonalDataRegistry.php:63
+msgid "A personal-data handler is already registered with this key."
+msgstr ""
+
+#: src/RateLimit/TransientRateLimiter.php:18
+msgid "Rate-limit scope or subject is invalid."
+msgstr ""
+
+#: src/RateLimit/TransientRateLimiter.php:21
+msgid "Rate-limit policy is outside the allowed range."
+msgstr ""
+
+#: src/Security/Authorization.php:23
+msgid "You do not have permission to perform this action."
+msgstr ""
+
+#: src/Security/Authorization.php:43
+msgid "You do not have permission to access this resource."
+msgstr ""
+
+#: src/Security/Authorization.php:57
+msgid "Authentication is required."
+msgstr ""
+
+#: src/Security/Csrf.php:30
+msgid "The request could not be verified."
+msgstr ""
+
+#: src/Security/GuestToken.php:28
+msgid "Secure token entropy is unavailable."
+msgstr ""
+
+#: src/Security/GuestToken.php:43
+msgid "The guest token could not be encoded."
+msgstr ""
+
+#: src/Security/GuestToken.php:57
+#: src/Security/GuestToken.php:62
+#: src/Security/GuestToken.php:68
+msgid "The guest token is invalid."
+msgstr ""
+
+#: src/Security/GuestToken.php:73
+msgid "The guest token signature is invalid."
+msgstr ""
+
+#: src/Security/GuestToken.php:78
+#: src/Security/GuestToken.php:90
+msgid "The guest token payload is invalid."
+msgstr ""
+
+#: src/Security/GuestToken.php:93
+msgid "The guest token claims are invalid."
+msgstr ""
+
+#: src/Security/GuestToken.php:96
+msgid "The guest token time window is invalid."
+msgstr ""
+
+#: src/Security/GuestToken.php:99
+msgid "The guest token has expired."
+msgstr ""
+
+#: src/Security/GuestToken.php:102
+msgid "The guest token does not match this resource."
+msgstr ""
+
+#: src/Security/GuestToken.php:120
+msgid "Guest token purpose is invalid."
+msgstr ""
+
+#: src/Security/GuestToken.php:123
+msgid "Guest token subject is invalid."
+msgstr ""
+
+#: src/Security/GuestToken.php:126
+msgid "Guest token lifetime is outside the allowed range."
+msgstr ""
+
+#: src/Security/GuestToken.php:139
+msgid "Guest token claim names are invalid."
+msgstr ""
+
+#: src/Security/GuestToken.php:142
+msgid "Guest token claims must contain scalar values only."
+msgstr ""
+
+#: src/Security/GuestToken.php:148
+msgid "Guest token claims are too large."
+msgstr ""
+
+#: src/Security/Replay/OptionReplayStore.php:25
+msgid "Replay protection key is invalid."
+msgstr ""
+
+#: src/Security/Replay/OptionReplayStore.php:28
+msgid "Replay protection lifetime is outside the allowed range."
+msgstr ""
+
+#: src/Security/Replay/OptionReplayStore.php:44
+msgid "Replay protection entropy is unavailable."
+msgstr ""
+
+#: src/Security/Secrets/EncryptedOptionSecretStore.php:18
+#: src/Security/Secrets/EncryptedOptionSecretStore.php:36
+msgid "Secret key is invalid."
+msgstr ""
+
+#: src/Security/Secrets/EncryptedOptionSecretStore.php:26
+#: src/Security/Secrets/EncryptedOptionSecretStore.php:120
+#: src/Security/Secrets/EncryptedOptionSecretStore.php:127
+#: src/Security/Secrets/EncryptedOptionSecretStore.php:147
+msgid "Stored secret data is invalid."
+msgstr ""
+
+#: src/Security/Secrets/EncryptedOptionSecretStore.php:39
+msgid "Secret value must not be empty."
+msgstr ""
+
+#: src/Security/Secrets/EncryptedOptionSecretStore.php:56
+msgid "The secret could not be stored."
+msgstr ""
+
+#: src/Security/Secrets/EncryptedOptionSecretStore.php:103
+#: src/Security/Secrets/EncryptedOptionSecretStore.php:108
+msgid "Secret encryption failed."
+msgstr ""
+
+#: src/Security/Secrets/EncryptedOptionSecretStore.php:111
+msgid "No supported secret encryption backend is available."
+msgstr ""
+
+#: src/Security/Secrets/EncryptedOptionSecretStore.php:139
+msgid "Stored secret nonce is invalid."
+msgstr ""
+
+#: src/Security/Secrets/EncryptedOptionSecretStore.php:142
+#: src/Security/Secrets/EncryptedOptionSecretStore.php:152
+#: src/Security/Secrets/EncryptedOptionSecretStore.php:155
+msgid "The secret could not be decrypted."
+msgstr ""
+
+#: src/Security/Secrets/EncryptedOptionSecretStore.php:158
+msgid "The encryption backend for this secret is unavailable."
+msgstr ""
+
+#: src/Security/Secrets/EncryptedOptionSecretStore.php:166
+msgid "WordPress secret key material is unavailable."
+msgstr ""
+
+#: src/Security/Secrets/EncryptedOptionSecretStore.php:181
+msgid "Secret encryption metadata could not be encoded."
+msgstr ""
+
+#: src/Security/SignedWebhook.php:38
+msgid "This webhook event has already been accepted."
+msgstr ""
+
+#: src/Security/SignedWebhook.php:58
+msgid "Webhook identity is invalid."
+msgstr ""
+
+#: src/Security/SignedWebhook.php:61
+msgid "Webhook secret is not configured securely."
+msgstr ""
+
+#: src/Security/SignedWebhook.php:64
+msgid "Webhook timestamp tolerance is invalid."
+msgstr ""
+
+#: src/Security/SignedWebhook.php:67
+msgid "Webhook payload is too large."
+msgstr ""
+
+#: src/Security/SignedWebhook.php:70
+msgid "Webhook timestamp is invalid."
+msgstr ""
+
+#: src/Security/SignedWebhook.php:76
+msgid "Webhook timestamp is outside the accepted window."
+msgstr ""
+
+#: src/Security/SignedWebhook.php:81
+msgid "Webhook signature is invalid."
+msgstr ""
+
+#: src/Security/SignedWebhook.php:94
+msgid "Webhook signature verification failed."
+msgstr ""
+
+#: src/Storefront/CartDrawer.php:65
+msgid "Your cart"
+msgstr ""
+
+#: src/Storefront/CartDrawer.php:66
+msgid "Close cart"
+msgstr ""
+
+#: src/Storefront/CartDrawer.php:74
+msgid "Your cart is empty."
+msgstr ""
+
+#: src/Storefront/CartDrawer.php:80
+msgid "Total"
+msgstr ""
+
+#: src/Storefront/CartDrawer.php:88
+msgid "View cart"
+msgstr ""
+
+#: src/Storefront/CartDrawer.php:89
+msgid "Checkout"
+msgstr ""
+
+#: src/Storefront/CatalogFilterRegistry.php:22
+msgid "Price"
+msgstr ""
+
+#: src/Storefront/CatalogFilterRegistry.php:27
+msgid "Availability"
+msgstr ""
+
+#: src/Storefront/CatalogFilterRegistry.php:66
+#: src/Storefront/CatalogFilterRegistry.php:392
+msgid "Newest"
+msgstr ""
+
+#: src/Storefront/CatalogFilterRegistry.php:71
+msgid "Price: low to high"
+msgstr ""
+
+#: src/Storefront/CatalogFilterRegistry.php:76
+msgid "Price: high to low"
+msgstr ""
+
+#: src/Storefront/CatalogFilterRegistry.php:170
+msgid "In stock"
+msgstr ""
+
+#: src/Storefront/CatalogFilterRegistry.php:171
+msgid "Out of stock"
+msgstr ""
+
+#: src/Storefront/CatalogFilterRegistry.php:172
+msgid "On backorder"
+msgstr ""
+
+#: src/Storefront/CatalogQuery.php:17
+msgid "WooCommerce Store API product querying is unavailable."
+msgstr ""
+
+#: src/Storefront/CatalogQuery.php:36
+msgid "The product catalogue could not be queried."
+msgstr ""
+
+#. translators: 1: Average product rating, 2: Number of product reviews.
+#: src/Storefront/ProductCardRenderer.php:36
+#, php-format
+msgid "Rated %1$s out of 5 from %2$d reviews."
+msgstr ""
+
+#: src/Storefront/ProductCardRenderer.php:104
+#: src/Storefront/ProductCardViewModel.php:138
+msgid "View product"
+msgstr ""
+
+#: src/Storefront/ProductCardRenderer.php:123
+#: src/Storefront/VariationViewModel.php:167
+#: assets/js/variation-controls.js:159
+msgid "Add to cart"
+msgstr ""
+
+#: src/Storefront/ProductCardRenderer.php:124
+#: src/Storefront/ProductCardRenderer.php:172
+#: src/Storefront/VariationViewModel.php:167
+#: assets/js/variation-controls.js:160
+msgid "Select options"
+msgstr ""
+
+#: src/Storefront/ProductCardRenderer.php:125
+#: assets/js/variation-controls.js:160
+msgid "Unavailable"
+msgstr ""
+
+#: src/Storefront/RecentlyViewed.php:38
+msgid "Recently viewed"
+msgstr ""
+
+#: src/Storefront/RecentlyViewed.php:53
+msgid "Clear"
+msgstr ""
+
+#: src/Storefront/RecentlyViewed.php:56
+msgid "No recently viewed products yet."
+msgstr ""
+
+#: src/Storefront/WishlistControls.php:59
+msgid "Your wishlist is empty."
+msgstr ""
+
+#: src/Storefront/WishlistControls.php:73
+#: assets/js/wishlist.js:131
+#: assets/js/wishlist.js:146
+msgid "Add to wishlist"
+msgstr ""
+
+#: src/Support/SettingsTransfer.php:36
+msgid "Ultimate Commerce could not encode the settings export."
+msgstr ""
+
+#: src/Support/SettingsTransfer.php:40
+msgid "Ultimate Commerce settings exceed the supported export size."
+msgstr ""
+
+#: src/Support/SettingsTransfer.php:50
+msgid "The Ultimate Commerce settings file is empty or too large."
+msgstr ""
+
+#: src/Support/SettingsTransfer.php:55
+msgid "The Ultimate Commerce settings file is not valid JSON."
+msgstr ""
+
+#: src/Support/SettingsTransfer.php:59
+msgid "The Ultimate Commerce settings file has an unsupported structure."
+msgstr ""
+
+#: src/Support/SettingsTransfer.php:63
+msgid "The settings file is not an Ultimate Commerce settings export."
+msgstr ""
+
+#: src/Support/SettingsTransfer.php:67
+msgid "The settings file targets a different product."
+msgstr ""
+
+#: src/Support/SettingsTransfer.php:71
+msgid "The Ultimate Commerce settings schema is not supported by this version."
+msgstr ""
+
+#: src/Support/SettingsTransfer.php:75
+msgid "The Ultimate Commerce settings section is not supported."
+msgstr ""
+
+#: src/Support/SettingsTransfer.php:79
+msgid "Module settings must be a JSON object."
+msgstr ""
+
+#: src/Support/SettingsTransfer.php:84
+msgid "The settings file contains too many module preferences."
+msgstr ""
+
+#: src/Support/SettingsTransfer.php:90
+msgid "The settings file contains an invalid module preference."
+msgstr ""
+
+#: src/Support/SettingsTransfer.php:111
+msgid "Too many module preferences are stored to create a portable settings file."
+msgstr ""
+
+#: src/Wishlist/WishlistStore.php:49
+msgid "A signed-in customer is required for this wishlist."
+msgstr ""
+
+#: src/Wishlist/WishlistStore.php:52
+msgid "This product cannot be added to the wishlist."
+msgstr ""
+
+#: src/Wishlist/WishlistStore.php:60
+#: assets/js/wishlist.js:275
+msgid "The wishlist has reached its item limit."
+msgstr ""
+
+#: src/Wishlist/WishlistStore.php:120
+#: src/Wishlist/WishlistStore.php:148
+msgid "Ultimate Commerce Wishlist"
+msgstr ""
+
+#: src/Wishlist/WishlistStore.php:152
+msgid "Product IDs"
+msgstr ""
+
+#: assets/js/cart-drawer.js:91
+msgid "Cart request failed."
+msgstr ""
+
+#: assets/js/cart-drawer.js:138
+#, js-format
+msgid "Cart request failed (%d)."
+msgstr ""
+
+#: assets/js/cart-drawer.js:154
+msgid "Loading cart…"
+msgstr ""
+
+#: assets/js/cart-drawer.js:176
+msgid "Updating cart…"
+msgstr ""
+
+#: assets/js/cart-drawer.js:181
+msgid "Cart updated."
+msgstr ""
+
+#: assets/js/cart-drawer.js:317
+msgid "Decrease quantity"
+msgstr ""
+
+#: assets/js/cart-drawer.js:328
+#, js-format
+msgid "Quantity for %s"
+msgstr ""
+
+#: assets/js/cart-drawer.js:328
+msgid "cart item"
+msgstr ""
+
+#: assets/js/cart-drawer.js:333
+msgid "Increase quantity"
+msgstr ""
+
+#: assets/js/cart-drawer.js:353
+#: assets/js/wishlist.js:184
+msgid "Remove"
+msgstr ""
+
+#: assets/js/cart-drawer.js:395
+#, js-format
+msgid "%d item in cart"
+msgid_plural "%d items in cart"
+msgstr[0] ""
+msgstr[1] ""
+
+#: assets/js/cart-drawer.js:400
+msgid "The cart could not be updated."
+msgstr ""
+
+#: assets/js/cart-drawer.js:455
+msgid "Adding to cart…"
+msgstr ""
+
+#: assets/js/recently-viewed.js:116
+msgid "No recently viewed products."
+msgstr ""
+
+#: assets/js/recently-viewed.js:129
+#: assets/js/recently-viewed.js:163
+msgid "Recently viewed products could not be loaded."
+msgstr ""
+
+#: assets/js/recently-viewed.js:158
+#, js-format
+msgid "%d recently viewed product."
+msgid_plural "%d recently viewed products."
+msgstr[0] ""
+msgstr[1] ""
+
+#: assets/js/recently-viewed.js:191
+msgid "Recently viewed products cleared."
+msgstr ""
+
+#: assets/js/wishlist.js:76
+#: assets/js/wishlist.js:304
+msgid "The wishlist could not be updated."
+msgstr ""
+
+#: assets/js/wishlist.js:125
+#, js-format
+msgid "Remove %s from wishlist"
+msgstr ""
+
+#: assets/js/wishlist.js:126
+#, js-format
+msgid "Add %s to wishlist"
+msgstr ""
+
+#: assets/js/wishlist.js:130
+msgid "Remove from wishlist"
+msgstr ""
+
+#: assets/js/wishlist.js:145
+msgid "Saved"
+msgstr ""
+
+#: assets/js/wishlist.js:207
+msgid "No saved products."
+msgstr ""
+
+#: assets/js/wishlist.js:220
+#: assets/js/wishlist.js:254
+msgid "Saved products could not be loaded."
+msgstr ""
+
+#: assets/js/wishlist.js:248
+#, js-format
+msgid "%d saved product."
+msgid_plural "%d saved products."
+msgstr[0] ""
+msgstr[1] ""
+
+#: assets/js/wishlist.js:301
+msgid "Removed from wishlist."
+msgstr ""
+
+#: assets/js/wishlist.js:302
+msgid "Added to wishlist."
+msgstr ""

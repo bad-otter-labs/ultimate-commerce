@@ -32,7 +32,15 @@ The plugin targets modern WordPress and relies on WordPress just-in-time text-do
 
 ## Translation template
 
-Phase 3 makes the source extractable and runtime translation-aware. The committed WordPress.org translation template/POT is a Phase 4 submission artifact, generated from the canonical `packages/ultimate-commerce-for-woocommerce/` source only. Development updater overlays and the legacy private-distribution bridge must not enter the public template.
+The committed WordPress.org template is:
+
+`packages/ultimate-commerce-for-woocommerce/languages/ultimate-commerce-for-woocommerce.pot`
+
+It is generated only from the canonical Free package through the official WP-CLI `wp i18n make-pot` command. The dedicated toolchain is pinned by `tools/i18n/composer.lock` to WP-CLI bundle 2.12.0 and is development tooling only.
+
+Generation includes both PHP and JavaScript source. `POT-Creation-Date` is deliberately blank so identical source regenerates byte-identical template content. Development updater overlays, repository docs/tests and the legacy private-distribution bridge do not enter the public template.
+
+The permanent translation-template workflow installs the exact lockfile, runs Composer's locked advisory audit, validates the toolchain licences, regenerates the POT into a temporary path and fails if it differs from the committed template.
 
 ## Regression gate
 
@@ -46,4 +54,4 @@ Phase 3 makes the source extractable and runtime translation-aware. The committe
 - translated variation-controller fallbacks
 - presence of the public theme/store integration guide
 
-This is a source-readiness gate, not a substitute for the Phase 4 POT/template and WordPress.org translation-package review.
+The source-readiness gate is complemented by `.github/workflows/translation-template.yml`, which proves the committed Phase 4 POT is reproducible with the pinned official extractor.

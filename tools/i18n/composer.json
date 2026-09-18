@@ -1,0 +1,12 @@
+{
+  "name": "bad-otter-labs/ultimate-commerce-i18n-tools",
+  "description": "Pinned WP-CLI tooling for Ultimate Commerce translation template generation.",
+  "type": "project",
+  "license": "GPL-2.0-or-later",
+  "require-dev": {
+    "wp-cli/wp-cli-bundle": "2.12.0"
+  },
+  "config": {
+    "sort-packages": true
+  }
+}
