@@ -48,11 +48,13 @@ Until that toolchain is pinned, this document must not be interpreted as saying 
 
 ## Public-repository runner transition
 
-Current validation runs on the private Bad Otter self-hosted runner because GitHub-hosted jobs were not provisioned for this private repository.
+Pull-request validation now runs on the GitHub-hosted `ubuntu-latest` baseline with read-only repository contents permission. The regression in `tests/ci-trust-boundary.py` rejects persistent self-hosted runners, write-scoped permissions and `pull_request_target` across pull-request workflows.
 
-**Before repository visibility changes to public, all workflows triggered by untrusted pull requests must move to GitHub-hosted or isolated ephemeral runners.**
+Trusted publishing remains separate: `development-release.yml` and `release.yml` may continue to use the controlled Bad Otter self-hosted runner because neither accepts pull-request events.
 
-Do not make the repository public while a persistent privileged self-hosted runner accepts arbitrary `pull_request` code.
+See `docs/public-ci-trust-boundary.md` for the enforced model.
+
+This removes the persistent-runner blocker to public reviewability. Repository visibility is still a deliberate release action and must not change until the remaining Phase 4 gates are satisfied.
 
 ## Submission checklist
 
