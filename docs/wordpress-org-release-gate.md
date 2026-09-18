@@ -23,6 +23,7 @@ Every canonical Free release candidate must be built through `scripts/build-word
 7. embedded-secret signature scan;
 8. forbidden development/artifact file scan;
 9. official WordPress Plugin Check against the built package.
+10. WordPress.org readme submission sections, privacy/external-service disclosure and public source/build references.
 
 The package audit runs against the ZIP that would be submitted, not only against the source tree.
 

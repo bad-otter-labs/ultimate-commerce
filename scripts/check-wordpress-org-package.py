@@ -116,6 +116,30 @@ def main() -> int:
         if re.search(r'^\s*\*\s*Update URI:', plugin, re.M):
             fail('WordPress.org Free package must not define Update URI')
 
+        required_sections = (
+            'Description',
+            'Installation',
+            'Frequently Asked Questions',
+            'Privacy',
+            'External services',
+            'Source and development',
+            'Changelog',
+        )
+        for section in required_sections:
+            pattern = '^==\\s*' + re.escape(section) + '\\s*==\\s*$'
+            if not re.search(pattern, readme, re.I | re.M):
+                fail(f'readme.txt is missing required submission section: {section}')
+
+        for marker in (
+            'does not contact any third-party service by default',
+            'does not send usage telemetry',
+            'https://github.com/bad-otter-labs/ultimate-commerce',
+            'scripts/build-wordpress-org-package.py',
+            'WordPress personal-data exporter and eraser',
+        ):
+            if marker.lower() not in readme.lower():
+                fail(f'readme.txt is missing required disclosure/source marker: {marker}')
+
         if COMPOSER in names:
             composer = json.loads(decode(zf, COMPOSER))
             if composer.get('license') != 'GPL-2.0-or-later':
