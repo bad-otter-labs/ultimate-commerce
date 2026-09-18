@@ -9,6 +9,11 @@ $ucTestMenus = array();
 $ucTestSubmenus = array();
 $ucTestFiredActions = array();
 
+$ucOverviewSource = file_get_contents(__DIR__ . '/../packages/ultimate-commerce-for-woocommerce/src/Admin/OverviewPage.php');
+if (!is_string($ucOverviewSource)) {
+    throw new RuntimeException('Unable to read Ultimate Commerce Overview source.');
+}
+
 function __(string $text, string $domain = ''): string
 {
     return $text;
@@ -91,5 +96,12 @@ ucAssert($ucTestSubmenus[3]['capability'] === Capabilities::VIEW_DIAGNOSTICS, 'D
 ucAssert(count($ucTestFiredActions) === 1, 'Admin extension action must fire once.');
 ucAssert($ucTestFiredActions[0][0] === 'uc_admin_menu', 'Public admin extension action is missing.');
 ucAssert($ucTestFiredActions[0][1] === array(AdminMenu::ROOT_SLUG), 'Admin extension action must expose the UC parent slug.');
+
+ucAssert(str_contains($ucOverviewSource, "esc_html__('Ultimate Commerce Pro'"), 'Overview must contain restrained Pro discovery.');
+ucAssert(str_contains($ucOverviewSource, 'optional paid companion'), 'Pro discovery must explain that Pro is optional.');
+ucAssert(str_contains($ucOverviewSource, 'Free remains usable without Pro'), 'Pro discovery must preserve standalone Free positioning.');
+ucAssert(str_contains($ucOverviewSource, 'https://github.com/bad-otter-labs/ultimate-commerce/tree/main/docs'), 'Overview documentation link must point to public project docs.');
+ucAssert(!str_contains($ucOverviewSource, "add_action('admin_notices'"), 'Pro discovery must not become a site-wide admin notice.');
+ucAssert(!str_contains($ucOverviewSource, "add_action('wp_dashboard_setup'"), 'Pro discovery must not become a dashboard widget.');
 
 echo "Ultimate Commerce admin menu contract passed.\n";
