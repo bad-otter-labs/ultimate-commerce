@@ -1,6 +1,16 @@
 # WordPress.org release gate
 
-Status: **Phase 1 release-engineering baseline**
+Status: **Phase 4 repository-side release candidate; external submission blockers remain**
+
+The repository-side engineering gates are implemented and must remain green on the exact submission candidate. This status is not WordPress.org approval and does not authorize a repository-visibility change by itself.
+
+External/release actions still required before Free 1.0 can complete Phase 4:
+
+- confirm that `badotterlabs` is the WordPress.org account that should receive contributor credit;
+- have WordPress.org accept/assign the planned `ultimate-commerce-for-woocommerce` slug;
+- after that slug exists, test the real installed-plugin basename handoff from the private 0.1.4 package without leaving duplicate active copies;
+- deliberately make the source repository public/reviewable as part of the approved release transition;
+- submit to WordPress.org and resolve reviewer feedback without weakening the architecture or security boundary.
 
 The canonical Free product is built from:
 
