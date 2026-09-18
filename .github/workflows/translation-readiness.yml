@@ -35,6 +35,7 @@ jobs:
           set -euo pipefail
           node --check packages/ultimate-commerce-for-woocommerce/assets/js/cart-drawer.js
           node --check packages/ultimate-commerce-for-woocommerce/assets/js/variation-controls.js
+          node --check packages/ultimate-commerce-for-woocommerce/assets/js/wishlist.js
 
       - name: Validate translation and integration contract
         shell: bash

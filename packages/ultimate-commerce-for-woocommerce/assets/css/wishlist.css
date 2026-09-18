@@ -1,0 +1,30 @@
+.uc-wishlist-toggle[aria-pressed="true"] {
+    font-weight: 600;
+}
+
+.uc-wishlist__items {
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: repeat(auto-fill, minmax(12rem, 1fr));
+}
+
+.uc-wishlist-item {
+    display: grid;
+    gap: 0.5rem;
+}
+
+.uc-wishlist-item__link {
+    display: grid;
+    gap: 0.5rem;
+    text-decoration: none;
+}
+
+.uc-wishlist-item__image {
+    display: block;
+    height: auto;
+    max-width: 100%;
+}
+
+.uc-wishlist__empty[hidden] {
+    display: none;
+}

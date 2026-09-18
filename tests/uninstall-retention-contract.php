@@ -6,6 +6,7 @@ define('ABSPATH', __DIR__ . '/');
 
 $ucOptions = array();
 $ucRoles = array();
+$ucUserMeta = array();
 
 final class UcTestRole
 {
@@ -85,6 +86,22 @@ function delete_option(string $name): bool
     return $existed;
 }
 
+function delete_metadata(string $metaType, int $objectId, string $metaKey, $metaValue = '', bool $deleteAll = false): bool
+{
+    global $ucUserMeta;
+    unset($objectId, $metaValue);
+
+    if ($metaType !== 'user' || !$deleteAll) {
+        return false;
+    }
+
+    foreach ($ucUserMeta as &$meta) {
+        unset($meta[$metaKey]);
+    }
+    unset($meta);
+    return true;
+}
+
 function get_role(string $name)
 {
     global $ucRoles;
@@ -106,11 +123,20 @@ function ucAssert(bool $condition, string $message): void
 
 require_once __DIR__ . '/../packages/ultimate-commerce-for-woocommerce/src/Support/Settings.php';
 require_once __DIR__ . '/../packages/ultimate-commerce-for-woocommerce/src/Security/Capabilities.php';
+require_once __DIR__ . '/../packages/ultimate-commerce-for-woocommerce/src/Wishlist/WishlistStore.php';
 require_once __DIR__ . '/../packages/ultimate-commerce-for-woocommerce/src/Privacy/Uninstall.php';
 
 use BadOtter\UltimateCommerce\Privacy\Uninstall;
 use BadOtter\UltimateCommerce\Security\Capabilities;
 use BadOtter\UltimateCommerce\Support\Settings;
+use BadOtter\UltimateCommerce\Wishlist\WishlistStore;
+
+$ucUserMeta = array(
+    1 => array(
+        WishlistStore::BASE_META_KEY => array(10, 11),
+        'third_party_user_meta' => 'keep-user-meta',
+    ),
+);
 
 $ucRoles = array(
     'administrator' => new UcTestRole(array(Capabilities::VIEW_DIAGNOSTICS, Capabilities::MANAGE_SETTINGS, 'manage_options')),
@@ -144,6 +170,8 @@ ucAssert(!isset($ucOptions['uc_lock_abc']) && !isset($ucOptions['uc_idem_def']) 
 ucAssert(!isset($ucOptions['_transient_uc_rl_jkl']) && !isset($ucOptions['_transient_timeout_uc_rl_jkl']), 'UC rate-limit transients must always be removed.');
 ucAssert(($ucOptions['woocommerce_currency'] ?? '') === 'GBP', 'WooCommerce-owned options must never be removed.');
 ucAssert(($ucOptions['third_party_option'] ?? '') === 'keep-me', 'Unrelated third-party options must never be removed.');
+ucAssert(($ucUserMeta[1][WishlistStore::metaKey()] ?? array()) === array(10, 11), 'Wishlist personal data must be retained by default.');
+ucAssert(($ucUserMeta[1]['third_party_user_meta'] ?? '') === 'keep-user-meta', 'Default uninstall must preserve unrelated user meta.');
 ucAssert(!isset($ucRoles['administrator']->caps[Capabilities::VIEW_DIAGNOSTICS]) && !isset($ucRoles['administrator']->caps[Capabilities::MANAGE_SETTINGS]), 'Administrator UC capabilities must be removed on uninstall.');
 ucAssert(!isset($ucRoles['shop_manager']->caps[Capabilities::VIEW_DIAGNOSTICS]), 'Shop manager UC capability must be removed on uninstall.');
 ucAssert(isset($ucRoles['administrator']->caps['manage_options']) && isset($ucRoles['shop_manager']->caps['manage_woocommerce']), 'Non-UC role capabilities must be preserved.');
@@ -168,6 +196,8 @@ ucAssert(!isset($ucOptions[Settings::UNINSTALL_DATA_OPTION]), 'Explicit purge mu
 ucAssert(!isset($ucOptions['ultimate_commerce_version']) && !isset($ucOptions['ultimate_commerce_schema_version']) && !isset($ucOptions['ultimate_commerce_modules']), 'Explicit purge must remove retained legacy migration data.');
 ucAssert(($ucOptions['woocommerce_currency'] ?? '') === 'GBP', 'Explicit UC purge must still preserve WooCommerce-owned options.');
 ucAssert(($ucOptions['third_party_option'] ?? '') === 'keep-me', 'Explicit UC purge must still preserve unrelated third-party options.');
+ucAssert(!isset($ucUserMeta[1][WishlistStore::metaKey()]), 'Explicit UC purge must remove wishlist user meta.');
+ucAssert(($ucUserMeta[1]['third_party_user_meta'] ?? '') === 'keep-user-meta', 'Explicit UC purge must preserve unrelated user meta.');
 
 Settings::updateDeleteDataOnUninstall(false);
 ucAssert(Settings::deleteDataOnUninstall() === false, 'Merchant must be able to return to the default retain-on-uninstall policy.');

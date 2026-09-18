@@ -4,6 +4,7 @@ namespace BadOtter\UltimateCommerce\Privacy;
 
 use BadOtter\UltimateCommerce\Security\Capabilities;
 use BadOtter\UltimateCommerce\Support\Settings;
+use BadOtter\UltimateCommerce\Wishlist\WishlistStore;
 
 defined('ABSPATH') || exit;
 
@@ -63,6 +64,7 @@ final class Uninstall
 
         if ($purgeMerchantData) {
             self::deleteOptions(self::PURGE_OPTIONS);
+            self::deleteUserMeta(array(WishlistStore::metaKey()));
         }
     }
 
@@ -71,6 +73,20 @@ final class Uninstall
     {
         foreach ($names as $name) {
             delete_option($name);
+        }
+    }
+
+    /** @param list<string> $keys */
+    private static function deleteUserMeta(array $keys): void
+    {
+        if (!function_exists('delete_metadata')) {
+            return;
+        }
+
+        foreach ($keys as $key) {
+            if (is_string($key) && str_starts_with($key, WishlistStore::BASE_META_KEY)) {
+                delete_metadata('user', 0, $key, '', true);
+            }
         }
     }
 

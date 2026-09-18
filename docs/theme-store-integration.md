@@ -72,6 +72,10 @@ If another plugin owns colour/image swatch metadata, adapt it once through `uc_v
 
 Catalogue cacheability is conservative by default. A store should only opt into `uc_catalog_public_cache_safe` after `uc_catalog_cache_context` varies on every market/tax/currency/geolocation dimension required by that installation.
 
+## Wishlist
+
+Wishlist API v1 is documented in `docs/wishlist-contract-v1.md`. Themes may render `WishlistControls::toggle()` or use the `[ultimate_commerce_wishlist]` shortcode, but must keep WooCommerce as product truth. Guest storage contains product IDs only and signed-in mutations target only the current authenticated customer.
+
 ## Module and admin extensions
 
 Reusable extensions register modules through Module API v1 and `uc_register_modules`; see `docs/module-extension-contract-v1.md`.

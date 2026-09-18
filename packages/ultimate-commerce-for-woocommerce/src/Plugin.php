@@ -13,6 +13,7 @@ use BadOtter\UltimateCommerce\Security\Capabilities;
 use BadOtter\UltimateCommerce\Security\Replay\OptionReplayStore;
 use BadOtter\UltimateCommerce\Support\ModuleRegistry;
 use BadOtter\UltimateCommerce\Support\OptionMigrator;
+use BadOtter\UltimateCommerce\Wishlist\WishlistStore;
 
 defined('ABSPATH') || exit;
 
@@ -27,6 +28,7 @@ final class Plugin
         OptionLockStore::hooks();
         OptionIdempotencyStore::hooks();
         PersonalDataRegistry::hooks();
+        WishlistStore::hooks();
         WooCommerceCompatibility::hooks();
 
         if (!class_exists('WooCommerce')) {
