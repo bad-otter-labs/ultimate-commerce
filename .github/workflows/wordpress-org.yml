@@ -13,6 +13,11 @@ jobs:
   package-review:
     runs-on: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name != github.repository && 'ubuntu-latest' || 'badotter' }}
     timeout-minutes: 20
+    env:
+      # Plugin Check uses wp-env internally. Isolate its generated WordPress state
+      # per run so a persistent same-repo runner cannot inherit stale plugin
+      # dependencies from an earlier review.
+      WP_ENV_HOME: ${{ runner.temp }}/plugin-check-wp-env-${{ github.run_id }}-${{ github.run_attempt }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4

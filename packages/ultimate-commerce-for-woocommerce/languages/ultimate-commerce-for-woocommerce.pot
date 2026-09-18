@@ -30,12 +30,12 @@ msgid "A modular commerce experience enhancement platform for WooCommerce."
 msgstr ""
 
 #. Author of the plugin
-#: ultimate-commerce-for-woocommerce.php:10
+#: ultimate-commerce-for-woocommerce.php:12
 msgid "Bad Otter Labs"
 msgstr ""
 
 #. Author URI of the plugin
-#: ultimate-commerce-for-woocommerce.php:11
+#: ultimate-commerce-for-woocommerce.php:13
 msgid "https://badotter.io"
 msgstr ""
 
