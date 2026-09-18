@@ -1,0 +1,15 @@
+includes:
+    - vendor/szepeviktor/phpstan-wordpress/extension.neon
+
+parameters:
+    level: 2
+    paths:
+        - packages/ultimate-commerce-for-woocommerce/src
+        - packages/ultimate-commerce-for-woocommerce/ultimate-commerce-for-woocommerce.php
+        - packages/ultimate-commerce-for-woocommerce/uninstall.php
+    bootstrapFiles:
+        - vendor/php-stubs/woocommerce-stubs/woocommerce-stubs.php
+        - vendor/php-stubs/woocommerce-stubs/woocommerce-packages-stubs.php
+    treatPhpDocTypesAsCertain: false
+    reportUnmatchedIgnoredErrors: true
+    tmpDir: .phpstan-cache
