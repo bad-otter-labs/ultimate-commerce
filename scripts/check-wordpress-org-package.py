@@ -138,6 +138,13 @@ def main() -> int:
             if not re.search(pattern, readme, re.I | re.M):
                 fail(f'readme.txt is missing required submission section: {section}')
 
+        for compatibility_marker in (
+            'WC requires at least: 9.8',
+            'WC tested up to: 11.1',
+        ):
+            if compatibility_marker not in plugin or compatibility_marker not in readme:
+                fail(f'WooCommerce compatibility metadata mismatch: {compatibility_marker}')
+
         for marker in (
             'does not contact any third-party service by default',
             'does not send usage telemetry',

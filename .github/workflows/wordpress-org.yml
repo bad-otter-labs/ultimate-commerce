@@ -17,6 +17,12 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Isolate Plugin Check wp-env state
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "WP_ENV_HOME=$RUNNER_TEMP/plugin-check-wp-env-$GITHUB_RUN_ID-$GITHUB_RUN_ATTEMPT" >> "$GITHUB_ENV"
+
       - name: Build and statically inspect canonical Free package
         shell: bash
         run: |

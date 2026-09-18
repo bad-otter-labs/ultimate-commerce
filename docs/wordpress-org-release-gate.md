@@ -82,7 +82,9 @@ Before the first WordPress.org submission/release:
 - Plugin Check is green on the exact release package;
 - pinned WPCS/PHPCompatibility/static analysis is green;
 - locked dependency advisory/licence checks and package secret scans are green;
-- HPOS and claimed Cart/Checkout Blocks compatibility is tested;
+- live compatibility matrix is green for WordPress 6.6.4 / WooCommerce 9.8.5 / PHP 8.1 and WordPress 7.1.1 / WooCommerce 11.1.0 / PHP 8.3;
+- HPOS is enabled through WooCommerce CLI in both matrix cases and claimed Cart/Checkout Blocks compatibility is confirmed through WooCommerce's feature registry;
+- a real Woo product/order and UC Account/Order view-model read path pass under HPOS, and the Woo Store API product route responds successfully;
 - deterministic 0.1.4-to-canonical option/data migration fixture is green;
 - after the WordPress.org slug is accepted, the real plugin-basename handoff is tested on an installed 0.1.4 fixture;
 - no duplicate active plugin copy is created during that live identity migration;
