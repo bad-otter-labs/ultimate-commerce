@@ -11,9 +11,7 @@ permissions:
 
 jobs:
   validate:
-    # Phase 0 repository is still private. Before changing repository visibility,
-    # move untrusted pull_request validation to GitHub-hosted or ephemeral runners.
-    runs-on: [self-hosted, Linux, X64, badotter, ci]
+    runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
       - name: Checkout
