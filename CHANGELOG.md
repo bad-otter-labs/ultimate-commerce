@@ -37,7 +37,8 @@
 - Add Wishlist API v1 with bounded signed-in persistence, browser-local guest state, authenticated merge, Woo Store API-backed display, privacy export/erase and explicit uninstall purge integration.
 - Add Recently Viewed API v1 with bounded browser-local product-ID history, cache-safe single-product tracking, live Woo Store API rendering and clear-history controls.
 - Add Account/Order API v1 with authenticated account summaries, HPOS-safe Woo order view models, strict customer ownership and public extension hooks.
-- Move pull-request validation onto isolated GitHub-hosted runners and enforce the public CI trust boundary before repository visibility changes.
+- Route cross-repository pull requests to GitHub-hosted validation while retaining the controlled runner for trusted same-repository development and publishing.
+- Expand the WordPress.org readme with installation, privacy, external-service, source/build and support disclosures, enforced against the release ZIP.
 
 ## 0.1.4 - 2026-09-15
 
