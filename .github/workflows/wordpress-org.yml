@@ -50,6 +50,9 @@ jobs:
           build-dir: './wporg-check/ultimate-commerce-for-woocommerce'
           slug: 'ultimate-commerce-for-woocommerce'
           include-experimental: false
+          # WordPress.org submission requires a warning-clean candidate too. Without
+          # strict mode the action annotates warnings but does not fail the job.
+          strict: true
           # Internal error helpers accept only package-owned literal messages, but
           # Plugin Check cannot infer that provenance once the literal crosses the
           # helper boundary. Keep this one narrow false-positive exemption visible.
