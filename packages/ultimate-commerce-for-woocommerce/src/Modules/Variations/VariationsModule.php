@@ -32,10 +32,10 @@ final class VariationsModule extends AbstractModule
 
     public function register(): void
     {
-        do_action('uc_variations_ready', $this);
+        do_action('ultimate_commerce_variations_ready', $this);
     }
 
-    /** Historical compatibility facade for `uc_variation_view_model`. */
+    /** Historical compatibility facade for `ultimate_commerce_variation_view_model`. */
     public function state(\WC_Product_Variation $variation): array
     {
         return VariationViewModel::fromVariation($variation);

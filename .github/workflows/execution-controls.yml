@@ -74,7 +74,7 @@ jobs:
           if not match or match.group(1) != '1.0.0':
               raise SystemExit('Execution API v1 constant is missing')
 
-          for source, hook in ((lock, 'uc_lock_store_delete'), (idem, 'uc_idempotency_store_delete')):
+          for source, hook in ((lock, 'ultimate_commerce_lock_store_delete'), (idem, 'ultimate_commerce_idempotency_store_delete')):
               if 'add_option(' not in source or 'random_bytes(16)' not in source or 'hash_equals' not in source:
                   raise SystemExit('Lease-backed stores must use atomic option claims, random leases and constant-time lease checks')
               if hook not in source:

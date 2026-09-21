@@ -44,16 +44,64 @@ jobs:
           unzip -q "$package" -d wporg-check
           test -f wporg-check/ultimate-commerce-for-woocommerce/ultimate-commerce-for-woocommerce.php
 
-      - name: Run official WordPress Plugin Check
-        uses: wordpress/plugin-check-action@v1
+      # plugin-check-action@v1 installs @wordpress/env@latest internally. Pin
+      # the Docker-based toolchain here so an upstream npm publication race cannot
+      # prevent Plugin Check from running against an otherwise unchanged candidate.
+      - name: Set up Node for Plugin Check
+        uses: actions/setup-node@v4
         with:
-          build-dir: './wporg-check/ultimate-commerce-for-woocommerce'
-          slug: 'ultimate-commerce-for-woocommerce'
-          include-experimental: false
-          # Internal error helpers accept only package-owned literal messages, but
-          # Plugin Check cannot infer that provenance once the literal crosses the
-          # helper boundary. Keep this one narrow false-positive exemption visible.
-          ignore-codes: 'WordPress.WP.I18n.NonSingularStringLiteralText'
+          node-version: '20'
+
+      - name: Install pinned wp-env
+        shell: bash
+        run: |
+          set -euo pipefail
+          npm -g --no-fund install @wordpress/env@10.25.0
+          wp-env --version
+
+      - name: Start isolated Plugin Check environment
+        shell: bash
+        run: |
+          set -euo pipefail
+          cat > .wp-env.json <<EOF
+          {
+            "core": null,
+            "port": 8880,
+            "testsPort": 8881,
+            "mappings": {
+              "wp-content/plugins/ultimate-commerce-for-woocommerce": "$(realpath wporg-check/ultimate-commerce-for-woocommerce)"
+            }
+          }
+          EOF
+          wp-env start --update
+          wp-env run cli wp cli info
+
+      - name: Run official WordPress Plugin Check
+        shell: bash
+        run: |
+          set -euo pipefail
+          wp-env run cli wp plugin install plugin-check --activate
+          wp-env run cli wp plugin install woocommerce --activate
+          wp-env run cli wp plugin activate ultimate-commerce-for-woocommerce
+
+          results="$RUNNER_TEMP/plugin-check-results.txt"
+          wp-env run cli wp plugin check ultimate-commerce-for-woocommerce \
+            --format=json \
+            --ignore-codes=WordPress.WP.I18n.NonSingularStringLiteralText \
+            --exclude-files=.wp-env.json \
+            --slug=ultimate-commerce-for-woocommerce \
+            --require=./wp-content/plugins/plugin-check/cli.php > "$results"
+
+          cat "$results"
+
+          # Submission gate is deliberately strict: any warning/error changes the
+          # Plugin Check output and must fail instead of being silently accepted.
+          grep -Fx 'Success: Checks complete. No errors found.' "$results"
+
+      - name: Stop Plugin Check environment
+        if: ${{ always() }}
+        shell: bash
+        run: wp-env stop || true
 
       - name: Retain exact validated WordPress.org candidate
         uses: actions/upload-artifact@v4

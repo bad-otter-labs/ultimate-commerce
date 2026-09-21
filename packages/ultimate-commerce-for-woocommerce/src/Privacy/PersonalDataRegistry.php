@@ -124,7 +124,7 @@ final class PersonalDataRegistry
         }
 
         self::$collecting = true;
-        do_action('uc_register_personal_data_handlers', self::instance());
+        do_action('ultimate_commerce_register_personal_data_handlers', self::instance());
         self::$collecting = false;
         self::$collected = true;
     }

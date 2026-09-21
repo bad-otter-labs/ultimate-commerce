@@ -15,7 +15,7 @@ final class RateLimit
         if (!self::$defaultLimiter) {
             self::$defaultLimiter = new TransientRateLimiter();
         }
-        $limiter = apply_filters('uc_rate_limiter', self::$defaultLimiter);
+        $limiter = apply_filters('ultimate_commerce_rate_limiter', self::$defaultLimiter);
         return $limiter instanceof RateLimiter ? $limiter : self::$defaultLimiter;
     }
 

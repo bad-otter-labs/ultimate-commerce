@@ -16,7 +16,7 @@ final class Audit
             self::$defaultSink = new HookAuditSink();
         }
 
-        $sink = apply_filters('uc_audit_sink', self::$defaultSink);
+        $sink = apply_filters('ultimate_commerce_audit_sink', self::$defaultSink);
         return $sink instanceof AuditSink ? $sink : self::$defaultSink;
     }
 

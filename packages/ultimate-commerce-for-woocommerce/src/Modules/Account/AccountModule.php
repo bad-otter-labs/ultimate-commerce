@@ -33,6 +33,6 @@ final class AccountModule extends AbstractModule
     public function register(): void
     {
         AccountHooks::hooks();
-        do_action('uc_account_ready', $this);
+        do_action('ultimate_commerce_account_ready', $this);
     }
 }

@@ -168,6 +168,7 @@
                 });
 
                 setStatus(sprintf(
+                    /* translators: %d: Number of recently viewed products. */
                     _n('%d recently viewed product.', '%d recently viewed products.', requested.length, 'ultimate-commerce-for-woocommerce'),
                     requested.length
                 ));

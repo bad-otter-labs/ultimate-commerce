@@ -72,6 +72,6 @@ final class AdminMenu
          *
          * @param string $parentSlug Ultimate Commerce root menu slug.
          */
-        do_action('uc_admin_menu', self::ROOT_SLUG);
+        do_action('ultimate_commerce_admin_menu', self::ROOT_SLUG);
     }
 }

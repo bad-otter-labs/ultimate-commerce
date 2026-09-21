@@ -8,7 +8,7 @@
 - Adopt GPL-2.0-or-later metadata for the canonical Free package.
 - Migrate legacy `ultimate_commerce_*` options to the canonical `uc_*` prefix without deleting rollback data.
 - Build the WordPress.org-targeted package deterministically and record the requirement to move untrusted PR validation off the persistent private runner before repository visibility changes.
-- Add public Module API v1 metadata and `uc_register_modules` registration for Pro and third-party extensions.
+- Add public Module API v1 metadata and `ultimate_commerce_register_modules` registration for Pro and third-party extensions.
 - Resolve module dependencies before boot and expose blocked/disabled module reasons in diagnostics.
 - Add a standalone contract regression test covering external registration, dependency ordering, missing dependencies, cycles and disabled dependencies.
 - Add versioned UC capabilities and move diagnostics to `uc_view_diagnostics` instead of a broad WooCommerce capability.
@@ -21,11 +21,11 @@
 - Add Execution API v1 contracts for short critical-section locks, durable idempotency claims, replaceable rate limiting and Action Scheduler jobs.
 - Add bounded retry policy and regression coverage for lease safety, duplicate business execution, rate-limit decisions and PII-minimised job arguments.
 - Add a deterministic WordPress.org package audit, private vulnerability-reporting policy and official Plugin Check CI gate for the built Free artifact.
-- Move Ultimate Commerce out of the WooCommerce admin menu into its own top-level Overview/Diagnostics structure with public `uc_admin_menu` and `uc_admin_overview` extension points.
+- Move Ultimate Commerce out of the WooCommerce admin menu into its own top-level Overview/Diagnostics structure with public `ultimate_commerce_admin_menu` and `ultimate_commerce_admin_overview` extension points.
 - Add Storefront API v1 with public product-card, bounded catalogue-query and semantic rendering contracts for themes/extensions.
 - Add batch-safe variable-product state with text/button, colour/image swatches, selected variation media/price, availability, accessibility semantics and Woo Store API cart handoff metadata.
 - Add validated catalogue filter/sort state for Woo product attributes, price and availability with deterministic URL state and public Pro/third-party extension points.
-- Keep `uc_product_view_model` and `uc_variation_view_model` as documented compatibility filters while introducing the supported Storefront API service surface.
+- Keep `ultimate_commerce_product_view_model` and `ultimate_commerce_variation_view_model` as documented compatibility filters while introducing the supported Storefront API service surface.
 - Add Cart API v1 with variation-aware quick add and an accessible cart drawer backed exclusively by WooCommerce Store API cart/session/totals truth.
 - Add cart drawer extension slots/events, quantity/remove operations, loading/error states and native Woo link/form fallbacks without embedding customer nonces in cacheable markup.
 - Add capability-protected module enable/disable management with preserved extension preferences, dependency/runtime status visibility and shared Module API integration.

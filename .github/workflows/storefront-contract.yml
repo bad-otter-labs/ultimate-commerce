@@ -59,12 +59,12 @@ jobs:
               raise SystemExit('Catalogue must delegate bounded product querying to Woo Store API ProductQuery')
           if '$wpdb' in query or 'meta_query' in query:
               raise SystemExit('UC catalogue query must not implement a direct SQL/product-meta query path')
-          if "'uc_catalog_public_cache_safe'" not in query or "'public_cache_safe' => $publicCacheSafe" not in query:
+          if "'ultimate_commerce_catalog_public_cache_safe'" not in query or "'public_cache_safe' => $publicCacheSafe" not in query:
               raise SystemExit('Public catalogue caching must remain explicit opt-in')
           for marker in ('MAX_PER_PAGE = 48', 'MAX_PAGE = 500', 'MAX_SELECTED_PER_FILTER = 12'):
               if marker not in filters:
                   raise SystemExit(f'Missing filter/query bound: {marker}')
-          if "apply_filters('uc_catalog_filter_state'" not in filters or 'return self::validateState(' not in filters:
+          if "apply_filters('ultimate_commerce_catalog_filter_state'" not in filters or 'return self::validateState(' not in filters:
               raise SystemExit('Public filter state must be revalidated after extension hooks')
           if 'validateSortDefinitions' not in filters:
               raise SystemExit('Extension sort definitions must remain bounded and normalized')
@@ -76,13 +76,13 @@ jobs:
               raise SystemExit('Variation attributes must derive from parent WC_Product_Attribute declarations')
           if 'sanitize_title($rawName)' not in variation:
               raise SystemExit('Local/custom variation attribute keys must use Woo-compatible sanitized titles')
-          if "apply_filters('uc_variation_swatch_data'" not in variation:
+          if "apply_filters('ultimate_commerce_variation_swatch_data'" not in variation:
               raise SystemExit('Swatch state must expose the public adapter filter')
           if 'availability_complete' not in variation or 'truncated' not in variation:
               raise SystemExit('Bounded variation state must disclose incomplete availability')
-          if 'uc_product_view_model' not in card or 'uc_product_card_view_model' not in card:
+          if 'ultimate_commerce_product_view_model' not in card or 'ultimate_commerce_product_card_view_model' not in card:
               raise SystemExit('Historical product bridge and new card hook must coexist')
-          if 'uc_variation_view_model' not in variation or 'uc_variation_product_state' not in variation:
+          if 'ultimate_commerce_variation_view_model' not in variation or 'ultimate_commerce_variation_product_state' not in variation:
               raise SystemExit('Historical variation bridge and new product-state hook must coexist')
           if 'radiogroup' not in renderer or 'aria-checked' not in renderer or 'aria-disabled' not in renderer:
               raise SystemExit('Renderer must expose keyboard/screen-reader variation semantics')
@@ -92,7 +92,7 @@ jobs:
           for marker in ('uc:variation-change', 'ArrowLeft', 'ArrowRight', 'variation_id'):
               if marker not in controller:
                   raise SystemExit(f'Progressive variation controller missing {marker}')
-          for required in ('Historical bridge migration', 'UC-disabled behaviour', 'WooCommerce Store API', 'progressively enhances', 'uc_variation_swatch_data', 'uc_catalog_public_cache_safe'):
+          for required in ('Historical bridge migration', 'UC-disabled behaviour', 'WooCommerce Store API', 'progressively enhances', 'ultimate_commerce_variation_swatch_data', 'ultimate_commerce_catalog_public_cache_safe'):
               if required not in docs:
                   raise SystemExit(f'Documentation missing {required}')
           print('Storefront catalogue public contract validated')

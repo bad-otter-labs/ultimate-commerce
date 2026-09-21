@@ -31,7 +31,7 @@ final class ProductDisplayModule extends AbstractModule
 
     public function register(): void
     {
-        do_action('uc_product_display_ready', $this);
+        do_action('ultimate_commerce_product_display_ready', $this);
     }
 
     /** @param int|\WC_Product $product */

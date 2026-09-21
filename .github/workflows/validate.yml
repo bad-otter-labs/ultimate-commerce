@@ -88,8 +88,8 @@ jobs:
               if f'function {method}(' not in interface:
                   raise SystemExit(f'Module contract is missing {method}()')
 
-          if "do_action('uc_register_modules', $registry)" not in plugin:
-              raise SystemExit('Public uc_register_modules registration action is missing')
+          if "do_action('ultimate_commerce_register_modules', $registry)" not in plugin:
+              raise SystemExit('Public ultimate_commerce_register_modules registration action is missing')
           if '$registry->register(new $class());' not in plugin:
               raise SystemExit('Built-in modules are not using the public registry registration path')
           print('Public module extension contract v1 validated')

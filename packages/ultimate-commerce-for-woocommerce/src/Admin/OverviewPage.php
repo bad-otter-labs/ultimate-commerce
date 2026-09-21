@@ -68,7 +68,7 @@ final class OverviewPage
              *
              * @param array<string, array<string, mixed>> $statuses Module statuses.
              */
-            do_action('uc_admin_overview', $statuses);
+            do_action('ultimate_commerce_admin_overview', $statuses);
             ?>
         </div>
         <?php

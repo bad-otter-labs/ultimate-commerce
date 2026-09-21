@@ -132,9 +132,11 @@ final class SettingsPage
     {
         self::authorizeRequest(self::PURPOSE_RETENTION);
 
+        // phpcs:disable WordPress.Security.NonceVerification.Missing -- authorizeRequest() verifies the retention nonce before this mutation input is read.
         $enabled = isset($_POST['delete_data_on_uninstall'])
             && is_scalar($_POST['delete_data_on_uninstall'])
             && sanitize_text_field((string) wp_unslash($_POST['delete_data_on_uninstall'])) === '1';
+        // phpcs:enable WordPress.Security.NonceVerification.Missing
 
         Settings::updateDeleteDataOnUninstall($enabled);
         self::redirect('retention-saved');
@@ -143,11 +145,13 @@ final class SettingsPage
     /** @return string|\WP_Error */
     private static function uploadedJson()
     {
+        // phpcs:disable WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- import() verifies the nonce before calling this helper; upload metadata is validated field-by-field and file contents are size-bounded below.
         if (!isset($_FILES['settings_file']) || !is_array($_FILES['settings_file'])) {
             return new \WP_Error('uc_settings_upload_missing', __('Choose an Ultimate Commerce settings file to import.', 'ultimate-commerce-for-woocommerce'));
         }
 
         $file = $_FILES['settings_file'];
+        // phpcs:enable WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
         $error = isset($file['error']) ? (int) $file['error'] : UPLOAD_ERR_NO_FILE;
         $size = isset($file['size']) ? (int) $file['size'] : 0;
         $tmpName = isset($file['tmp_name']) && is_string($file['tmp_name']) ? $file['tmp_name'] : '';
@@ -169,9 +173,11 @@ final class SettingsPage
     {
         self::requireCapability();
 
+        // phpcs:disable WordPress.Security.NonceVerification.Missing -- This reads the nonce field solely so the shared Csrf::require() verifier can validate it below.
         $nonce = isset($_POST[self::NONCE_FIELD]) && is_scalar($_POST[self::NONCE_FIELD])
             ? sanitize_text_field((string) wp_unslash($_POST[self::NONCE_FIELD]))
             : '';
+        // phpcs:enable WordPress.Security.NonceVerification.Missing
         $verified = Csrf::require($nonce, $purpose);
         if ($verified instanceof \WP_Error) {
             wp_die(
@@ -208,10 +214,13 @@ final class SettingsPage
 
     private static function noticeCode(): string
     {
+        // phpcs:disable WordPress.Security.NonceVerification.Recommended -- Read-only, sanitized admin notice state; it does not authorize or mutate data.
         if (!isset($_GET['uc_settings_status']) || !is_scalar($_GET['uc_settings_status'])) {
             return '';
         }
-        return sanitize_key((string) wp_unslash($_GET['uc_settings_status']));
+        $code = sanitize_key((string) wp_unslash($_GET['uc_settings_status']));
+        // phpcs:enable WordPress.Security.NonceVerification.Recommended
+        return $code;
     }
 
     private static function renderNotice(string $code): void

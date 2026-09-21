@@ -17,7 +17,7 @@ final class SecretStore
             self::$defaultProvider = new EncryptedOptionSecretStore();
         }
 
-        $provider = apply_filters('uc_secret_store_provider', self::$defaultProvider);
+        $provider = apply_filters('ultimate_commerce_secret_store_provider', self::$defaultProvider);
         return $provider instanceof SecretStoreContract ? $provider : self::$defaultProvider;
     }
 

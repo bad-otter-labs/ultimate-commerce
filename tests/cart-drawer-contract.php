@@ -41,9 +41,9 @@ uc_cart_assert_contains("define('ULTIMATE_COMMERCE_CART_API_VERSION', '1.1.0')",
 uc_cart_assert_contains('CartDrawer::hooks();', $module, 'Free Cart module must register the public drawer.');
 uc_cart_assert_contains("add_action('wp_enqueue_scripts', array(__CLASS__, 'maybeEnqueueAssets'), 20);", $drawer, 'Auto-rendered drawer assets must be enqueued before footer script printing.');
 uc_cart_assert_contains('self::enqueueAssets();', $drawer, 'Auto-render asset hook must enqueue the public controller/styles.');
-uc_cart_assert_contains("apply_filters('uc_cart_drawer_auto_render'", $drawer, 'Auto-render must be replaceable.');
-uc_cart_assert_contains("apply_filters('uc_cart_drawer_context'", $drawer, 'Drawer context extension filter is missing.');
-uc_cart_assert_contains("do_action('uc_cart_drawer_slot'", $drawer, 'Drawer slot action is missing.');
+uc_cart_assert_contains("apply_filters('ultimate_commerce_cart_drawer_auto_render'", $drawer, 'Auto-render must be replaceable.');
+uc_cart_assert_contains("apply_filters('ultimate_commerce_cart_drawer_context'", $drawer, 'Drawer context extension filter is missing.');
+uc_cart_assert_contains("do_action('ultimate_commerce_cart_drawer_slot'", $drawer, 'Drawer slot action is missing.');
 uc_cart_assert_contains("rest_url('wc/store/v1')", $drawer, 'Drawer must derive its API root from Woo Store API.');
 uc_cart_assert_contains('role="dialog"', $drawer, 'Drawer dialog semantics are missing.');
 uc_cart_assert_contains('aria-modal="true"', $drawer, 'Drawer modal semantics are missing.');
@@ -87,7 +87,7 @@ uc_cart_assert_contains("nativeInput.value = option.getAttribute( 'data-uc-reque
 uc_cart_assert_contains('option.tabIndex = option === tabStop ? 0 : -1;', $variationController, 'Variation radios must use a roving tab stop.');
 uc_cart_assert_contains('.uc-cart-drawer[hidden]', $style, 'Drawer hidden-state CSS is missing.');
 uc_cart_assert_contains('WooCommerce remains authoritative', $docs, 'Cart ownership boundary must be documented.');
-uc_cart_assert_contains('uc_cart_drawer_slot', $docs, 'Pro/third-party drawer slot must be documented.');
+uc_cart_assert_contains('ultimate_commerce_cart_drawer_slot', $docs, 'Pro/third-party drawer slot must be documented.');
 uc_cart_assert_contains('uc:cart-state', $docs, 'Initial/mutation cart-state event must be documented.');
 
 print "Cart drawer contract v1 validated\n";

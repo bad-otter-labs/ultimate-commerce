@@ -87,7 +87,7 @@ integration_text = integration.read_text()
 for marker in (
     'ULTIMATE_COMMERCE_STOREFRONT_API_VERSION',
     'ULTIMATE_COMMERCE_CART_API_VERSION',
-    'uc_cart_drawer_auto_render',
+    'ultimate_commerce_cart_drawer_auto_render',
     'uc:variation-change',
     'ULTIMATE_COMMERCE_RECENTLY_VIEWED_API_VERSION',
     'WooCommerce remains authoritative',

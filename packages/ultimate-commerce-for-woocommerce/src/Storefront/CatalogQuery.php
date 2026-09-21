@@ -21,7 +21,7 @@ final class CatalogQuery
 
         $state = CatalogFilterRegistry::normalize($input);
         $params = self::storeApiParams($state, $input);
-        $params = apply_filters('uc_catalog_store_api_params', $params, $state, $input);
+        $params = apply_filters('ultimate_commerce_catalog_store_api_params', $params, $state, $input);
         $params = self::reboundParams(is_array($params) ? $params : array(), $state);
 
         $request = new \WP_REST_Request('GET', '/wc/store/v1/products');
@@ -64,12 +64,12 @@ final class CatalogQuery
             'tax_display' => (string) get_option('woocommerce_tax_display_shop', ''),
             'locale' => function_exists('determine_locale') ? determine_locale() : get_locale(),
         );
-        $cacheContext = apply_filters('uc_catalog_cache_context', $cacheContext, $state, $input);
+        $cacheContext = apply_filters('ultimate_commerce_catalog_cache_context', $cacheContext, $state, $input);
         if (!is_array($cacheContext)) {
             $cacheContext = array();
         }
         $publicCacheSafe = (bool) apply_filters(
-            'uc_catalog_public_cache_safe',
+            'ultimate_commerce_catalog_public_cache_safe',
             false,
             $state,
             $input,
@@ -95,7 +95,7 @@ final class CatalogQuery
             ),
         );
 
-        $filtered = apply_filters('uc_catalog_query_result', $payload, $state, $input);
+        $filtered = apply_filters('ultimate_commerce_catalog_query_result', $payload, $state, $input);
         return is_array($filtered) ? $filtered : $payload;
     }
 
@@ -111,6 +111,7 @@ final class CatalogQuery
             'orderby' => (string) ($sort['orderby'] ?? 'date'),
             'page' => (int) $state['page'],
             'include' => $include,
+            // phpcs:ignore WordPressVIPMinimum.Performance.WPQueryParams.PostNotIn_exclude -- Empty Woo Store API schema default; no exclusion query is executed unless an extension supplies bounded IDs.
             'exclude' => array(),
             'per_page' => (int) $state['per_page'],
             'parent' => array(),
@@ -188,6 +189,7 @@ final class CatalogQuery
         $params['page'] = max(1, min(CatalogFilterRegistry::MAX_PAGE, (int) ($params['page'] ?? $state['page'])));
         $params['per_page'] = max(1, min(CatalogFilterRegistry::MAX_PER_PAGE, (int) ($params['per_page'] ?? $state['per_page'])));
         $params['include'] = array_slice(array_values(array_unique(array_filter(array_map('absint', (array) ($params['include'] ?? array()))))), 0, self::MAX_INCLUDE_IDS);
+        // phpcs:ignore WordPressVIPMinimum.Performance.WPQueryParams.PostNotIn_exclude -- Public Store API extension input is normalized and capped at MAX_INCLUDE_IDS before WooCommerce receives it.
         $params['exclude'] = array_slice(array_values(array_unique(array_filter(array_map('absint', (array) ($params['exclude'] ?? array()))))), 0, self::MAX_INCLUDE_IDS);
         return $params;
     }

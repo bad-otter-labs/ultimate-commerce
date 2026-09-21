@@ -16,7 +16,7 @@ final class AccountHooks
     {
         $model = AccountViewModel::forCurrentUser();
         if (is_array($model)) {
-            do_action('uc_account_view_model_ready', $model);
+            do_action('ultimate_commerce_account_view_model_ready', $model);
         }
     }
 
@@ -25,7 +25,7 @@ final class AccountHooks
     {
         $model = OrderViewModel::fromOrder($order);
         if (is_array($model)) {
-            do_action('uc_order_view_model_ready', $model, $order);
+            do_action('ultimate_commerce_order_view_model_ready', $model, $order);
         }
     }
 }

@@ -76,7 +76,7 @@ jobs:
 
           if "wp_privacy_personal_data_exporters" not in registry or "wp_privacy_personal_data_erasers" not in registry:
               raise SystemExit('Personal data registry must integrate with WordPress exporter/eraser filters')
-          if "uc_register_personal_data_handlers" not in registry:
+          if "ultimate_commerce_register_personal_data_handlers" not in registry:
               raise SystemExit('Public personal-data registration action is missing')
           if 'PersonalDataRegistry::hooks();' not in plugin:
               raise SystemExit('Privacy hooks must be registered by the Free plugin')
@@ -88,8 +88,8 @@ jobs:
           for forbidden_guard in ('password', 'secret', 'token', 'authorization', 'credential'):
               if forbidden_guard not in audit:
                   raise SystemExit(f'Audit context guard is missing {forbidden_guard}')
-          if "do_action('uc_audit_event', $event)" not in sink:
-              raise SystemExit('Default audit sink must emit structured uc_audit_event hook')
+          if "do_action('ultimate_commerce_audit_event', $event)" not in sink:
+              raise SystemExit('Default audit sink must emit structured ultimate_commerce_audit_event hook')
           if 'error_log' in sink or 'update_option' in sink or 'add_option' in sink:
               raise SystemExit('Default audit sink must not persist events into generic logs/options')
 

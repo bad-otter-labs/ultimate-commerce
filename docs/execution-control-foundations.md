@@ -57,7 +57,7 @@ The default `TransientRateLimiter` is a local fixed-window limiter:
 - bounds the limit and window
 - stores only counter/reset metadata
 
-WordPress transients do not provide a universal cross-node atomic increment. The default limiter is therefore an abuse-reduction baseline, not a claim of strict distributed quota enforcement. Large/multi-node or money-like validation endpoints can replace it through `uc_rate_limiter` with Redis/edge/other atomic infrastructure while preserving the public contract.
+WordPress transients do not provide a universal cross-node atomic increment. The default limiter is therefore an abuse-reduction baseline, not a claim of strict distributed quota enforcement. Large/multi-node or money-like validation endpoints can replace it through `ultimate_commerce_rate_limiter` with Redis/edge/other atomic infrastructure while preserving the public contract.
 
 Callers decide the subject identity. Prefer an opaque user/customer/session identifier or a privacy-conscious derived value; do not persist raw personal data merely to rate-limit it.
 
@@ -65,8 +65,8 @@ Callers decide the subject identity. Prefer an opaque user/customer/session iden
 
 The default option-backed stores can be replaced through:
 
-- `uc_lock_store`
-- `uc_idempotency_store`
+- `ultimate_commerce_lock_store`
+- `ultimate_commerce_idempotency_store`
 
 Custom providers implement the public `LockStore` / `IdempotencyStore` interfaces.
 

@@ -11,7 +11,7 @@ The page is a UI over the existing Module API and `uc_modules` preference store.
 - Preferences for temporarily unregistered modules are preserved. Deactivating Pro or another extension and saving Free settings therefore does not erase that extension's remembered module state.
 - The next WordPress request resolves the saved preferences before modules boot.
 - Dependencies are not silently enabled or disabled on the merchant's behalf. If an enabled module cannot boot because a dependency is unavailable, the Modules page reports the registry's blocked state and issue.
-- `uc_module_enabled` remains the final code-level override. When its effective result differs from the stored merchant preference, the page reports that the effective state is overridden by code.
+- `ultimate_commerce_module_enabled` remains the final code-level override. When its effective result differs from the stored merchant preference, the page reports that the effective state is overridden by code.
 
 ## Security
 
@@ -21,7 +21,7 @@ Shop managers continue to receive `uc_view_diagnostics` only by default. They ca
 
 ## Extension modules
 
-Pro and third-party modules registered through `uc_register_modules` automatically participate in this UI. Free reads only the public Module contract metadata exposed by `ModuleRegistry::statuses()` and does not depend on Pro classes or product logic.
+Pro and third-party modules registered through `ultimate_commerce_register_modules` automatically participate in this UI. Free reads only the public Module contract metadata exposed by `ModuleRegistry::statuses()` and does not depend on Pro classes or product logic.
 
 A registered extension module should provide a stable canonical key, product identifier, tier and dependency keys. Invalid or duplicate module keys are still rejected by the Module Registry before the admin page is built.
 

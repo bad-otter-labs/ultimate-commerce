@@ -10,7 +10,7 @@ final class HookAuditSink implements AuditSink
 {
     public function record(AuditEvent $event)
     {
-        do_action('uc_audit_event', $event);
+        do_action('ultimate_commerce_audit_event', $event);
         return true;
     }
 }

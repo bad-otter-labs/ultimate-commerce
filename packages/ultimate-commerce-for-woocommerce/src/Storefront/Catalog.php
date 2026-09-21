@@ -35,13 +35,13 @@ final class Catalog
         }
 
         ob_start();
-        do_action('uc_product_list_before', $result, $context);
+        do_action('ultimate_commerce_product_list_before', $result, $context);
         echo '<div class="uc-product-list" data-uc-product-list="1">';
         foreach ($result['items'] as $item) {
             echo ProductCardRenderer::render($item, $context); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- renderer escapes its fields.
         }
         echo '</div>';
-        do_action('uc_product_list_after', $result, $context);
+        do_action('ultimate_commerce_product_list_after', $result, $context);
         return (string) ob_get_clean();
     }
 

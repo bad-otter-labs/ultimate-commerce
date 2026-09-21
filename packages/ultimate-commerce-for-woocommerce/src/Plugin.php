@@ -40,7 +40,7 @@ final class Plugin
 
         $registry = new ModuleRegistry();
         $classes = require ULTIMATE_COMMERCE_DIR . 'config/modules.php';
-        foreach ((array) apply_filters('uc_module_classes', $classes) as $class) {
+        foreach ((array) apply_filters('ultimate_commerce_module_classes', $classes) as $class) {
             if (is_string($class) && class_exists($class)) {
                 $registry->register(new $class());
             }
@@ -53,8 +53,8 @@ final class Plugin
          *
          * Extensions should call ModuleRegistry::register() with a Module implementation.
          */
-        do_action('uc_register_modules', $registry);
-        do_action('uc_modules_registered', $registry);
+        do_action('ultimate_commerce_register_modules', $registry);
+        do_action('ultimate_commerce_modules_registered', $registry);
 
         $registry->boot();
 

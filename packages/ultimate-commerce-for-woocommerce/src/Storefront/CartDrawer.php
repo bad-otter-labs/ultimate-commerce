@@ -19,7 +19,7 @@ final class CartDrawer
 
     public static function maybeEnqueueAssets(): void
     {
-        if (is_admin() || !(bool) apply_filters('uc_cart_drawer_auto_render', true)) {
+        if (is_admin() || !(bool) apply_filters('ultimate_commerce_cart_drawer_auto_render', true)) {
             return;
         }
 
@@ -28,7 +28,7 @@ final class CartDrawer
 
     public static function maybeRender(): void
     {
-        if (is_admin() || !(bool) apply_filters('uc_cart_drawer_auto_render', true)) {
+        if (is_admin() || !(bool) apply_filters('ultimate_commerce_cart_drawer_auto_render', true)) {
             return;
         }
 
@@ -45,14 +45,14 @@ final class CartDrawer
         self::$rendered = true;
         self::enqueueAssets();
 
-        $context = apply_filters('uc_cart_drawer_context', $context);
+        $context = apply_filters('ultimate_commerce_cart_drawer_context', $context);
         $context = is_array($context) ? $context : array();
         $apiRoot = untrailingslashit(rest_url('wc/store/v1'));
         $drawerId = 'uc-cart-drawer';
         $titleId = $drawerId . '-title';
 
         ob_start();
-        do_action('uc_cart_drawer_render_before', $context);
+        do_action('ultimate_commerce_cart_drawer_render_before', $context);
         ?>
         <div
             id="<?php echo esc_attr($drawerId); ?>"
@@ -102,7 +102,7 @@ final class CartDrawer
             </section>
         </div>
         <?php
-        do_action('uc_cart_drawer_render_after', $context);
+        do_action('ultimate_commerce_cart_drawer_render_after', $context);
         return (string) ob_get_clean();
     }
 
@@ -156,7 +156,7 @@ final class CartDrawer
     private static function slot(string $slot, array $context): void
     {
         echo '<div class="uc-cart-drawer__slot uc-cart-drawer__slot--' . esc_attr(sanitize_html_class($slot)) . '" data-uc-cart-slot="' . esc_attr($slot) . '">';
-        do_action('uc_cart_drawer_slot', $slot, $context);
+        do_action('ultimate_commerce_cart_drawer_slot', $slot, $context);
         echo '</div>';
     }
 }

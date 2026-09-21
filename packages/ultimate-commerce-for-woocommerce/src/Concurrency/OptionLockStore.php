@@ -9,7 +9,7 @@ defined('ABSPATH') || exit;
 final class OptionLockStore implements LockStore
 {
     private const PREFIX = 'uc_lock_';
-    private const DELETE_HOOK = 'uc_lock_store_delete';
+    private const DELETE_HOOK = 'ultimate_commerce_lock_store_delete';
     private const MIN_TTL = 5;
     private const MAX_TTL = 86400;
 

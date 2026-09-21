@@ -15,7 +15,7 @@ final class Idempotency
         if (!self::$defaultStore) {
             self::$defaultStore = new OptionIdempotencyStore();
         }
-        $store = apply_filters('uc_idempotency_store', self::$defaultStore);
+        $store = apply_filters('ultimate_commerce_idempotency_store', self::$defaultStore);
         return $store instanceof IdempotencyStore ? $store : self::$defaultStore;
     }
 

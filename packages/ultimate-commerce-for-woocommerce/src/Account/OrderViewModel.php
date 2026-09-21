@@ -76,7 +76,7 @@ final class OrderViewModel
             ),
         );
 
-        $data = apply_filters('uc_order_view_model', $data, $order, $actorUserId);
+        $data = apply_filters('ultimate_commerce_order_view_model', $data, $order, $actorUserId);
         return is_array($data) ? $data : array();
     }
 }

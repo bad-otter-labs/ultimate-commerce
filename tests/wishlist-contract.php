@@ -122,7 +122,7 @@ foreach (array(
     "nocache_headers();" => $bootstrap,
     "wp_create_nonce('wp_rest')" => $bootstrap,
     "DataRetention::ACCOUNT_LIFETIME" => $store,
-    "add_action('uc_product_card_slot'" => $controls,
+    "add_action('ultimate_commerce_product_card_slot'" => $controls,
     "add_shortcode('ultimate_commerce_wishlist'" => $controls,
     "array('wp-i18n')" => $controls,
     "wp_set_script_translations" => $controls,

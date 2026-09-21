@@ -29,7 +29,7 @@ final class AccountViewModel
         }
 
         $limit = max(1, min(self::MAX_RECENT_ORDERS, $recentOrderLimit));
-        $filteredLimit = apply_filters('uc_account_recent_order_limit', $limit, $userId);
+        $filteredLimit = apply_filters('ultimate_commerce_account_recent_order_limit', $limit, $userId);
         $limit = is_scalar($filteredLimit)
             ? max(1, min(self::MAX_RECENT_ORDERS, absint($filteredLimit)))
             : $limit;
@@ -73,7 +73,7 @@ final class AccountViewModel
             ),
         );
 
-        $data = apply_filters('uc_account_view_model', $data, $userId);
+        $data = apply_filters('ultimate_commerce_account_view_model', $data, $userId);
         return is_array($data) ? $data : array();
     }
 }
