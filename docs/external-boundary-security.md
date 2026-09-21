@@ -35,7 +35,7 @@ The default provider is `EncryptedOptionSecretStore`:
 - key material derived from the WordPress secure-auth salt
 - key name is authenticated as additional data, preventing ciphertext swapping between names
 
-External/enterprise secret providers can replace the default through `uc_secret_store_provider` by returning an implementation of `BadOtter\UltimateCommerce\Contracts\SecretStore`.
+External/enterprise secret providers can replace the default through `ultimate_commerce_secret_store_provider` by returning an implementation of `BadOtter\UltimateCommerce\Contracts\SecretStore`.
 
 Important limitations:
 

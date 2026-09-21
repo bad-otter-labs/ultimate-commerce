@@ -20,13 +20,13 @@ Do not substitute broad capabilities such as `manage_options` or `manage_woocomm
 Free fires the public action:
 
 ```php
-uc_admin_menu
+ultimate_commerce_admin_menu
 ```
 
 The first argument is the root parent slug. Extensions may register supported subpages from that action:
 
 ```php
-add_action('uc_admin_menu', static function (string $parentSlug): void {
+add_action('ultimate_commerce_admin_menu', static function (string $parentSlug): void {
     add_submenu_page(
         $parentSlug,
         __('Example', 'example-extension'),
@@ -42,7 +42,7 @@ Free never imports or calls Pro classes. Pro and legitimate third-party extensio
 
 ## Overview extension point
 
-Free fires `uc_admin_overview` near the end of the Overview page and passes the current module-status array. Extensions may add small status/entry-point UI there when useful, but they should keep feature implementation and privileged mutations on their own pages.
+Free fires `ultimate_commerce_admin_overview` near the end of the Overview page and passes the current module-status array. Extensions may add small status/entry-point UI there when useful, but they should keep feature implementation and privileged mutations on their own pages.
 
 ## Ownership rules
 

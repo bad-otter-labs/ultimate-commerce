@@ -29,7 +29,7 @@ When a customer is authenticated, guest IDs are merged into the server wishlist 
 
 ## Rendering
 
-Product-card toggles attach through the existing `uc_product_card_slot` / `after_title` extension seam. Product pages also receive a semantic toggle.
+Product-card toggles attach through the existing `ultimate_commerce_product_card_slot` / `after_title` extension seam. Product pages also receive a semantic toggle.
 
 Merchants can create a normal WordPress page containing:
 

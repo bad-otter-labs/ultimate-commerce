@@ -25,7 +25,7 @@ Useful methods:
 The built-in Free Cart module auto-renders the drawer in `wp_footer`. Themes may disable that behavior:
 
 ```php
-add_filter('uc_cart_drawer_auto_render', '__return_false');
+add_filter('ultimate_commerce_cart_drawer_auto_render', '__return_false');
 ```
 
 and place `CartDrawer::render()` themselves.
@@ -97,14 +97,14 @@ The controller does not persist a cart snapshot in `localStorage` or another UC 
 
 Filters:
 
-- `uc_cart_drawer_auto_render` — enable/disable Free's `wp_footer` shell.
-- `uc_cart_drawer_context` — add presentation-neutral context passed to PHP slots.
+- `ultimate_commerce_cart_drawer_auto_render` — enable/disable Free's `wp_footer` shell.
+- `ultimate_commerce_cart_drawer_context` — add presentation-neutral context passed to PHP slots.
 
 Actions:
 
-- `uc_cart_drawer_render_before`
-- `uc_cart_drawer_render_after`
-- `uc_cart_drawer_slot`
+- `ultimate_commerce_cart_drawer_render_before`
+- `ultimate_commerce_cart_drawer_render_after`
+- `ultimate_commerce_cart_drawer_slot`
 
 Named PHP slots:
 

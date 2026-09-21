@@ -48,29 +48,29 @@ Cart API v1 is documented in `docs/cart-drawer-contract-v1.md`.
 The built-in Cart module normally outputs the drawer shell in `wp_footer`. A theme can own placement without forking behavior:
 
 ```php
-add_filter('uc_cart_drawer_auto_render', '__return_false');
+add_filter('ultimate_commerce_cart_drawer_auto_render', '__return_false');
 ```
 
 Then render `CartDrawer::render()` where appropriate and use `CartDrawer::trigger()` for an accessible opener. If the custom markup adopts the documented contract, `CartDrawer::enqueueAssets()` loads the controller/structural CSS.
 
 Quick Add and cart mutations go directly through WooCommerce Store API. Do not copy the Woo cart into theme local storage, create a UC cart endpoint, recalculate totals, or bypass Woo stock/purchasability errors.
 
-Supported cart extension seams include named `uc_cart_drawer_slot` positions plus browser events such as `uc:cart-open`, `uc:cart-refresh` and `uc:cart-updated`.
+Supported cart extension seams include named `ultimate_commerce_cart_drawer_slot` positions plus browser events such as `uc:cart-open`, `uc:cart-refresh` and `uc:cart-updated`.
 
 ## Catalogue filters and swatches
 
 Use documented Storefront API hooks rather than reading UC internals from templates. Examples include:
 
-- `uc_catalog_filter_definitions`
-- `uc_catalog_sort_definitions`
-- `uc_catalog_cache_context`
-- `uc_product_card_view_model`
-- `uc_variation_product_state`
-- `uc_variation_swatch_data`
+- `ultimate_commerce_catalog_filter_definitions`
+- `ultimate_commerce_catalog_sort_definitions`
+- `ultimate_commerce_catalog_cache_context`
+- `ultimate_commerce_product_card_view_model`
+- `ultimate_commerce_variation_product_state`
+- `ultimate_commerce_variation_swatch_data`
 
-If another plugin owns colour/image swatch metadata, adapt it once through `uc_variation_swatch_data`; do not duplicate that provider's storage logic throughout the theme.
+If another plugin owns colour/image swatch metadata, adapt it once through `ultimate_commerce_variation_swatch_data`; do not duplicate that provider's storage logic throughout the theme.
 
-Catalogue cacheability is conservative by default. A store should only opt into `uc_catalog_public_cache_safe` after `uc_catalog_cache_context` varies on every market/tax/currency/geolocation dimension required by that installation.
+Catalogue cacheability is conservative by default. A store should only opt into `ultimate_commerce_catalog_public_cache_safe` after `ultimate_commerce_catalog_cache_context` varies on every market/tax/currency/geolocation dimension required by that installation.
 
 ## Wishlist
 
@@ -84,13 +84,13 @@ Recently Viewed API v1 (`ULTIMATE_COMMERCE_RECENTLY_VIEWED_API_VERSION`) is docu
 
 Account API v1 (`ULTIMATE_COMMERCE_ACCOUNT_API_VERSION`) is documented in `docs/account-order-contract-v1.md`. Themes and extensions may consume `AccountViewModel::forCurrentUser()` and `OrderViewModel::fromOrder()` only for authenticated customer context. Order access is re-authorised server-side on every model build and remains backed by WooCommerce CRUD/query APIs.
 
-Presentation integrations may extend `uc_account_view_model` and `uc_order_view_model`, or consume the corresponding `*_ready` actions emitted on WooCommerce account surfaces. Do not cache these models publicly or infer guest-order ownership.
+Presentation integrations may extend `ultimate_commerce_account_view_model` and `ultimate_commerce_order_view_model`, or consume the corresponding `*_ready` actions emitted on WooCommerce account surfaces. Do not cache these models publicly or infer guest-order ownership.
 
 ## Module and admin extensions
 
-Reusable extensions register modules through Module API v1 and `uc_register_modules`; see `docs/module-extension-contract-v1.md`.
+Reusable extensions register modules through Module API v1 and `ultimate_commerce_register_modules`; see `docs/module-extension-contract-v1.md`.
 
-Admin extensions attach beneath the standalone Ultimate Commerce menu through `uc_admin_menu` and must enforce their own exact UC capability on every callback; see `docs/admin-menu-extension-contract.md`.
+Admin extensions attach beneath the standalone Ultimate Commerce menu through `ultimate_commerce_admin_menu` and must enforce their own exact UC capability on every callback; see `docs/admin-menu-extension-contract.md`.
 
 A theme should not register product behavior by reaching into `ModuleRegistry`, options or module implementation classes directly.
 

@@ -50,7 +50,7 @@ High-volume logs/events must not default to forever merely because storage is ch
 Modules register UC-owned personal-data handlers through:
 
 ```php
-add_action('uc_register_personal_data_handlers', function ($registry) {
+add_action('ultimate_commerce_register_personal_data_handlers', function ($registry) {
     $registry->register(
         'stock_alerts',
         'Ultimate Commerce stock alerts',
@@ -118,10 +118,10 @@ Examples of actions that should eventually emit audit events include:
 The default `HookAuditSink` emits:
 
 ```text
-uc_audit_event
+ultimate_commerce_audit_event
 ```
 
-It deliberately does **not** write to the PHP error log or a generic WordPress option. A later audit persistence slice can provide an indexed store with explicit retention/export policy, and Pro/enterprise deployments can replace the sink through `uc_audit_sink`.
+It deliberately does **not** write to the PHP error log or a generic WordPress option. A later audit persistence slice can provide an indexed store with explicit retention/export policy, and Pro/enterprise deployments can replace the sink through `ultimate_commerce_audit_sink`.
 
 A persistent sink must preserve the event contract and must not silently add secret/request payload data.
 

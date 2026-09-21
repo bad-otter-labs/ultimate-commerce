@@ -20,9 +20,9 @@ Recent orders are queried with `wc_get_orders()` scoped to the current customer.
 
 Extensions may use:
 
-- `uc_account_recent_order_limit` to adjust the recent-order query within the hard maximum
-- `uc_account_view_model` to add presentation data without replacing WooCommerce truth
-- `uc_account_view_model_ready` when WooCommerce renders the account dashboard
+- `ultimate_commerce_account_recent_order_limit` to adjust the recent-order query within the hard maximum
+- `ultimate_commerce_account_view_model` to add presentation data without replacing WooCommerce truth
+- `ultimate_commerce_account_view_model_ready` when WooCommerce renders the account dashboard
 
 ## Order view model
 
@@ -30,7 +30,7 @@ Extensions may use:
 
 The model contains order identity, status, created time, currency, total, line-item presentation data and stable extension slots. It does not expose the Woo order key.
 
-`uc_order_view_model` may extend the model after ownership has been verified. `uc_order_view_model_ready` fires before WooCommerce renders the order table.
+`ultimate_commerce_order_view_model` may extend the model after ownership has been verified. `ultimate_commerce_order_view_model_ready` fires before WooCommerce renders the order table.
 
 ## Authorisation
 

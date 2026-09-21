@@ -44,7 +44,7 @@ The response contains:
 - `canonical_query`: deterministic flat URL parameters
 - `cache`: last-modified/context/cache-key metadata
 
-The result contains no cart token, nonce or customer identity. UC conservatively reports `public_cache_safe=false` by default because guest prices can still vary by tax, market, geolocation or currency integrations. A deployment may opt in through `uc_catalog_public_cache_safe` only after `uc_catalog_cache_context` includes every required cache-vary dimension for that store. UC never assumes that logged-out implies globally cacheable.
+The result contains no cart token, nonce or customer identity. UC conservatively reports `public_cache_safe=false` by default because guest prices can still vary by tax, market, geolocation or currency integrations. A deployment may opt in through `ultimate_commerce_catalog_public_cache_safe` only after `ultimate_commerce_catalog_cache_context` includes every required cache-vary dimension for that store. UC never assumes that logged-out implies globally cacheable.
 
 ## Product-card schema
 
@@ -93,7 +93,7 @@ If variation limits are exceeded, `variation.truncated` is true and `variation.a
 - `radiogroup`/`radio`, `aria-checked`, `aria-disabled` semantics
 - Woo Store API add-item handoff metadata only when a complete selected variation is purchasable and in stock
 
-The `uc_swatch_color` and `uc_swatch_image_id` term-meta keys are the built-in Free storage convention, not a requirement for external swatch systems. `uc_variation_swatch_data` receives the default `{color, image_id}` payload, the Woo term and taxonomy; an integration may map an existing swatch provider into the same public state without changing catalogue/product-card code. UC validates the returned colour and attachment ID again after the filter.
+The `uc_swatch_color` and `uc_swatch_image_id` term-meta keys are the built-in Free storage convention, not a requirement for external swatch systems. `ultimate_commerce_variation_swatch_data` receives the default `{color, image_id}` payload, the Woo term and taxonomy; an integration may map an existing swatch provider into the same public state without changing catalogue/product-card code. UC validates the returned colour and attachment ID again after the filter.
 
 The default semantic renderer progressively enhances these states with `assets/js/variation-controls.js`. It owns reusable selection matching, option availability refresh, variation image/price switching, submit-state changes and radio-style arrow-key navigation. The controller is loaded only when the default renderer outputs variable-product controls.
 
@@ -107,7 +107,7 @@ The controller dispatches a bubbling `uc:variation-change` DOM event containing 
 
 ## Filter configuration
 
-Free automatically exposes Woo global product attributes (`pa_*`) plus price and availability. Stores can narrow, rename, reorder or add registered product taxonomies through `uc_catalog_filter_definitions`. The hook receives the complete registered global-attribute set first; UC applies the 16-filter safety cap after the store/extension has selected and reordered the definitions.
+Free automatically exposes Woo global product attributes (`pa_*`) plus price and availability. Stores can narrow, rename, reorder or add registered product taxonomies through `ultimate_commerce_catalog_filter_definitions`. The hook receives the complete registered global-attribute set first; UC applies the 16-filter safety cap after the store/extension has selected and reordered the definitions.
 
 For large catalogues, dimensions such as garment type, use case, weather, waterproof rating, warmth, fit, size, colour and material should be modeled as Woo global attributes or other indexed product taxonomies. Do not model storefront facets as arbitrary product-meta scans.
 
@@ -115,39 +115,39 @@ Flat parameters such as `filter_colour=navy,olive&min_price=50&sort=price_asc&pa
 
 `filters[].options[].count` is the bounded Woo taxonomy term count for the option. It is not presented as a fully faceted post-filter result count. A future count provider may refine counts through the public descriptor/query extension points without changing URL state.
 
-`uc_catalog_filter_state` is an extension point, not a bypass around safety limits. UC revalidates the state after the hook, including page/per-page limits, selected-value caps, registered filter IDs, price ranges, availability values and sort identifiers.
+`ultimate_commerce_catalog_filter_state` is an extension point, not a bypass around safety limits. UC revalidates the state after the hook, including page/per-page limits, selected-value caps, registered filter IDs, price ranges, availability values and sort identifiers.
 
 ## Public extension points
 
 Filters:
 
-- `uc_catalog_filter_definitions`
-- `uc_catalog_sort_definitions`
-- `uc_catalog_filter_state`
-- `uc_catalog_filter_descriptors`
-- `uc_catalog_store_api_params`
-- `uc_catalog_query_result`
-- `uc_catalog_cache_context`
-- `uc_catalog_public_cache_safe`
-- `uc_product_card_view_model`
-- `uc_product_card_classes`
-- `uc_variation_product_state`
-- `uc_variation_state`
-- `uc_variation_attribute_display`
-- `uc_variation_swatch_data`
+- `ultimate_commerce_catalog_filter_definitions`
+- `ultimate_commerce_catalog_sort_definitions`
+- `ultimate_commerce_catalog_filter_state`
+- `ultimate_commerce_catalog_filter_descriptors`
+- `ultimate_commerce_catalog_store_api_params`
+- `ultimate_commerce_catalog_query_result`
+- `ultimate_commerce_catalog_cache_context`
+- `ultimate_commerce_catalog_public_cache_safe`
+- `ultimate_commerce_product_card_view_model`
+- `ultimate_commerce_product_card_classes`
+- `ultimate_commerce_variation_product_state`
+- `ultimate_commerce_variation_state`
+- `ultimate_commerce_variation_attribute_display`
+- `ultimate_commerce_variation_swatch_data`
 
 Compatibility filters:
 
-- `uc_product_view_model`
-- `uc_variation_view_model`
+- `ultimate_commerce_product_view_model`
+- `ultimate_commerce_variation_view_model`
 
 Actions:
 
-- `uc_product_list_before`
-- `uc_product_list_after`
-- `uc_product_card_render_before`
-- `uc_product_card_render_after`
-- `uc_product_card_slot`
+- `ultimate_commerce_product_list_before`
+- `ultimate_commerce_product_list_after`
+- `ultimate_commerce_product_card_render_before`
+- `ultimate_commerce_product_card_render_after`
+- `ultimate_commerce_product_card_slot`
 
 Browser event:
 
@@ -157,16 +157,16 @@ Pro may add sort definitions such as Recommended, waterproof rating, warmth or A
 
 ## Historical bridge migration
 
-The historical filters `uc_product_view_model` and `uc_variation_view_model` remain active compatibility extension points in v1, but they are no longer the preferred service entry point.
+The historical filters `ultimate_commerce_product_view_model` and `ultimate_commerce_variation_view_model` remain active compatibility extension points in v1, but they are no longer the preferred service entry point.
 
 Migration:
 
 1. Replace direct construction/use of `Modules\ProductDisplay\ProductViewModel` with `Storefront\Catalog::product()` or `ProductCardViewModel::fromProduct()`.
 2. Replace calls to `VariationsModule::state()` with `VariationViewModel::fromVariation()` or `VariationViewModel::forProduct()` for full variable-product state.
-3. Move new product-card custom fields to `uc_product_card_view_model`; the historical `uc_product_view_model` still runs after it for transition compatibility.
-4. Move new single-variation custom fields to `uc_variation_state`; the historical `uc_variation_view_model` still runs after it.
-5. For full product-level variation state/extensions, use `uc_variation_product_state` rather than assembling sibling variation queries in a theme.
-6. If an existing plugin owns colour/image swatch metadata, map it once through `uc_variation_swatch_data` rather than reading that plugin's storage from theme templates.
+3. Move new product-card custom fields to `ultimate_commerce_product_card_view_model`; the historical `ultimate_commerce_product_view_model` still runs after it for transition compatibility.
+4. Move new single-variation custom fields to `ultimate_commerce_variation_state`; the historical `ultimate_commerce_variation_view_model` still runs after it.
+5. For full product-level variation state/extensions, use `ultimate_commerce_variation_product_state` rather than assembling sibling variation queries in a theme.
+6. If an existing plugin owns colour/image swatch metadata, map it once through `ultimate_commerce_variation_swatch_data` rather than reading that plugin's storage from theme templates.
 7. Do not query variation IDs/stock/prices separately in the theme. Consume the UC model and hand cart mutation back to Woo.
 
 ## Example theme consumer

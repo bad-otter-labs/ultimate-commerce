@@ -35,7 +35,7 @@ Every module declares:
 Free creates one `ModuleRegistry`, registers its built-in modules, then fires:
 
 ```php
-do_action('uc_register_modules', $registry);
+do_action('ultimate_commerce_register_modules', $registry);
 ```
 
 Pro and third-party plugins hook that action and call only the public `ModuleRegistry::register()` method.
@@ -66,7 +66,7 @@ final class ExampleModule extends AbstractModule
     }
 }
 
-add_action('uc_register_modules', static function (ModuleRegistry $registry): void {
+add_action('ultimate_commerce_register_modules', static function (ModuleRegistry $registry): void {
     if (!defined('ULTIMATE_COMMERCE_MODULE_API_VERSION')) {
         return;
     }
@@ -79,7 +79,7 @@ add_action('uc_register_modules', static function (ModuleRegistry $registry): vo
 });
 ```
 
-If Free is absent, `uc_register_modules` never fires. Pro should separately present its dependency guard to an administrator; it must not make Free call into Pro.
+If Free is absent, `ultimate_commerce_register_modules` never fires. Pro should separately present its dependency guard to an administrator; it must not make Free call into Pro.
 
 ## Dependency rules
 
@@ -102,7 +102,7 @@ Disabled or blocked modules must not call `register()`, which prevents their run
 
 ## Compatibility filter
 
-The historical `uc_module_classes` filter remains available during the pre-release transition, but it is not the preferred Pro/third-party contract. New extensions should use `uc_register_modules` and `ModuleRegistry::register()`.
+The historical `ultimate_commerce_module_classes` filter remains available during the pre-release transition, but it is not the preferred Pro/third-party contract. New extensions should use `ultimate_commerce_register_modules` and `ModuleRegistry::register()`.
 
 ## Public-contract rule
 
