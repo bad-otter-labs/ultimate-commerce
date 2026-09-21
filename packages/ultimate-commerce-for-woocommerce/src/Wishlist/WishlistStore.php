@@ -62,7 +62,7 @@ final class WishlistStore
 
         $ids[] = $productId;
         self::save($userId, $ids);
-        do_action('uc_wishlist_item_added', $userId, $productId, $ids);
+        do_action('ultimate_commerce_wishlist_item_added', $userId, $productId, $ids);
 
         return $ids;
     }
@@ -79,7 +79,7 @@ final class WishlistStore
             static fn(int $candidate): bool => $candidate !== $productId
         ));
         self::save($userId, $ids);
-        do_action('uc_wishlist_item_removed', $userId, $productId, $ids);
+        do_action('ultimate_commerce_wishlist_item_removed', $userId, $productId, $ids);
 
         return $ids;
     }
@@ -108,7 +108,7 @@ final class WishlistStore
         }
 
         self::save($userId, $ids);
-        do_action('uc_wishlist_merged', $userId, $ids);
+        do_action('ultimate_commerce_wishlist_merged', $userId, $ids);
 
         return $ids;
     }
@@ -227,7 +227,7 @@ final class WishlistStore
             $allowed = $product->get_status() === 'publish';
         }
 
-        return (bool) apply_filters('uc_wishlist_product_allowed', $allowed, $product, $productId);
+        return (bool) apply_filters('ultimate_commerce_wishlist_product_allowed', $allowed, $product, $productId);
     }
 
     /** @param list<int> $ids */
@@ -239,7 +239,7 @@ final class WishlistStore
         } else {
             update_user_meta($userId, self::metaKey(), $ids);
         }
-        do_action('uc_wishlist_updated', $userId, $ids);
+        do_action('ultimate_commerce_wishlist_updated', $userId, $ids);
     }
 
     private static function error(string $code, string $message, int $status): \WP_Error

@@ -44,7 +44,7 @@ final class ProductCardViewModel
         if (!$product->is_in_stock()) {
             $classes[] = 'uc-product-card--out-of-stock';
         }
-        $classes = apply_filters('uc_product_card_classes', $classes, $product);
+        $classes = apply_filters('ultimate_commerce_product_card_classes', $classes, $product);
         $classes = array_values(array_unique(array_filter(array_map('sanitize_html_class', is_array($classes) ? $classes : array()))));
 
         $data = array(
@@ -102,9 +102,9 @@ final class ProductCardViewModel
         $data['attributes'] = $variationState['attributes'] ?? array();
         $data['variation_ids'] = $variationState['variation_ids'] ?? array();
 
-        $data = apply_filters('uc_product_card_view_model', $data, $product);
+        $data = apply_filters('ultimate_commerce_product_card_view_model', $data, $product);
         $data = is_array($data) ? $data : array();
-        $legacy = apply_filters('uc_product_view_model', $data, $product);
+        $legacy = apply_filters('ultimate_commerce_product_view_model', $data, $product);
         return is_array($legacy) ? $legacy : $data;
     }
 

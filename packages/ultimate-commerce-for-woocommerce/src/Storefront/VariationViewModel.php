@@ -132,7 +132,7 @@ final class VariationViewModel
                     $display = 'color';
                 }
             }
-            $display = sanitize_key((string) apply_filters('uc_variation_attribute_display', $display, $attributeName, $product, $attributeOptions));
+            $display = sanitize_key((string) apply_filters('ultimate_commerce_variation_attribute_display', $display, $attributeName, $product, $attributeOptions));
             if (!in_array($display, array('button', 'color', 'image'), true)) {
                 $display = 'button';
             }
@@ -199,7 +199,7 @@ final class VariationViewModel
             'action' => $action,
         );
 
-        $filtered = apply_filters('uc_variation_product_state', $state, $product);
+        $filtered = apply_filters('ultimate_commerce_variation_product_state', $state, $product);
         return is_array($filtered) ? $filtered : $state;
     }
 
@@ -224,9 +224,9 @@ final class VariationViewModel
             'media' => MediaViewModel::fromAttachment((int) $variation->get_image_id()),
         );
 
-        $state = apply_filters('uc_variation_state', $state, $variation);
+        $state = apply_filters('ultimate_commerce_variation_state', $state, $variation);
         $state = is_array($state) ? $state : array();
-        $legacy = apply_filters('uc_variation_view_model', $state, $variation);
+        $legacy = apply_filters('ultimate_commerce_variation_view_model', $state, $variation);
         return is_array($legacy) ? $legacy : $state;
     }
 
@@ -272,7 +272,7 @@ final class VariationViewModel
                     'color' => (string) get_term_meta((int) $term->term_id, 'uc_swatch_color', true),
                     'image_id' => absint(get_term_meta((int) $term->term_id, 'uc_swatch_image_id', true)),
                 );
-                $filteredSwatch = apply_filters('uc_variation_swatch_data', $defaultSwatch, $term, $taxonomy);
+                $filteredSwatch = apply_filters('ultimate_commerce_variation_swatch_data', $defaultSwatch, $term, $taxonomy);
                 $filteredSwatch = is_array($filteredSwatch) ? $filteredSwatch : $defaultSwatch;
                 $color = sanitize_hex_color((string) ($filteredSwatch['color'] ?? ''));
                 $imageId = absint($filteredSwatch['image_id'] ?? 0);

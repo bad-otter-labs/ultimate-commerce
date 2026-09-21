@@ -18,7 +18,7 @@ final class ProductCardRenderer
 
         $classes = implode(' ', array_map('sanitize_html_class', (array) ($view['classes'] ?? array('uc-product-card'))));
         ob_start();
-        do_action('uc_product_card_render_before', $view, $context);
+        do_action('ultimate_commerce_product_card_render_before', $view, $context);
         echo '<article class="' . esc_attr($classes) . '" data-uc-product-card="1" data-product-id="' . esc_attr((string) $view['id']) . '">';
         self::slot('before_media', $view, $context);
         self::media($view);
@@ -50,7 +50,7 @@ final class ProductCardRenderer
         }
         self::slot('after_action', $view, $context);
         echo '</div></article>';
-        do_action('uc_product_card_render_after', $view, $context);
+        do_action('ultimate_commerce_product_card_render_after', $view, $context);
         return (string) ob_get_clean();
     }
 
@@ -195,7 +195,7 @@ final class ProductCardRenderer
     private static function slot(string $slot, array $view, array $context): void
     {
         echo '<div class="uc-product-card__slot uc-product-card__slot--' . esc_attr(sanitize_html_class($slot)) . '" data-uc-slot="' . esc_attr($slot) . '">';
-        do_action('uc_product_card_slot', $slot, $view, $context);
+        do_action('ultimate_commerce_product_card_slot', $slot, $view, $context);
         echo '</div>';
     }
 }

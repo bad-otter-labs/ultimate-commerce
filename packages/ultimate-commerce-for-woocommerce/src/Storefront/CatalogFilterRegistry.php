@@ -54,7 +54,7 @@ final class CatalogFilterRegistry
 
         // Store/theme/extension code may choose and reorder from the complete
         // registered attribute set before validateDefinitions() applies the cap.
-        $filtered = apply_filters('uc_catalog_filter_definitions', $definitions);
+        $filtered = apply_filters('ultimate_commerce_catalog_filter_definitions', $definitions);
         return self::validateDefinitions(is_array($filtered) ? $filtered : $definitions);
     }
 
@@ -78,7 +78,7 @@ final class CatalogFilterRegistry
                 'order' => 'desc',
             ),
         );
-        $filtered = apply_filters('uc_catalog_sort_definitions', $definitions);
+        $filtered = apply_filters('ultimate_commerce_catalog_sort_definitions', $definitions);
         return self::validateSortDefinitions(is_array($filtered) ? $filtered : $definitions);
     }
 
@@ -129,7 +129,7 @@ final class CatalogFilterRegistry
             'availability' => $availability,
         ), $definitions, $sorts);
 
-        $filtered = apply_filters('uc_catalog_filter_state', $state, $input, $definitions);
+        $filtered = apply_filters('ultimate_commerce_catalog_filter_state', $state, $input, $definitions);
         return self::validateState(is_array($filtered) ? $filtered : $state, $definitions, $sorts);
     }
 
@@ -186,7 +186,7 @@ final class CatalogFilterRegistry
             $descriptors[] = $descriptor;
         }
 
-        $filtered = apply_filters('uc_catalog_filter_descriptors', $descriptors, $state);
+        $filtered = apply_filters('ultimate_commerce_catalog_filter_descriptors', $descriptors, $state);
         return is_array($filtered) ? $filtered : $descriptors;
     }
 
