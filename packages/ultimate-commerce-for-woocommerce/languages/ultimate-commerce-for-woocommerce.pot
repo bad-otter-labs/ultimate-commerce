@@ -307,11 +307,11 @@ msgstr ""
 msgid "Access denied"
 msgstr ""
 
-#: src/Admin/ModulesPage.php:204
+#: src/Admin/ModulesPage.php:197
 msgid "Module settings saved."
 msgstr ""
 
-#: src/Admin/ModulesPage.php:197
+#: src/Admin/ModulesPage.php:204
 msgid "Active"
 msgstr ""
 
