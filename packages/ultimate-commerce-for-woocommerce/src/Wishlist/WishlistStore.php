@@ -20,7 +20,7 @@ final class WishlistStore
             return;
         }
         self::$hooksRegistered = true;
-        add_action('uc_register_personal_data_handlers', array(__CLASS__, 'registerPrivacy'));
+        add_action('ultimate_commerce_register_personal_data_handlers', array(__CLASS__, 'registerPrivacy'));
     }
 
     public static function metaKey(): string

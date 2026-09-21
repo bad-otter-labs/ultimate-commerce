@@ -18,7 +18,7 @@ function is_object_in_taxonomy($object, $taxonomy): bool { return $object === 'p
 
 function apply_filters($tag, $value, ...$args)
 {
-    if ($tag !== 'uc_catalog_filter_state') {
+    if ($tag !== 'ultimate_commerce_catalog_filter_state') {
         return $value;
     }
 

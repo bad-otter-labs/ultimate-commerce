@@ -13,7 +13,7 @@ final class OptionIdempotencyStore implements IdempotencyStore
     public const STATUS_COMPLETED = 'completed';
 
     private const PREFIX = 'uc_idem_';
-    private const DELETE_HOOK = 'uc_idempotency_store_delete';
+    private const DELETE_HOOK = 'ultimate_commerce_idempotency_store_delete';
     private const MIN_TTL = 60;
     private const MAX_TTL = 604800;
 

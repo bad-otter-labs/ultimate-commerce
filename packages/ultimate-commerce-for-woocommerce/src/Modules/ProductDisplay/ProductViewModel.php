@@ -12,7 +12,7 @@ final class ProductViewModel
      * Historical compatibility facade.
      *
      * New consumers should use ProductCardViewModel::fromProduct() or Storefront\Catalog.
-     * The `uc_product_view_model` filter remains active inside the new public view-model path.
+     * The `ultimate_commerce_product_view_model` filter remains active inside the new public view-model path.
      *
      * @param int|\WC_Product $product
      */

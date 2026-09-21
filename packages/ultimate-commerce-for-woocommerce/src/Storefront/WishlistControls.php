@@ -17,7 +17,7 @@ final class WishlistControls
 
     public static function hooks(): void
     {
-        add_action('uc_product_card_slot', array(__CLASS__, 'productCardSlot'), 10, 3);
+        add_action('ultimate_commerce_product_card_slot', array(__CLASS__, 'productCardSlot'), 10, 3);
         add_action('woocommerce_after_add_to_cart_form', array(__CLASS__, 'singleProductToggle'), 20);
         add_shortcode('ultimate_commerce_wishlist', array(__CLASS__, 'shortcode'));
     }

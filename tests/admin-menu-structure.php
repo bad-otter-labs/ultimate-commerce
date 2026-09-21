@@ -94,7 +94,7 @@ ucAssert($ucTestSubmenus[3]['menuSlug'] === AdminMenu::DIAGNOSTICS_SLUG, 'Diagno
 ucAssert($ucTestSubmenus[3]['capability'] === Capabilities::VIEW_DIAGNOSTICS, 'Diagnostics must remain readable through the diagnostics capability.');
 
 ucAssert(count($ucTestFiredActions) === 1, 'Admin extension action must fire once.');
-ucAssert($ucTestFiredActions[0][0] === 'uc_admin_menu', 'Public admin extension action is missing.');
+ucAssert($ucTestFiredActions[0][0] === 'ultimate_commerce_admin_menu', 'Public admin extension action is missing.');
 ucAssert($ucTestFiredActions[0][1] === array(AdminMenu::ROOT_SLUG), 'Admin extension action must expose the UC parent slug.');
 
 ucAssert(str_contains($ucOverviewSource, "esc_html__('Ultimate Commerce Pro'"), 'Overview must contain restrained Pro discovery.');

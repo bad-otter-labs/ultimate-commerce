@@ -13,7 +13,7 @@ final class WP_Error
 
 $GLOBALS['uc_governance_filters'] = array();
 $GLOBALS['uc_governance_actions'] = array();
-$GLOBALS['uc_audit_events'] = array();
+$GLOBALS['ultimate_commerce_audit_events'] = array();
 $GLOBALS['uc_test_user_id'] = 42;
 
 function __($text, $domain = null): string { return (string) $text; }
@@ -53,8 +53,8 @@ function do_action($hook, ...$args): void
             $callback(...$args);
         }
     }
-    if ($hook === 'uc_audit_event' && isset($args[0])) {
-        $GLOBALS['uc_audit_events'][] = $args[0];
+    if ($hook === 'ultimate_commerce_audit_event' && isset($args[0])) {
+        $GLOBALS['ultimate_commerce_audit_events'][] = $args[0];
     }
 }
 
@@ -107,9 +107,9 @@ uc_governance_assert($nested instanceof WP_Error && $nested->code === 'uc_audit_
 $badUser = AuditEvent::create('inventory.adjusted', 'user', 'email@example.com', 'variation', '123');
 uc_governance_assert($badUser instanceof WP_Error && $badUser->code === 'uc_audit_actor_invalid', 'user actor must use numeric WordPress ID rather than PII');
 uc_governance_assert(Audit::record($event) === true, 'default audit sink should accept event');
-uc_governance_assert(count($GLOBALS['uc_audit_events']) === 1, 'default audit sink should emit uc_audit_event hook');
+uc_governance_assert(count($GLOBALS['ultimate_commerce_audit_events']) === 1, 'default audit sink should emit ultimate_commerce_audit_event hook');
 
-add_action('uc_register_personal_data_handlers', static function (PersonalDataRegistry $registry): void {
+add_action('ultimate_commerce_register_personal_data_handlers', static function (PersonalDataRegistry $registry): void {
     $result = $registry->register(
         'stock_alerts',
         'Ultimate Commerce stock alerts',
