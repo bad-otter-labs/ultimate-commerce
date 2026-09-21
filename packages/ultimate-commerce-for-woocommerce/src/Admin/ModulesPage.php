@@ -121,9 +121,11 @@ final class ModulesPage
     {
         self::authorizeRequest();
 
+        // phpcs:disable WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- authorizeRequest() verifies the nonce first; only registry-owned array keys are inspected and submitted values are ignored.
         $posted = isset($_POST['modules']) && is_array($_POST['modules'])
             ? wp_unslash($_POST['modules'])
             : array();
+        // phpcs:enable WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
         $states = array();
         foreach (array_keys(Plugin::registry()->all()) as $key) {
             $states[$key] = array_key_exists($key, $posted);
@@ -137,9 +139,11 @@ final class ModulesPage
     {
         self::requireCapability();
 
+        // phpcs:disable WordPress.Security.NonceVerification.Missing -- This reads the nonce field solely so the shared Csrf::require() verifier can validate it below.
         $nonce = isset($_POST[self::NONCE_FIELD]) && is_scalar($_POST[self::NONCE_FIELD])
             ? sanitize_text_field((string) wp_unslash($_POST[self::NONCE_FIELD]))
             : '';
+        // phpcs:enable WordPress.Security.NonceVerification.Missing
         $verified = Csrf::require($nonce, self::PURPOSE_SAVE);
         if ($verified instanceof \WP_Error) {
             wp_die(
@@ -176,10 +180,13 @@ final class ModulesPage
 
     private static function noticeCode(): string
     {
+        // phpcs:disable WordPress.Security.NonceVerification.Recommended -- Read-only, sanitized admin notice state; it does not authorize or mutate data.
         if (!isset($_GET['uc_modules_status']) || !is_scalar($_GET['uc_modules_status'])) {
             return '';
         }
-        return sanitize_key((string) wp_unslash($_GET['uc_modules_status']));
+        $code = sanitize_key((string) wp_unslash($_GET['uc_modules_status']));
+        // phpcs:enable WordPress.Security.NonceVerification.Recommended
+        return $code;
     }
 
     private static function renderNotice(string $code): void
