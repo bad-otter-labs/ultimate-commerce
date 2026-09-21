@@ -24,16 +24,16 @@ final class DiagnosticsPage
         $modules = (array) ($snapshot['modules'] ?? array());
         $supportJson = SystemStatus::supportJson($snapshot);
         ?>
-        <div class="wrap">
-            <h1><?php echo esc_html__('Ultimate Commerce Diagnostics', 'ultimate-commerce-for-woocommerce'); ?></h1>
-            <p><?php echo esc_html__('Read-only system state for Ultimate Commerce, WooCommerce compatibility and registered modules.', 'ultimate-commerce-for-woocommerce'); ?></p>
+        <div class="wrap uc-admin uc-admin--diagnostics">
+            <h1 class="uc-admin__title"><?php echo esc_html__('Ultimate Commerce Diagnostics', 'ultimate-commerce-for-woocommerce'); ?></h1>
+            <p class="uc-admin__lede"><?php echo esc_html__('Read-only system state for Ultimate Commerce, WooCommerce compatibility and registered modules.', 'ultimate-commerce-for-woocommerce'); ?></p>
 
-            <h2><?php echo esc_html__('System summary', 'ultimate-commerce-for-woocommerce'); ?></h2>
-            <table class="widefat striped" style="max-width:900px">
+            <h2 class="uc-diagnostics-title"><?php echo esc_html__('System summary', 'ultimate-commerce-for-woocommerce'); ?></h2>
+            <table class="widefat striped uc-data-table">
                 <tbody>
                     <tr>
                         <th scope="row"><?php echo esc_html__('Overall status', 'ultimate-commerce-for-woocommerce'); ?></th>
-                        <td><?php echo esc_html(self::overallLabel((string) ($snapshot['overall'] ?? 'attention'))); ?></td>
+                        <td><span class="uc-status uc-status--<?php echo esc_attr(($snapshot['overall'] ?? 'attention') === 'healthy' ? 'healthy' : 'attention'); ?>"><?php echo esc_html(self::overallLabel((string) ($snapshot['overall'] ?? 'attention'))); ?></span></td>
                     </tr>
                     <tr>
                         <th scope="row"><?php echo esc_html__('Ultimate Commerce version', 'ultimate-commerce-for-woocommerce'); ?></th>
@@ -62,8 +62,8 @@ final class DiagnosticsPage
                 </tbody>
             </table>
 
-            <h2><?php echo esc_html__('Environment', 'ultimate-commerce-for-woocommerce'); ?></h2>
-            <table class="widefat striped" style="max-width:900px">
+            <h2 class="uc-diagnostics-title"><?php echo esc_html__('Environment', 'ultimate-commerce-for-woocommerce'); ?></h2>
+            <table class="widefat striped uc-data-table">
                 <tbody>
                     <tr><th scope="row"><?php echo esc_html__('WordPress', 'ultimate-commerce-for-woocommerce'); ?></th><td><code><?php echo esc_html((string) ($environment['wordpress'] ?? 'Unavailable')); ?></code></td></tr>
                     <tr><th scope="row"><?php echo esc_html__('WooCommerce', 'ultimate-commerce-for-woocommerce'); ?></th><td><code><?php echo esc_html((string) ($environment['woocommerce'] ?? 'Unavailable')); ?></code></td></tr>
@@ -78,8 +78,8 @@ final class DiagnosticsPage
                 </tbody>
             </table>
 
-            <h2><?php echo esc_html__('WooCommerce compatibility', 'ultimate-commerce-for-woocommerce'); ?></h2>
-            <table class="widefat striped" style="max-width:900px">
+            <h2 class="uc-diagnostics-title"><?php echo esc_html__('WooCommerce compatibility', 'ultimate-commerce-for-woocommerce'); ?></h2>
+            <table class="widefat striped uc-data-table">
                 <tbody>
                     <tr><th scope="row"><?php echo esc_html__('HPOS compatibility declared', 'ultimate-commerce-for-woocommerce'); ?></th><td><?php echo esc_html(self::yesNo(!empty($compatibility['hpos_declared']))); ?></td></tr>
                     <tr><th scope="row"><?php echo esc_html__('HPOS active', 'ultimate-commerce-for-woocommerce'); ?></th><td><?php echo esc_html(self::yesNo(!empty($compatibility['hpos_active']))); ?></td></tr>
@@ -88,8 +88,8 @@ final class DiagnosticsPage
                 </tbody>
             </table>
 
-            <h2><?php echo esc_html__('Public API versions', 'ultimate-commerce-for-woocommerce'); ?></h2>
-            <table class="widefat striped" style="max-width:900px">
+            <h2 class="uc-diagnostics-title"><?php echo esc_html__('Public API versions', 'ultimate-commerce-for-woocommerce'); ?></h2>
+            <table class="widefat striped uc-data-table">
                 <thead><tr><th scope="col"><?php echo esc_html__('API', 'ultimate-commerce-for-woocommerce'); ?></th><th scope="col"><?php echo esc_html__('Version', 'ultimate-commerce-for-woocommerce'); ?></th></tr></thead>
                 <tbody>
                     <?php foreach ($apis as $api => $version) : ?>
@@ -98,8 +98,8 @@ final class DiagnosticsPage
                 </tbody>
             </table>
 
-            <h2><?php echo esc_html__('Modules', 'ultimate-commerce-for-woocommerce'); ?></h2>
-            <table class="widefat striped" style="max-width:1100px">
+            <h2 class="uc-diagnostics-title"><?php echo esc_html__('Modules', 'ultimate-commerce-for-woocommerce'); ?></h2>
+            <table class="widefat striped uc-data-table uc-diagnostics-modules">
                 <thead>
                     <tr>
                         <th scope="col"><?php echo esc_html__('Module', 'ultimate-commerce-for-woocommerce'); ?></th>
@@ -119,7 +119,7 @@ final class DiagnosticsPage
                             <th scope="row"><?php echo esc_html((string) ($module['name'] ?? $key)); ?> <code><?php echo esc_html((string) $key); ?></code></th>
                             <td><code><?php echo esc_html((string) ($module['product'] ?? '')); ?></code><br><?php echo esc_html((string) ($module['tier'] ?? '')); ?></td>
                             <td><?php echo $dependencies === array() ? esc_html__('None', 'ultimate-commerce-for-woocommerce') : esc_html(implode(', ', $dependencies)); ?></td>
-                            <td><?php echo esc_html((string) ($module['status'] ?? 'registered')); ?></td>
+                            <td><span class="uc-status uc-status--<?php echo esc_attr(sanitize_html_class((string) ($module['status'] ?? 'registered'))); ?>"><?php echo esc_html((string) ($module['status'] ?? 'registered')); ?></span></td>
                             <td><code><?php echo esc_html((string) ($module['issue'] ?? '')); ?></code></td>
                         </tr>
                     <?php endforeach; ?>
@@ -127,10 +127,10 @@ final class DiagnosticsPage
                 </tbody>
             </table>
 
-            <h2><?php echo esc_html__('Support snapshot', 'ultimate-commerce-for-woocommerce'); ?></h2>
+            <h2 class="uc-support-title"><?php echo esc_html__('Support snapshot', 'ultimate-commerce-for-woocommerce'); ?></h2>
             <p><?php echo esc_html__('Copy this JSON when asking for support. It excludes site URLs, filesystem paths, credentials, secrets, customer/order data and module settings payloads.', 'ultimate-commerce-for-woocommerce'); ?></p>
             <label for="uc-support-snapshot" class="screen-reader-text"><?php echo esc_html__('Ultimate Commerce support snapshot', 'ultimate-commerce-for-woocommerce'); ?></label>
-            <textarea id="uc-support-snapshot" class="large-text code" rows="24" readonly><?php echo esc_textarea($supportJson); ?></textarea>
+            <textarea id="uc-support-snapshot" class="large-text code uc-support-snapshot" rows="24" readonly><?php echo esc_textarea($supportJson); ?></textarea>
         </div>
         <?php
     }

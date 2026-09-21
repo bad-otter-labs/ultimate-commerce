@@ -30,30 +30,30 @@ final class SettingsPage
         self::requireCapability();
         $deleteDataOnUninstall = Settings::deleteDataOnUninstall();
         ?>
-        <div class="wrap">
-            <h1><?php echo esc_html__('Ultimate Commerce Settings', 'ultimate-commerce-for-woocommerce'); ?></h1>
-            <p><?php echo esc_html__('Export or import portable Ultimate Commerce merchant settings. Runtime metadata, secrets and caches are never part of this file.', 'ultimate-commerce-for-woocommerce'); ?></p>
+        <div class="wrap uc-admin uc-admin--settings">
+            <h1 class="uc-admin__title"><?php echo esc_html__('Ultimate Commerce Settings', 'ultimate-commerce-for-woocommerce'); ?></h1>
+            <p class="uc-admin__lede"><?php echo esc_html__('Export or import portable Ultimate Commerce merchant settings. Runtime metadata, secrets and caches are never part of this file.', 'ultimate-commerce-for-woocommerce'); ?></p>
 
             <?php self::renderNotice(self::noticeCode()); ?>
 
-            <h2><?php echo esc_html__('Export settings', 'ultimate-commerce-for-woocommerce'); ?></h2>
+            <section class="uc-card uc-settings-card"><h2 class="uc-card__title"><?php echo esc_html__('Export settings', 'ultimate-commerce-for-woocommerce'); ?></h2>
             <p><?php echo esc_html__('Download a JSON file containing supported merchant configuration. The current format includes stored module preferences, including temporarily unavailable extension modules.', 'ultimate-commerce-for-woocommerce'); ?></p>
             <form method="post" action="<?php echo esc_url(admin_url('admin-post.php')); ?>">
                 <input type="hidden" name="action" value="uc_settings_export">
                 <?php wp_nonce_field('uc_' . self::PURPOSE_EXPORT, self::NONCE_FIELD); ?>
                 <?php submit_button(__('Download settings file', 'ultimate-commerce-for-woocommerce'), 'secondary', 'submit', false); ?>
-            </form>
+            </form></section>
 
-            <hr style="max-width:900px;margin:2rem 0">
+            <div class="uc-section-gap" aria-hidden="true"></div>
 
-            <h2><?php echo esc_html__('Import settings', 'ultimate-commerce-for-woocommerce'); ?></h2>
+            <section class="uc-card uc-settings-card"><h2 class="uc-card__title"><?php echo esc_html__('Import settings', 'ultimate-commerce-for-woocommerce'); ?></h2>
             <p><?php echo esc_html__('Import a JSON file previously exported by Ultimate Commerce. Declared module preferences are merged with existing settings, so omitted extension preferences are preserved.', 'ultimate-commerce-for-woocommerce'); ?></p>
-            <form method="post" enctype="multipart/form-data" action="<?php echo esc_url(admin_url('admin-post.php')); ?>" style="max-width:900px">
+            <form class="uc-settings-form" method="post" enctype="multipart/form-data" action="<?php echo esc_url(admin_url('admin-post.php')); ?>">
                 <input type="hidden" name="action" value="uc_settings_import">
                 <?php wp_nonce_field('uc_' . self::PURPOSE_IMPORT, self::NONCE_FIELD); ?>
                 <p>
                     <label for="uc-settings-file"><strong><?php echo esc_html__('Settings JSON file', 'ultimate-commerce-for-woocommerce'); ?></strong></label><br>
-                    <input id="uc-settings-file" name="settings_file" type="file" accept=".json,application/json" required>
+                    <input class="uc-file-input" id="uc-settings-file" name="settings_file" type="file" accept=".json,application/json" required>
                 </p>
                 <p class="description">
                     <?php
@@ -67,17 +67,17 @@ final class SettingsPage
                     ?>
                 </p>
                 <?php submit_button(__('Import settings', 'ultimate-commerce-for-woocommerce'), 'primary', 'submit', false); ?>
-            </form>
+            </form></section>
 
-            <hr style="max-width:900px;margin:2rem 0">
+            <div class="uc-section-gap" aria-hidden="true"></div>
 
-            <h2><?php echo esc_html__('Data retention', 'ultimate-commerce-for-woocommerce'); ?></h2>
+            <section class="uc-card uc-settings-card uc-settings-card--danger"><h2 class="uc-card__title"><?php echo esc_html__('Data retention', 'ultimate-commerce-for-woocommerce'); ?></h2>
             <p><?php echo esc_html__('Ultimate Commerce keeps merchant configuration by default when the plugin is deleted, making a later reinstall recoverable. Short-lived runtime locks, replay records, idempotency records and rate-limit transients are always removed.', 'ultimate-commerce-for-woocommerce'); ?></p>
-            <form method="post" action="<?php echo esc_url(admin_url('admin-post.php')); ?>" style="max-width:900px">
+            <form class="uc-settings-form" method="post" action="<?php echo esc_url(admin_url('admin-post.php')); ?>">
                 <input type="hidden" name="action" value="uc_settings_retention">
                 <?php wp_nonce_field('uc_' . self::PURPOSE_RETENTION, self::NONCE_FIELD); ?>
                 <p>
-                    <label>
+                    <label class="uc-toggle uc-toggle--danger">
                         <input type="checkbox" name="delete_data_on_uninstall" value="1" <?php checked($deleteDataOnUninstall); ?>>
                         <strong><?php echo esc_html__('Delete Ultimate Commerce data when the plugin is deleted', 'ultimate-commerce-for-woocommerce'); ?></strong>
                     </label>
@@ -85,7 +85,7 @@ final class SettingsPage
                 <p class="description"><?php echo esc_html__('When enabled, deletion also removes stored module preferences and Ultimate Commerce encrypted secrets. WooCommerce products, stock, carts, orders, payments and other WooCommerce-owned data are never deleted by this cleanup.', 'ultimate-commerce-for-woocommerce'); ?></p>
                 <p class="description"><?php echo esc_html__('This destructive local preference is intentionally excluded from settings export/import.', 'ultimate-commerce-for-woocommerce'); ?></p>
                 <?php submit_button(__('Save data retention', 'ultimate-commerce-for-woocommerce'), 'secondary', 'submit', false); ?>
-            </form>
+            </form></section>
         </div>
         <?php
     }

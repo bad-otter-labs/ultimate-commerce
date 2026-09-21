@@ -47,31 +47,31 @@ msgstr ""
 msgid "Order not found."
 msgstr ""
 
-#: src/Admin/AdminMenu.php:22
 #: src/Admin/AdminMenu.php:23
+#: src/Admin/AdminMenu.php:24
 #: src/Admin/OverviewPage.php:35
 msgid "Ultimate Commerce"
 msgstr ""
 
-#: src/Admin/AdminMenu.php:33
 #: src/Admin/AdminMenu.php:34
+#: src/Admin/AdminMenu.php:35
 #: src/Admin/OverviewPage.php:38
 msgid "Overview"
 msgstr ""
 
-#: src/Admin/AdminMenu.php:42
 #: src/Admin/AdminMenu.php:43
+#: src/Admin/AdminMenu.php:44
 #: src/Admin/DiagnosticsPage.php:101
 msgid "Modules"
 msgstr ""
 
-#: src/Admin/AdminMenu.php:51
 #: src/Admin/AdminMenu.php:52
+#: src/Admin/AdminMenu.php:53
 msgid "Settings"
 msgstr ""
 
-#: src/Admin/AdminMenu.php:60
 #: src/Admin/AdminMenu.php:61
+#: src/Admin/AdminMenu.php:62
 msgid "Diagnostics"
 msgstr ""
 

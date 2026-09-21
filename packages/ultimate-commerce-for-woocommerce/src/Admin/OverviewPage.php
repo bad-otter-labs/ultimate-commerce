@@ -31,12 +31,12 @@ final class OverviewPage
         ));
         $diagnosticsUrl = admin_url('admin.php?page=' . AdminMenu::DIAGNOSTICS_SLUG);
         ?>
-        <div class="wrap">
-            <h1><?php echo esc_html__('Ultimate Commerce', 'ultimate-commerce-for-woocommerce'); ?></h1>
-            <p><?php echo esc_html__('Commerce experience and retail operations foundations for WooCommerce.', 'ultimate-commerce-for-woocommerce'); ?></p>
+        <div class="wrap uc-admin uc-admin--overview">
+            <h1 class="uc-admin__title"><?php echo esc_html__('Ultimate Commerce', 'ultimate-commerce-for-woocommerce'); ?></h1>
+            <p class="uc-admin__lede"><?php echo esc_html__('Commerce experience and retail operations foundations for WooCommerce.', 'ultimate-commerce-for-woocommerce'); ?></p>
 
-            <h2><?php echo esc_html__('Overview', 'ultimate-commerce-for-woocommerce'); ?></h2>
-            <table class="widefat striped" style="max-width:900px">
+            <h2 class="uc-section-title"><?php echo esc_html__('Overview', 'ultimate-commerce-for-woocommerce'); ?></h2>
+            <table class="widefat striped uc-summary-grid">
                 <tbody>
                     <tr><th><?php echo esc_html__('Version', 'ultimate-commerce-for-woocommerce'); ?></th><td><?php echo esc_html(ULTIMATE_COMMERCE_VERSION); ?></td></tr>
                     <tr><th><?php echo esc_html__('Registered modules', 'ultimate-commerce-for-woocommerce'); ?></th><td><?php echo esc_html((string) $total); ?></td></tr>
@@ -46,7 +46,7 @@ final class OverviewPage
                 </tbody>
             </table>
 
-            <p>
+            <p class="uc-actions">
                 <a class="button button-secondary" href="<?php echo esc_url($diagnosticsUrl); ?>">
                     <?php echo esc_html__('View diagnostics', 'ultimate-commerce-for-woocommerce'); ?>
                 </a>
@@ -55,10 +55,10 @@ final class OverviewPage
                 </a>
             </p>
 
-            <hr style="max-width:900px;margin:2rem 0">
+            <div class="uc-section-gap" aria-hidden="true"></div>
 
-            <h2><?php echo esc_html__('Ultimate Commerce Pro', 'ultimate-commerce-for-woocommerce'); ?></h2>
-            <p style="max-width:900px">
+            <h2 class="uc-pro-heading"><?php echo esc_html__('Ultimate Commerce Pro', 'ultimate-commerce-for-woocommerce'); ?></h2>
+            <p class="uc-pro-copy">
                 <?php echo esc_html__('Ultimate Commerce Pro is an optional paid companion for advanced conversion, merchandising, customer and retail-operations modules. Ultimate Commerce Free remains usable without Pro, a Bad Otter account or a hosted Bad Otter service.', 'ultimate-commerce-for-woocommerce'); ?>
             </p>
 
