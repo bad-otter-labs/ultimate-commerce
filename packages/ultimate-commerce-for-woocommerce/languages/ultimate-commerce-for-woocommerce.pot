@@ -293,21 +293,21 @@ msgstr ""
 msgid "Save module settings"
 msgstr ""
 
-#: src/Admin/ModulesPage.php:147
-#: src/Admin/SettingsPage.php:179
+#: src/Admin/ModulesPage.php:151
+#: src/Admin/SettingsPage.php:185
 msgid "Request rejected"
 msgstr ""
 
-#: src/Admin/ModulesPage.php:157
+#: src/Admin/ModulesPage.php:161
 msgid "You do not have permission to manage Ultimate Commerce modules."
 msgstr ""
 
-#: src/Admin/ModulesPage.php:158
-#: src/Admin/SettingsPage.php:190
+#: src/Admin/ModulesPage.php:162
+#: src/Admin/SettingsPage.php:196
 msgid "Access denied"
 msgstr ""
 
-#: src/Admin/ModulesPage.php:190
+#: src/Admin/ModulesPage.php:204
 msgid "Module settings saved."
 msgstr ""
 
@@ -315,19 +315,19 @@ msgstr ""
 msgid "Active"
 msgstr ""
 
-#: src/Admin/ModulesPage.php:199
+#: src/Admin/ModulesPage.php:206
 msgid "Disabled"
 msgstr ""
 
-#: src/Admin/ModulesPage.php:201
+#: src/Admin/ModulesPage.php:208
 msgid "Blocked"
 msgstr ""
 
-#: src/Admin/ModulesPage.php:203
+#: src/Admin/ModulesPage.php:210
 msgid "Starting"
 msgstr ""
 
-#: src/Admin/ModulesPage.php:205
+#: src/Admin/ModulesPage.php:212
 msgid "Registered"
 msgstr ""
 
@@ -422,31 +422,31 @@ msgstr ""
 msgid "Settings export failed"
 msgstr ""
 
-#: src/Admin/SettingsPage.php:147
+#: src/Admin/SettingsPage.php:150
 msgid "Choose an Ultimate Commerce settings file to import."
 msgstr ""
 
-#: src/Admin/SettingsPage.php:156
+#: src/Admin/SettingsPage.php:160
 msgid "The uploaded settings file could not be accepted."
 msgstr ""
 
-#: src/Admin/SettingsPage.php:162
+#: src/Admin/SettingsPage.php:166
 msgid "The uploaded settings file is empty, unreadable or too large."
 msgstr ""
 
-#: src/Admin/SettingsPage.php:189
+#: src/Admin/SettingsPage.php:195
 msgid "You do not have permission to manage Ultimate Commerce settings."
 msgstr ""
 
-#: src/Admin/SettingsPage.php:220
+#: src/Admin/SettingsPage.php:229
 msgid "Ultimate Commerce settings imported. The imported module preferences are now active."
 msgstr ""
 
-#: src/Admin/SettingsPage.php:225
+#: src/Admin/SettingsPage.php:234
 msgid "Ultimate Commerce data-retention preference saved."
 msgstr ""
 
-#: src/Admin/SettingsPage.php:230
+#: src/Admin/SettingsPage.php:239
 msgid "The settings file was not imported. Use a valid Ultimate Commerce settings export and try again."
 msgstr ""
 
