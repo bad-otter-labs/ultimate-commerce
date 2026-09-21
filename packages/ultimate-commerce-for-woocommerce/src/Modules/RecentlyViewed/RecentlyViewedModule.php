@@ -42,6 +42,6 @@ final class RecentlyViewedModule extends AbstractModule
     public function register(): void
     {
         RecentlyViewed::hooks();
-        do_action('uc_recently_viewed_ready', $this);
+        do_action('ultimate_commerce_recently_viewed_ready', $this);
     }
 }

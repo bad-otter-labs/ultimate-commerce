@@ -48,6 +48,6 @@ final class WishlistModule extends AbstractModule
         WishlistBootstrap::hooks();
         WishlistRestController::hooks();
         WishlistControls::hooks();
-        do_action('uc_wishlist_ready', $this);
+        do_action('ultimate_commerce_wishlist_ready', $this);
     }
 }

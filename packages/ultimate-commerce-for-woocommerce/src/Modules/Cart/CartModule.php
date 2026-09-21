@@ -42,6 +42,6 @@ final class CartModule extends AbstractModule
     public function register(): void
     {
         CartDrawer::hooks();
-        do_action('uc_cart_ready', $this);
+        do_action('ultimate_commerce_cart_ready', $this);
     }
 }

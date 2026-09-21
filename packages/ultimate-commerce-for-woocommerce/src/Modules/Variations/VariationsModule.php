@@ -32,7 +32,7 @@ final class VariationsModule extends AbstractModule
 
     public function register(): void
     {
-        do_action('uc_variations_ready', $this);
+        do_action('ultimate_commerce_variations_ready', $this);
     }
 
     /** Historical compatibility facade for `uc_variation_view_model`. */
