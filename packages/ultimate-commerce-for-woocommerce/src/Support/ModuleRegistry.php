@@ -53,7 +53,7 @@ final class ModuleRegistry
         $this->modules[$key] = $module;
         $this->status[$key] = 'registered';
 
-        do_action('uc_module_registered', $key, $module, $this);
+        do_action('ultimate_commerce_module_registered', $key, $module, $this);
         return true;
     }
 
@@ -159,7 +159,7 @@ final class ModuleRegistry
         $module->register();
         $this->booted[$key] = true;
         $this->status[$key] = 'booted';
-        do_action('uc_module_loaded', $key, $module, $this);
+        do_action('ultimate_commerce_module_loaded', $key, $module, $this);
         return true;
     }
 
@@ -169,12 +169,12 @@ final class ModuleRegistry
         $this->status[$key] = 'blocked';
         if (!isset($this->issues[$key])) {
             $this->issues[$key] = $reason;
-            do_action('uc_module_blocked', $key, $reason, $this);
+            do_action('ultimate_commerce_module_blocked', $key, $reason, $this);
         }
     }
 
     private function reject(Module $module, string $reason): void
     {
-        do_action('uc_module_registration_rejected', $module, $reason, $this);
+        do_action('ultimate_commerce_module_registration_rejected', $module, $reason, $this);
     }
 }

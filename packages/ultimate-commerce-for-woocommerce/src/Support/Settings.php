@@ -14,7 +14,7 @@ final class Settings
         $stored = get_option(self::MODULE_OPTION, array());
         $enabled = !is_array($stored) || !array_key_exists($key, $stored) ? true : (bool) $stored[$key];
 
-        return (bool) apply_filters('uc_module_enabled', $enabled, $key);
+        return (bool) apply_filters('ultimate_commerce_module_enabled', $enabled, $key);
     }
 
     public static function moduleStates(): array

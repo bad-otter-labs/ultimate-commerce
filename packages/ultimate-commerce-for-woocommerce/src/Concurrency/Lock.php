@@ -15,7 +15,7 @@ final class Lock
         if (!self::$defaultStore) {
             self::$defaultStore = new OptionLockStore();
         }
-        $store = apply_filters('uc_lock_store', self::$defaultStore);
+        $store = apply_filters('ultimate_commerce_lock_store', self::$defaultStore);
         return $store instanceof LockStore ? $store : self::$defaultStore;
     }
 
