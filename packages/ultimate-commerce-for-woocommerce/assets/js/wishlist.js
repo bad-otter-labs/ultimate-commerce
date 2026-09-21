@@ -122,8 +122,16 @@
     function buttonLabel(productName, saved) {
         if (productName) {
             return saved
-                ? sprintf(__('Remove %s from wishlist', 'ultimate-commerce-for-woocommerce'), productName)
-                : sprintf(__('Add %s to wishlist', 'ultimate-commerce-for-woocommerce'), productName);
+                ? sprintf(
+                    /* translators: %s: Product name. */
+                    __('Remove %s from wishlist', 'ultimate-commerce-for-woocommerce'),
+                    productName
+                )
+                : sprintf(
+                    /* translators: %s: Product name. */
+                    __('Add %s to wishlist', 'ultimate-commerce-for-woocommerce'),
+                    productName
+                );
         }
 
         return saved
@@ -258,6 +266,7 @@
                 });
 
                 setStatus(sprintf(
+                    /* translators: %d: Number of saved products. */
                     _n('%d saved product.', '%d saved products.', ids.length, 'ultimate-commerce-for-woocommerce'),
                     ids.length
                 ));

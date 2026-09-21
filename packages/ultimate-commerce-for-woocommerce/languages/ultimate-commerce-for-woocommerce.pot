@@ -942,8 +942,8 @@ msgid "Your wishlist is empty."
 msgstr ""
 
 #: src/Storefront/WishlistControls.php:73
-#: assets/js/wishlist.js:131
-#: assets/js/wishlist.js:146
+#: assets/js/wishlist.js:139
+#: assets/js/wishlist.js:154
 msgid "Add to wishlist"
 msgstr ""
 
@@ -1008,7 +1008,7 @@ msgid "This product cannot be added to the wishlist."
 msgstr ""
 
 #: src/Wishlist/WishlistStore.php:60
-#: assets/js/wishlist.js:288
+#: assets/js/wishlist.js:297
 msgid "The wishlist has reached its item limit."
 msgstr ""
 
@@ -1025,57 +1025,60 @@ msgstr ""
 msgid "Cart request failed."
 msgstr ""
 
-#: assets/js/cart-drawer.js:138
+#. translators: %d: HTTP response status code.
+#: assets/js/cart-drawer.js:140
 #, js-format
 msgid "Cart request failed (%d)."
 msgstr ""
 
-#: assets/js/cart-drawer.js:154
+#: assets/js/cart-drawer.js:158
 msgid "Loading cart…"
 msgstr ""
 
-#: assets/js/cart-drawer.js:176
+#: assets/js/cart-drawer.js:180
 msgid "Updating cart…"
 msgstr ""
 
-#: assets/js/cart-drawer.js:181
+#: assets/js/cart-drawer.js:185
 msgid "Cart updated."
 msgstr ""
 
-#: assets/js/cart-drawer.js:317
+#: assets/js/cart-drawer.js:321
 msgid "Decrease quantity"
 msgstr ""
 
-#: assets/js/cart-drawer.js:328
+#. translators: %s: Product name.
+#: assets/js/cart-drawer.js:336
 #, js-format
 msgid "Quantity for %s"
 msgstr ""
 
-#: assets/js/cart-drawer.js:328
+#: assets/js/cart-drawer.js:337
 msgid "cart item"
 msgstr ""
 
-#: assets/js/cart-drawer.js:333
+#: assets/js/cart-drawer.js:344
 msgid "Increase quantity"
 msgstr ""
 
-#: assets/js/cart-drawer.js:353
-#: assets/js/wishlist.js:184
+#: assets/js/cart-drawer.js:364
+#: assets/js/wishlist.js:192
 msgid "Remove"
 msgstr ""
 
-#: assets/js/cart-drawer.js:395
+#. translators: %d: Number of cart items.
+#: assets/js/cart-drawer.js:410
 #, js-format
 msgid "%d item in cart"
 msgid_plural "%d items in cart"
 msgstr[0] ""
 msgstr[1] ""
 
-#: assets/js/cart-drawer.js:401
+#: assets/js/cart-drawer.js:419
 msgid "The cart could not be updated."
 msgstr ""
 
-#: assets/js/cart-drawer.js:471
+#: assets/js/cart-drawer.js:489
 msgid "Adding to cart…"
 msgstr ""
 
@@ -1084,64 +1087,68 @@ msgid "No recently viewed products."
 msgstr ""
 
 #: assets/js/recently-viewed.js:142
-#: assets/js/recently-viewed.js:176
+#: assets/js/recently-viewed.js:177
 msgid "Recently viewed products could not be loaded."
 msgstr ""
 
-#: assets/js/recently-viewed.js:171
+#. translators: %d: Number of recently viewed products.
+#: assets/js/recently-viewed.js:172
 #, js-format
 msgid "%d recently viewed product."
 msgid_plural "%d recently viewed products."
 msgstr[0] ""
 msgstr[1] ""
 
-#: assets/js/recently-viewed.js:204
+#: assets/js/recently-viewed.js:205
 msgid "Recently viewed products cleared."
 msgstr ""
 
 #: assets/js/wishlist.js:76
-#: assets/js/wishlist.js:317
+#: assets/js/wishlist.js:326
 msgid "The wishlist could not be updated."
 msgstr ""
 
-#: assets/js/wishlist.js:125
+#. translators: %s: Product name.
+#: assets/js/wishlist.js:127
 #, js-format
 msgid "Remove %s from wishlist"
 msgstr ""
 
-#: assets/js/wishlist.js:126
+#. translators: %s: Product name.
+#: assets/js/wishlist.js:132
 #, js-format
 msgid "Add %s to wishlist"
 msgstr ""
 
-#: assets/js/wishlist.js:130
+#: assets/js/wishlist.js:138
 msgid "Remove from wishlist"
 msgstr ""
 
-#: assets/js/wishlist.js:145
+#: assets/js/wishlist.js:153
 msgid "Saved"
 msgstr ""
 
-#: assets/js/wishlist.js:221
+#: assets/js/wishlist.js:229
 msgid "No saved products."
 msgstr ""
 
-#: assets/js/wishlist.js:233
-#: assets/js/wishlist.js:267
+#: assets/js/wishlist.js:241
+#: assets/js/wishlist.js:276
 msgid "Saved products could not be loaded."
 msgstr ""
 
-#: assets/js/wishlist.js:261
+#. translators: %d: Number of saved products.
+#: assets/js/wishlist.js:270
 #, js-format
 msgid "%d saved product."
 msgid_plural "%d saved products."
 msgstr[0] ""
 msgstr[1] ""
 
-#: assets/js/wishlist.js:314
+#: assets/js/wishlist.js:323
 msgid "Removed from wishlist."
 msgstr ""
 
-#: assets/js/wishlist.js:315
+#: assets/js/wishlist.js:324
 msgid "Added to wishlist."
 msgstr ""

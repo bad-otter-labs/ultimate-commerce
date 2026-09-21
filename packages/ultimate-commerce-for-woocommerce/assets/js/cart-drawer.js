@@ -135,7 +135,11 @@
                     if (!response.ok) {
                         var message = payload && payload.message
                             ? String(payload.message)
-                            : sprintf(__('Cart request failed (%d).', 'ultimate-commerce-for-woocommerce'), response.status);
+                            : sprintf(
+                                /* translators: %d: HTTP response status code. */
+                                __('Cart request failed (%d).', 'ultimate-commerce-for-woocommerce'),
+                                response.status
+                            );
                         throw apiError(message, response, payload);
                     }
                     return payload;
@@ -325,7 +329,14 @@
                     input.max = String(limits.maximum);
                 }
                 input.step = String(limits.multiple_of || 1);
-                input.setAttribute('aria-label', sprintf(__('Quantity for %s', 'ultimate-commerce-for-woocommerce'), String(item.name || __('cart item', 'ultimate-commerce-for-woocommerce'))));
+                input.setAttribute(
+                    'aria-label',
+                    sprintf(
+                        /* translators: %s: Product name. */
+                        __('Quantity for %s', 'ultimate-commerce-for-woocommerce'),
+                        String(item.name || __('cart item', 'ultimate-commerce-for-woocommerce'))
+                    )
+                );
                 input.setAttribute('data-uc-cart-mutation', '1');
 
                 var increment = node('button', 'uc-cart-item__quantity-button', '+');
@@ -392,7 +403,14 @@
                 : items.reduce(function (sum, item) { return sum + Number(item.quantity || 0); }, 0);
             Array.prototype.forEach.call(document.querySelectorAll('[data-uc-cart-count="1"]'), function (countNode) {
                 countNode.textContent = count > 0 ? String(count) : '';
-                countNode.setAttribute('aria-label', sprintf(_n('%d item in cart', '%d items in cart', count, 'ultimate-commerce-for-woocommerce'), count));
+                countNode.setAttribute(
+                    'aria-label',
+                    sprintf(
+                        /* translators: %d: Number of cart items. */
+                        _n('%d item in cart', '%d items in cart', count, 'ultimate-commerce-for-woocommerce'),
+                        count
+                    )
+                );
             });
             emit('uc:cart-state', { cart: cart });
         }
