@@ -43,7 +43,7 @@ jobs:
               raise SystemExit('Ultimate Commerce top-level menu registration is missing')
           if "public const ROOT_SLUG = 'ultimate-commerce';" not in menu:
               raise SystemExit('Stable Ultimate Commerce root slug is missing')
-          if "do_action('uc_admin_menu', self::ROOT_SLUG);" not in menu:
+          if "do_action('ultimate_commerce_admin_menu', self::ROOT_SLUG);" not in menu:
               raise SystemExit('Public UC admin-menu extension action is missing')
           if "'woocommerce'" in menu or "add_submenu_page(\n            'woocommerce'" in diagnostics:
               raise SystemExit('Ultimate Commerce admin pages must not be nested under WooCommerce')
