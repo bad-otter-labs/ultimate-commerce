@@ -34,17 +34,17 @@ final class ModulesPage
             }
         );
         ?>
-        <div class="wrap">
-            <h1><?php echo esc_html__('Ultimate Commerce Modules', 'ultimate-commerce-for-woocommerce'); ?></h1>
-            <p><?php echo esc_html__('Enable or disable registered Ultimate Commerce modules. WooCommerce remains the source of truth for products, stock, cart, totals, orders and payments.', 'ultimate-commerce-for-woocommerce'); ?></p>
+        <div class="wrap uc-admin uc-admin--modules">
+            <h1 class="uc-admin__title"><?php echo esc_html__('Ultimate Commerce Modules', 'ultimate-commerce-for-woocommerce'); ?></h1>
+            <p class="uc-admin__lede"><?php echo esc_html__('Enable or disable registered Ultimate Commerce modules. WooCommerce remains the source of truth for products, stock, cart, totals, orders and payments.', 'ultimate-commerce-for-woocommerce'); ?></p>
 
             <?php self::renderNotice(self::noticeCode()); ?>
 
-            <form method="post" action="<?php echo esc_url(admin_url('admin-post.php')); ?>">
+            <form class="uc-card uc-modules-card" method="post" action="<?php echo esc_url(admin_url('admin-post.php')); ?>">
                 <input type="hidden" name="action" value="uc_modules_save">
                 <?php wp_nonce_field('uc_' . self::PURPOSE_SAVE, self::NONCE_FIELD); ?>
 
-                <table class="widefat striped">
+                <table class="widefat striped uc-data-table uc-modules-table">
                     <thead>
                         <tr>
                             <th scope="col"><?php echo esc_html__('Module', 'ultimate-commerce-for-woocommerce'); ?></th>
@@ -57,7 +57,7 @@ final class ModulesPage
                     <tbody>
                         <?php if ($statuses === array()) : ?>
                             <tr>
-                                <td colspan="5"><?php echo esc_html__('No Ultimate Commerce modules are currently registered.', 'ultimate-commerce-for-woocommerce'); ?></td>
+                                <td class="uc-empty-state" colspan="5"><?php echo esc_html__('No Ultimate Commerce modules are currently registered.', 'ultimate-commerce-for-woocommerce'); ?></td>
                             </tr>
                         <?php else : ?>
                             <?php foreach ($statuses as $key => $status) : ?>
@@ -66,7 +66,7 @@ final class ModulesPage
                                 $effectiveEnabled = !empty($status['enabled']);
                                 $dependencies = array_values(array_filter((array) ($status['dependencies'] ?? array()), 'is_string'));
                                 ?>
-                                <tr>
+                                <tr class="uc-module-row">
                                     <th scope="row">
                                         <strong><?php echo esc_html((string) ($status['name'] ?? $key)); ?></strong><br>
                                         <code><?php echo esc_html($key); ?></code>
@@ -85,7 +85,7 @@ final class ModulesPage
                                         <?php endif; ?>
                                     </td>
                                     <td>
-                                        <strong><?php echo esc_html(self::statusLabel((string) ($status['status'] ?? 'registered'))); ?></strong>
+                                        <span class="uc-status uc-status--<?php echo esc_attr(sanitize_html_class((string) ($status['status'] ?? 'registered'))); ?>"><?php echo esc_html(self::statusLabel((string) ($status['status'] ?? 'registered'))); ?></span>
                                         <?php if (!empty($status['issue'])) : ?>
                                             <p class="description"><code><?php echo esc_html((string) $status['issue']); ?></code></p>
                                         <?php endif; ?>
@@ -94,7 +94,7 @@ final class ModulesPage
                                         <?php endif; ?>
                                     </td>
                                     <td>
-                                        <label>
+                                        <label class="uc-toggle">
                                             <input
                                                 type="checkbox"
                                                 name="modules[<?php echo esc_attr($key); ?>]"

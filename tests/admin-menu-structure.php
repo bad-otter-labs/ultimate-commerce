@@ -65,9 +65,11 @@ use BadOtter\UltimateCommerce\Security\Capabilities;
 
 AdminMenu::hooks();
 
-ucAssert(count($ucTestActions) === 1, 'Admin menu must register one admin_menu hook.');
+ucAssert(count($ucTestActions) === 2, 'Admin menu must register navigation and scoped asset hooks.');
 ucAssert($ucTestActions[0][0] === 'admin_menu', 'Admin menu must hook admin_menu.');
 ucAssert($ucTestActions[0][2] === 20, 'Admin menu priority must remain deterministic.');
+ucAssert($ucTestActions[1][0] === 'admin_enqueue_scripts', 'Admin UI assets must use the WordPress admin enqueue hook.');
+ucAssert($ucTestActions[1][1] === array(AdminMenu::class, 'enqueueAssets'), 'Admin UI asset loading must remain owned by AdminMenu.');
 
 AdminMenu::register();
 

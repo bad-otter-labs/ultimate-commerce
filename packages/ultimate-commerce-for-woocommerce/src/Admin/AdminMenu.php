@@ -14,6 +14,7 @@ final class AdminMenu
     public static function hooks(): void
     {
         add_action('admin_menu', array(__CLASS__, 'register'), 20);
+        add_action('admin_enqueue_scripts', array(__CLASS__, 'enqueueAssets'));
     }
 
     public static function register(): void
@@ -73,5 +74,26 @@ final class AdminMenu
          * @param string $parentSlug Ultimate Commerce root menu slug.
          */
         do_action('ultimate_commerce_admin_menu', self::ROOT_SLUG);
+    }
+
+    public static function enqueueAssets(string $hookSuffix): void
+    {
+        $screens = array(
+            'toplevel_page_' . self::ROOT_SLUG,
+            self::ROOT_SLUG . '_page_' . ModulesPage::SLUG,
+            self::ROOT_SLUG . '_page_' . SettingsPage::SLUG,
+            self::ROOT_SLUG . '_page_' . self::DIAGNOSTICS_SLUG,
+        );
+
+        if (!in_array($hookSuffix, $screens, true)) {
+            return;
+        }
+
+        wp_enqueue_style(
+            'ultimate-commerce-admin',
+            ULTIMATE_COMMERCE_URL . 'assets/css/admin.css',
+            array(),
+            ULTIMATE_COMMERCE_VERSION
+        );
     }
 }
