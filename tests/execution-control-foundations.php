@@ -114,7 +114,7 @@ uc_exec_assert($policy->delayAfterFailure(4) === 300, 'retry delay should respec
 uc_exec_assert(ActionScheduler::schedule('inventory.reconcile', array('variation_id' => 42, 'location_id' => 7)) === true, 'valid Action Scheduler job should schedule');
 uc_exec_assert(count($GLOBALS['uc_exec_as_actions']) === 1, 'one background job should be scheduled');
 $scheduled = $GLOBALS['uc_exec_as_actions'][0];
-uc_exec_assert($scheduled['hook'] === 'uc_job_inventory.reconcile' && $scheduled['group'] === ActionScheduler::GROUP, 'UC job hook/group mismatch');
+uc_exec_assert($scheduled['hook'] === 'ulticofo_job_inventory.reconcile' && $scheduled['group'] === ActionScheduler::GROUP, 'UC job hook/group mismatch');
 uc_exec_assert(ActionScheduler::schedule('inventory.reconcile', array('variation_id' => 42, 'location_id' => 7)) === true, 'unique duplicate should be treated as already scheduled');
 uc_exec_assert(count($GLOBALS['uc_exec_as_actions']) === 1, 'unique duplicate must not schedule second action');
 $badArgs = ActionScheduler::schedule('notify.customer', array('email' => 'customer@example.com'));
@@ -123,7 +123,7 @@ $nestedArgs = ActionScheduler::schedule('inventory.batch', array('ids' => array(
 uc_exec_assert($nestedArgs instanceof WP_Error && $nestedArgs->code === 'uc_job_args_invalid', 'nested job payload should be rejected');
 uc_exec_assert(ActionScheduler::scheduleRetry('inventory.reconcile', array('variation_id' => 42), 1, $policy) === true, 'retry should schedule through bounded policy');
 $retry = $GLOBALS['uc_exec_as_actions'][1];
-uc_exec_assert(($retry['args']['uc_attempt'] ?? 0) === 2, 'retry job should carry incremented attempt counter');
+uc_exec_assert(($retry['args']['ulticofo_attempt'] ?? 0) === 2, 'retry job should carry incremented attempt counter');
 $exhausted = ActionScheduler::scheduleRetry('inventory.reconcile', array('variation_id' => 42), 5, $policy);
 uc_exec_assert($exhausted instanceof WP_Error && $exhausted->code === 'uc_job_retry_exhausted', 'exhausted retry should fail closed');
 
