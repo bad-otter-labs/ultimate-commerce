@@ -10,7 +10,7 @@ The public contract version is `ULTIMATE_COMMERCE_RECENTLY_VIEWED_API_VERSION = 
 
 ## Storage and privacy
 
-Recently viewed state uses `localStorage` only. Single-site installs use `uc_recently_viewed_v1`; multisite installs suffix the current blog ID so stores on the same origin do not share history.
+Recently viewed state uses `localStorage` only. Single-site installs use `ulticofo_recently_viewed_v1`; multisite installs suffix the current blog ID so stores on the same origin do not share history.
 
 The list contains at most 12 unique positive product IDs. Product snapshots, customer identifiers, account IDs, REST nonces, prices and stock are never persisted in the history.
 
