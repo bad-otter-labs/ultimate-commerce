@@ -47,9 +47,9 @@ jobs:
                   raise SystemExit(f'Module settings write contract missing: {marker}')
 
           required_page = (
-              "add_action('admin_post_uc_modules_save'",
+              "add_action('admin_post_ulticofo_modules_save'",
               'Capabilities::MANAGE_SETTINGS',
-              'Csrf::require(',
+              "check_admin_referer('ulticofo_' . self::PURPOSE_SAVE, self::NONCE_FIELD);",
               'Plugin::registry()->statuses()',
               'Plugin::registry()->all()',
               'Settings::updateModuleStates($states)',
