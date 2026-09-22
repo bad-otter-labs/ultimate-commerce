@@ -25,7 +25,7 @@ CI requires the runner to provide PHP 8.1 or newer. It then downloads Composer 2
 
 Those exclusions avoid a high-risk repository-wide formatting rewrite while keeping review-oriented WordPress checks active, including security, escaping, database/API usage and i18n.
 
-Two admin request handlers are excluded from the generic nonce-detection sniff because they route verification through the shared `Csrf::require()` security contract. Their capability/CSRF behaviour remains covered by dedicated regression tests.
+The admin request handlers use WordPress's native `check_admin_referer()` flow, so the generic nonce-detection sniff remains enabled for them. Capability checks remain separate and are covered by request-security regressions.
 
 The discouraged-function base64 sniff is excluded only for the signed guest-token and encrypted-secret implementations. In those locations base64 is transport encoding around authenticated cryptography, not executable-code obfuscation.
 
