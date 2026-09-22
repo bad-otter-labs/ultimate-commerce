@@ -132,7 +132,7 @@ foreach (array(
     "'bootstrapUrl' => WishlistBootstrap::url()" => $controls,
     "'storageKey' =>" => $controls,
     "String(config.bootstrapUrl || '')" => $controller,
-    "String(config.storageKey || 'uc_wishlist_v1')" => $controller,
+    "String(config.storageKey || 'ulticofo_wishlist_v1')" => $controller,
     "new URL(endpoint, window.location.href)" => $controller,
     "url.searchParams.set('include'" => $controller,
     'use BadOtter\\UltimateCommerce\\Wishlist\\WishlistStore;' => $uninstall,
