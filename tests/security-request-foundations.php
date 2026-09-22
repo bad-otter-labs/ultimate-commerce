@@ -54,6 +54,13 @@ function update_option($name, $value, $autoload = null): bool
     return true;
 }
 
+function delete_option($name): bool
+{
+    $existed = array_key_exists($name, $GLOBALS['uc_test_options']);
+    unset($GLOBALS['uc_test_options'][$name]);
+    return $existed;
+}
+
 function get_role($name)
 {
     return $GLOBALS['uc_test_roles'][$name] ?? null;
