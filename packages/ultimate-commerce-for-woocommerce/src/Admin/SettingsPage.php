@@ -3,7 +3,6 @@
 namespace BadOtter\UltimateCommerce\Admin;
 
 use BadOtter\UltimateCommerce\Security\Capabilities;
-use BadOtter\UltimateCommerce\Security\Csrf;
 use BadOtter\UltimateCommerce\Support\Settings;
 use BadOtter\UltimateCommerce\Support\SettingsTransfer;
 
@@ -13,16 +12,16 @@ final class SettingsPage
 {
     public const SLUG = 'ultimate-commerce-settings';
 
-    private const NONCE_FIELD = 'uc_settings_transfer_nonce';
+    private const NONCE_FIELD = 'ulticofo_settings_transfer_nonce';
     private const PURPOSE_EXPORT = 'settings_export';
     private const PURPOSE_IMPORT = 'settings_import';
     private const PURPOSE_RETENTION = 'settings_retention';
 
     public static function hooks(): void
     {
-        add_action('admin_post_uc_settings_export', array(__CLASS__, 'export'));
-        add_action('admin_post_uc_settings_import', array(__CLASS__, 'import'));
-        add_action('admin_post_uc_settings_retention', array(__CLASS__, 'saveRetention'));
+        add_action('admin_post_ulticofo_settings_export', array(__CLASS__, 'export'));
+        add_action('admin_post_ulticofo_settings_import', array(__CLASS__, 'import'));
+        add_action('admin_post_ulticofo_settings_retention', array(__CLASS__, 'saveRetention'));
     }
 
     public static function render(): void
@@ -39,8 +38,8 @@ final class SettingsPage
             <section class="uc-card uc-settings-card"><h2 class="uc-card__title"><?php echo esc_html__('Export settings', 'ultimate-commerce-for-woocommerce'); ?></h2>
             <p><?php echo esc_html__('Download a JSON file containing supported merchant configuration. The current format includes stored module preferences, including temporarily unavailable extension modules.', 'ultimate-commerce-for-woocommerce'); ?></p>
             <form method="post" action="<?php echo esc_url(admin_url('admin-post.php')); ?>">
-                <input type="hidden" name="action" value="uc_settings_export">
-                <?php wp_nonce_field('uc_' . self::PURPOSE_EXPORT, self::NONCE_FIELD); ?>
+                <input type="hidden" name="action" value="ulticofo_settings_export">
+                <?php wp_nonce_field('ulticofo_' . self::PURPOSE_EXPORT, self::NONCE_FIELD); ?>
                 <?php submit_button(__('Download settings file', 'ultimate-commerce-for-woocommerce'), 'secondary', 'submit', false); ?>
             </form></section>
 
@@ -49,8 +48,8 @@ final class SettingsPage
             <section class="uc-card uc-settings-card"><h2 class="uc-card__title"><?php echo esc_html__('Import settings', 'ultimate-commerce-for-woocommerce'); ?></h2>
             <p><?php echo esc_html__('Import a JSON file previously exported by Ultimate Commerce. Declared module preferences are merged with existing settings, so omitted extension preferences are preserved.', 'ultimate-commerce-for-woocommerce'); ?></p>
             <form class="uc-settings-form" method="post" enctype="multipart/form-data" action="<?php echo esc_url(admin_url('admin-post.php')); ?>">
-                <input type="hidden" name="action" value="uc_settings_import">
-                <?php wp_nonce_field('uc_' . self::PURPOSE_IMPORT, self::NONCE_FIELD); ?>
+                <input type="hidden" name="action" value="ulticofo_settings_import">
+                <?php wp_nonce_field('ulticofo_' . self::PURPOSE_IMPORT, self::NONCE_FIELD); ?>
                 <p>
                     <label for="uc-settings-file"><strong><?php echo esc_html__('Settings JSON file', 'ultimate-commerce-for-woocommerce'); ?></strong></label><br>
                     <input class="uc-file-input" id="uc-settings-file" name="settings_file" type="file" accept=".json,application/json" required>
@@ -74,8 +73,8 @@ final class SettingsPage
             <section class="uc-card uc-settings-card uc-settings-card--danger"><h2 class="uc-card__title"><?php echo esc_html__('Data retention', 'ultimate-commerce-for-woocommerce'); ?></h2>
             <p><?php echo esc_html__('Ultimate Commerce keeps merchant configuration by default when the plugin is deleted, making a later reinstall recoverable. Short-lived runtime locks, replay records, idempotency records and rate-limit transients are always removed.', 'ultimate-commerce-for-woocommerce'); ?></p>
             <form class="uc-settings-form" method="post" action="<?php echo esc_url(admin_url('admin-post.php')); ?>">
-                <input type="hidden" name="action" value="uc_settings_retention">
-                <?php wp_nonce_field('uc_' . self::PURPOSE_RETENTION, self::NONCE_FIELD); ?>
+                <input type="hidden" name="action" value="ulticofo_settings_retention">
+                <?php wp_nonce_field('ulticofo_' . self::PURPOSE_RETENTION, self::NONCE_FIELD); ?>
                 <p>
                     <label class="uc-toggle uc-toggle--danger">
                         <input type="checkbox" name="delete_data_on_uninstall" value="1" <?php checked($deleteDataOnUninstall); ?>>
@@ -173,19 +172,7 @@ final class SettingsPage
     {
         self::requireCapability();
 
-        // phpcs:disable WordPress.Security.NonceVerification.Missing -- This reads the nonce field solely so the shared Csrf::require() verifier can validate it below.
-        $nonce = isset($_POST[self::NONCE_FIELD]) && is_scalar($_POST[self::NONCE_FIELD])
-            ? sanitize_text_field((string) wp_unslash($_POST[self::NONCE_FIELD]))
-            : '';
-        // phpcs:enable WordPress.Security.NonceVerification.Missing
-        $verified = Csrf::require($nonce, $purpose);
-        if ($verified instanceof \WP_Error) {
-            wp_die(
-                esc_html($verified->get_error_message()),
-                esc_html__('Request rejected', 'ultimate-commerce-for-woocommerce'),
-                array('response' => 403)
-            );
-        }
+        check_admin_referer('ulticofo_' . $purpose, self::NONCE_FIELD);
     }
 
     private static function requireCapability(): void
@@ -204,7 +191,7 @@ final class SettingsPage
         $url = add_query_arg(
             array(
                 'page' => self::SLUG,
-                'uc_settings_status' => sanitize_key($status),
+                'ulticofo_settings_status' => sanitize_key($status),
             ),
             admin_url('admin.php')
         );
@@ -215,10 +202,10 @@ final class SettingsPage
     private static function noticeCode(): string
     {
         // phpcs:disable WordPress.Security.NonceVerification.Recommended -- Read-only, sanitized admin notice state; it does not authorize or mutate data.
-        if (!isset($_GET['uc_settings_status']) || !is_scalar($_GET['uc_settings_status'])) {
+        if (!isset($_GET['ulticofo_settings_status']) || !is_scalar($_GET['ulticofo_settings_status'])) {
             return '';
         }
-        $code = sanitize_key((string) wp_unslash($_GET['uc_settings_status']));
+        $code = sanitize_key((string) wp_unslash($_GET['ulticofo_settings_status']));
         // phpcs:enable WordPress.Security.NonceVerification.Recommended
         return $code;
     }
