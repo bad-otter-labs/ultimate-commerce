@@ -53,7 +53,17 @@ final class Capabilities
             $shopManager->add_cap(self::VIEW_DIAGNOSTICS);
         }
 
+        foreach (array($administrator, $shopManager) as $role) {
+            if (!$role || !method_exists($role, 'remove_cap')) {
+                continue;
+            }
+            foreach (self::legacy() as $capability) {
+                $role->remove_cap($capability);
+            }
+        }
+
         update_option(self::VERSION_OPTION, self::VERSION, false);
+        delete_option('uc_capability_version');
     }
 
     public static function remove(): void
