@@ -8,14 +8,17 @@ defined('ABSPATH') || exit;
 
 final class OptionReplayStore implements ReplayStore
 {
-    private const PREFIX = 'uc_replay_';
-    private const DELETE_HOOK = 'uc_replay_store_delete';
+    private const PREFIX = 'ulticofo_replay_';
+    private const LEGACY_PREFIX = 'uc_replay_';
+    private const DELETE_HOOK = 'ulticofo_replay_store_delete';
+    private const LEGACY_DELETE_HOOK = 'uc_replay_store_delete';
     private const MIN_TTL = 60;
     private const MAX_TTL = 604800;
 
     public static function hooks(): void
     {
         add_action(self::DELETE_HOOK, array(__CLASS__, 'deleteScheduled'), 10, 2);
+        add_action(self::LEGACY_DELETE_HOOK, array(__CLASS__, 'deleteScheduled'), 10, 2);
     }
 
     /** @return string|false|\WP_Error */
@@ -77,7 +80,8 @@ final class OptionReplayStore implements ReplayStore
 
     public static function deleteScheduled(string $optionName, string $lease): void
     {
-        if (!str_starts_with($optionName, self::PREFIX) || !preg_match('/^[a-f0-9]{32}$/', $lease)) {
+        if ((!str_starts_with($optionName, self::PREFIX) && !str_starts_with($optionName, self::LEGACY_PREFIX))
+            || !preg_match('/^[a-f0-9]{32}$/', $lease)) {
             return;
         }
 
