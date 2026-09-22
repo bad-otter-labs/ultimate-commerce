@@ -118,13 +118,14 @@ final class ModulesPage
 
     public static function save(): void
     {
-        self::authorizeRequest();
+        self::requireCapability();
+        check_admin_referer('ulticofo_' . self::PURPOSE_SAVE, self::NONCE_FIELD);
 
-        // phpcs:disable WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- authorizeRequest() verifies the nonce first; only registry-owned array keys are inspected and submitted values are ignored.
+        // phpcs:disable WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Only registry-owned array keys are inspected; submitted values are ignored.
         $posted = isset($_POST['modules']) && is_array($_POST['modules'])
             ? wp_unslash($_POST['modules'])
             : array();
-        // phpcs:enable WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+        // phpcs:enable WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
         $states = array();
         foreach (array_keys(Plugin::registry()->all()) as $key) {
             $states[$key] = array_key_exists($key, $posted);
@@ -132,13 +133,6 @@ final class ModulesPage
 
         Settings::updateModuleStates($states);
         self::redirect('saved');
-    }
-
-    private static function authorizeRequest(): void
-    {
-        self::requireCapability();
-
-        check_admin_referer('ulticofo_' . self::PURPOSE_SAVE, self::NONCE_FIELD);
     }
 
     private static function requireCapability(): void
