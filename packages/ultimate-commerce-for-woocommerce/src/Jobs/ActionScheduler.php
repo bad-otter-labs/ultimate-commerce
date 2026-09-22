@@ -57,13 +57,13 @@ final class ActionScheduler
             return self::error('uc_job_retry_exhausted', __('Background job retry limit has been reached.', 'ultimate-commerce-for-woocommerce'));
         }
 
-        $args['uc_attempt'] = $failedAttempt + 1;
+        $args['ulticofo_attempt'] = $failedAttempt + 1;
         return self::schedule($job, $args, time() + $policy->delayAfterFailure($failedAttempt), true);
     }
 
     public static function hook(string $job): string
     {
-        return 'uc_job_' . $job;
+        return 'ulticofo_job_' . $job;
     }
 
     private static function validJob(string $job): bool
