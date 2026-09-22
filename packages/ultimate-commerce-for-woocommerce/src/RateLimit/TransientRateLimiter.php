@@ -8,7 +8,7 @@ defined('ABSPATH') || exit;
 
 final class TransientRateLimiter implements RateLimiter
 {
-    private const PREFIX = 'uc_rl_';
+    private const PREFIX = 'ulticofo_rl_';
     private const MAX_LIMIT = 10000;
     private const MAX_WINDOW = 86400;
 
