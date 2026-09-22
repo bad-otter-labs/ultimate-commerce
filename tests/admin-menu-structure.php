@@ -113,7 +113,9 @@ ucAssert(!str_contains($ucOverviewSource, "add_action('admin_notices'"), 'Pro di
 ucAssert(!str_contains($ucOverviewSource, "add_action('wp_dashboard_setup'"), 'Pro discovery must not become a dashboard widget.');
 
 ucAssert(str_contains($ucModulesSource, "check_admin_referer('ulticofo_' . self::PURPOSE_SAVE, self::NONCE_FIELD);"), 'Module settings mutation must use a reviewer-visible native nonce check.');
-ucAssert(str_contains($ucSettingsSource, "check_admin_referer('ulticofo_' . \$purpose, self::NONCE_FIELD);"), 'Settings mutations must use a reviewer-visible native nonce check.');
+ucAssert(str_contains($ucSettingsSource, "check_admin_referer('ulticofo_' . self::PURPOSE_EXPORT, self::NONCE_FIELD);"), 'Settings export must use a reviewer-visible native nonce check.');
+ucAssert(str_contains($ucSettingsSource, "check_admin_referer('ulticofo_' . self::PURPOSE_IMPORT, self::NONCE_FIELD);"), 'Settings import must use a reviewer-visible native nonce check.');
+ucAssert(str_contains($ucSettingsSource, "check_admin_referer('ulticofo_' . self::PURPOSE_RETENTION, self::NONCE_FIELD);"), 'Settings retention mutation must use a reviewer-visible native nonce check.');
 ucAssert(str_contains($ucModulesSource, 'self::requireCapability();'), 'Module settings mutation must keep capability authorization separate from CSRF verification.');
 ucAssert(str_contains($ucSettingsSource, 'self::requireCapability();'), 'Settings mutations must keep capability authorization separate from CSRF verification.');
 ucAssert(!str_contains($ucModulesSource, 'admin_post_uc_'), 'Module admin-post action must not use the short legacy prefix.');
