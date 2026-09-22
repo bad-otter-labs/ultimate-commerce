@@ -12,7 +12,8 @@ final class OptionIdempotencyStore implements IdempotencyStore
     public const STATUS_IN_PROGRESS = 'in_progress';
     public const STATUS_COMPLETED = 'completed';
 
-    private const PREFIX = 'uc_idem_';
+    private const PREFIX = 'ulticofo_idem_';
+    private const LEGACY_PREFIX = 'uc_idem_';
     private const DELETE_HOOK = 'ultimate_commerce_idempotency_store_delete';
     private const MIN_TTL = 60;
     private const MAX_TTL = 604800;
@@ -110,7 +111,8 @@ final class OptionIdempotencyStore implements IdempotencyStore
 
     public static function deleteScheduled(string $option, string $lease): void
     {
-        if (!str_starts_with($option, self::PREFIX) || !self::validLease($lease)) {
+        if ((!str_starts_with($option, self::PREFIX) && !str_starts_with($option, self::LEGACY_PREFIX))
+            || !self::validLease($lease)) {
             return;
         }
 
