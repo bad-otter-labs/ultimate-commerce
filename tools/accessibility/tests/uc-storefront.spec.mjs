@@ -113,9 +113,10 @@ test('wishlist pressed state and recently viewed live UI remain operable', async
   await expect(wishlistToggle).toHaveAttribute('aria-label', /Remove .* from wishlist|Remove from wishlist/);
 
   const wishlistIds = await page.evaluate(() => {
-    return JSON.parse(window.localStorage.getItem('uc_wishlist_v1') || '[]');
+    return JSON.parse(window.localStorage.getItem('ulticofo_wishlist_v1') || '[]');
   });
   expect(wishlistIds.length).toBeGreaterThan(0);
+  await expect.poll(async () => page.evaluate(() => window.localStorage.getItem('uc_wishlist_v1'))).toBeNull();
 
   await page.evaluate((id) => {
     window.localStorage.setItem('uc_recently_viewed_v1', JSON.stringify([id]));
@@ -125,6 +126,9 @@ test('wishlist pressed state and recently viewed live UI remain operable', async
 
   await expect(page.locator('.uc-recently-viewed-item')).toHaveCount(1);
   await expect(page.locator('[data-uc-recently-viewed-status="1"]')).toContainText('1 recently viewed product');
+  const migratedRecent = await page.evaluate(() => JSON.parse(window.localStorage.getItem('ulticofo_recently_viewed_v1') || '[]'));
+  expect(migratedRecent).toContain(recentProductId);
+  await expect.poll(async () => page.evaluate(() => window.localStorage.getItem('uc_recently_viewed_v1'))).toBeNull();
 
   await expectNoUcAxeViolations(page, [
     '[data-uc-wishlist-list="1"]',
@@ -135,6 +139,8 @@ test('wishlist pressed state and recently viewed live UI remain operable', async
   await expect(page.locator('.uc-recently-viewed-item')).toHaveCount(0);
   await expect(page.locator('[data-uc-recently-viewed-status="1"]')).toContainText('Recently viewed products cleared');
 
-  const recentState = await page.evaluate(() => window.localStorage.getItem('uc_recently_viewed_v1'));
+  const recentState = await page.evaluate(() => window.localStorage.getItem('ulticofo_recently_viewed_v1'));
+  const legacyRecentState = await page.evaluate(() => window.localStorage.getItem('uc_recently_viewed_v1'));
   expect(recentState).toBeNull();
+  expect(legacyRecentState).toBeNull();
 });
