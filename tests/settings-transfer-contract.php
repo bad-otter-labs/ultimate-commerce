@@ -88,13 +88,13 @@ require_once __DIR__ . '/../packages/ultimate-commerce-for-woocommerce/src/Suppo
 use BadOtter\UltimateCommerce\Support\SettingsTransfer;
 
 $ucOptions = array(
-    'uc_modules' => array(
+    'ulticofo_modules' => array(
         'cart' => true,
         'extension_absent' => false,
         'Bad Key' => true,
     ),
-    'uc_version' => 'should-not-export',
-    'uc_schema_version' => 'should-not-export',
+    'ulticofo_version' => 'should-not-export',
+    'ulticofo_schema_version' => 'should-not-export',
 );
 
 $export = SettingsTransfer::exportJson();
@@ -109,8 +109,8 @@ ucAssert($decoded->settings->modules instanceof stdClass, 'Export modules must b
 ucAssert($decoded->settings->modules->cart === true, 'Stored cart preference missing from export.');
 ucAssert($decoded->settings->modules->extension_absent === false, 'Temporarily absent extension preference missing from export.');
 ucAssert(!property_exists($decoded->settings->modules, 'Bad Key'), 'Invalid stored module keys must not be exported.');
-ucAssert(strpos($export, 'uc_version') === false, 'Runtime version metadata must not be exported.');
-ucAssert(strpos($export, 'uc_schema_version') === false, 'Runtime schema metadata must not be exported.');
+ucAssert(strpos($export, 'ulticofo_version') === false, 'Runtime version metadata must not be exported.');
+ucAssert(strpos($export, 'ulticofo_schema_version') === false, 'Runtime schema metadata must not be exported.');
 
 $valid = json_encode(array(
     'format' => 'ultimate-commerce-settings',
@@ -125,9 +125,9 @@ $valid = json_encode(array(
 ));
 $result = SettingsTransfer::importJson((string) $valid);
 ucAssert(is_array($result), 'Valid import must return merged module states.');
-ucAssert($ucOptions['uc_modules']['cart'] === false, 'Import must update declared module preferences.');
-ucAssert($ucOptions['uc_modules']['product_display'] === true, 'Import must add declared canonical module preferences.');
-ucAssert($ucOptions['uc_modules']['extension_absent'] === false, 'Import must preserve omitted extension preferences.');
+ucAssert($ucOptions['ulticofo_modules']['cart'] === false, 'Import must update declared module preferences.');
+ucAssert($ucOptions['ulticofo_modules']['product_display'] === true, 'Import must add declared canonical module preferences.');
+ucAssert($ucOptions['ulticofo_modules']['extension_absent'] === false, 'Import must preserve omitted extension preferences.');
 
 $emptyModules = json_encode(array(
     'format' => 'ultimate-commerce-settings',
