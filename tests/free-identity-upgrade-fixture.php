@@ -66,15 +66,15 @@ $wooBefore = array(
 OptionMigrator::migrate();
 
 uc_upgrade_assert(
-    $GLOBALS['uc_upgrade_options']['uc_version'] === '0.1.4',
+    $GLOBALS['uc_upgrade_options']['ulticofo_version'] === '0.1.4',
     'Legacy version must be copied into the canonical version option.'
 );
 uc_upgrade_assert(
-    $GLOBALS['uc_upgrade_options']['uc_schema_version'] === '1',
+    $GLOBALS['uc_upgrade_options']['ulticofo_schema_version'] === '1',
     'Legacy schema version must be copied into the canonical schema option.'
 );
 uc_upgrade_assert(
-    $GLOBALS['uc_upgrade_options']['uc_modules'] === $legacyBefore['ultimate_commerce_modules'],
+    $GLOBALS['uc_upgrade_options']['ulticofo_modules'] === $legacyBefore['ultimate_commerce_modules'],
     'Legacy module preferences must survive the identity migration without transformation.'
 );
 
@@ -93,7 +93,7 @@ foreach ($wooBefore as $name => $value) {
     );
 }
 
-$expectedWrites = array('uc_version', 'uc_schema_version', 'uc_modules');
+$expectedWrites = array('ulticofo_version', 'ulticofo_schema_version', 'ulticofo_modules');
 uc_upgrade_assert(count($GLOBALS['uc_upgrade_writes']) === count($expectedWrites), 'Migration must write only missing canonical options.');
 foreach ($GLOBALS['uc_upgrade_writes'] as $index => $write) {
     uc_upgrade_assert(($write['name'] ?? '') === $expectedWrites[$index], 'Unexpected migration write ordering or option name.');
@@ -114,7 +114,7 @@ $canonicalModules = array(
     'cart' => true,
     'account' => true,
 );
-$GLOBALS['uc_upgrade_options']['uc_modules'] = $canonicalModules;
+$GLOBALS['uc_upgrade_options']['ulticofo_modules'] = $canonicalModules;
 $GLOBALS['uc_upgrade_options']['ultimate_commerce_modules'] = array(
     'products' => false,
     'variations' => false,
@@ -124,7 +124,7 @@ $GLOBALS['uc_upgrade_options']['ultimate_commerce_modules'] = array(
 
 OptionMigrator::migrate();
 uc_upgrade_assert(
-    $GLOBALS['uc_upgrade_options']['uc_modules'] === $canonicalModules,
+    $GLOBALS['uc_upgrade_options']['ulticofo_modules'] === $canonicalModules,
     'An existing canonical option must win over a conflicting legacy value.'
 );
 uc_upgrade_assert(
@@ -143,9 +143,9 @@ uc_upgrade_assert(!str_contains((string) $migrator, 'update_option('), 'Identity
 uc_upgrade_assert(!str_contains((string) $migrator, 'woocommerce_'), 'Identity migration must not target WooCommerce-owned options.');
 
 foreach (array(
-    "'ultimate_commerce_version' => 'uc_version'",
-    "'ultimate_commerce_schema_version' => 'uc_schema_version'",
-    "'ultimate_commerce_modules' => 'uc_modules'",
+    "'ulticofo_version' => array('uc_version', 'ultimate_commerce_version')",
+    "'ulticofo_schema_version' => array('uc_schema_version', 'ultimate_commerce_schema_version')",
+    "'ulticofo_modules' => array('uc_modules', 'ultimate_commerce_modules')",
 ) as $mapping) {
     uc_upgrade_assert(str_contains((string) $migrator, $mapping), 'Expected legacy-to-canonical mapping is missing: ' . $mapping);
 }
