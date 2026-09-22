@@ -46,15 +46,16 @@ jobs:
               if marker not in transfer:
                   raise SystemExit(f'Settings transfer contract missing: {marker}')
 
-          for forbidden in ('uc_version', 'uc_schema_version', 'SecretStore', 'get_option('):
+          for forbidden in ('ulticofo_version', 'ulticofo_schema_version', 'uc_version', 'uc_schema_version', 'SecretStore', 'get_option('):
               if forbidden in transfer:
                   raise SystemExit(f'Settings transfer must not expose runtime/secret/arbitrary option data: {forbidden}')
 
           required_page = (
               'Capabilities::MANAGE_SETTINGS',
-              'Csrf::require',
-              "admin_post_uc_settings_export",
-              "admin_post_uc_settings_import",
+              "check_admin_referer('ulticofo_' . self::PURPOSE_EXPORT, self::NONCE_FIELD);",
+              "check_admin_referer('ulticofo_' . self::PURPOSE_IMPORT, self::NONCE_FIELD);",
+              "admin_post_ulticofo_settings_export",
+              "admin_post_ulticofo_settings_import",
               'SettingsTransfer::MAX_BYTES',
               'is_uploaded_file',
           )
