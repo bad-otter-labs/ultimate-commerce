@@ -144,30 +144,30 @@ $ucRoles = array(
 );
 
 $ucOptions = array(
-    'uc_delete_data_on_uninstall' => false,
-    'uc_modules' => array('cart' => false, 'pro_example' => true),
-    'uc_secret_store_v1' => array('pro.license' => 'encrypted-value'),
-    'uc_version' => '0.2.0',
-    'uc_schema_version' => '1',
-    'uc_capability_version' => '1',
-    'uc_lock_abc' => array('lease' => 'a'),
-    'uc_idem_def' => array('state' => 'completed'),
-    'uc_replay_ghi' => array('lease' => 'b'),
-    '_transient_uc_rl_jkl' => array('count' => 1),
-    '_transient_timeout_uc_rl_jkl' => 9999999999,
+    'ulticofo_delete_data_on_uninstall' => false,
+    'ulticofo_modules' => array('cart' => false, 'pro_example' => true),
+    'ulticofo_secret_store_v1' => array('pro.license' => 'encrypted-value'),
+    'ulticofo_version' => '0.2.0',
+    'ulticofo_schema_version' => '1',
+    'ulticofo_capability_version' => '1',
+    'ulticofo_lock_abc' => array('lease' => 'a'),
+    'ulticofo_idem_def' => array('state' => 'completed'),
+    'ulticofo_replay_ghi' => array('lease' => 'b'),
+    '_transient_ulticofo_rl_jkl' => array('count' => 1),
+    '_transient_timeout_ulticofo_rl_jkl' => 9999999999,
     'woocommerce_currency' => 'GBP',
     'third_party_option' => 'keep-me',
 );
 
 Uninstall::run();
 
-ucAssert(isset($ucOptions['uc_modules']), 'Merchant module preferences must be retained by default.');
-ucAssert(isset($ucOptions['uc_secret_store_v1']), 'Encrypted UC secrets must be retained by default for reinstall recovery.');
+ucAssert(isset($ucOptions['ulticofo_modules']), 'Merchant module preferences must be retained by default.');
+ucAssert(isset($ucOptions['ulticofo_secret_store_v1']), 'Encrypted UC secrets must be retained by default for reinstall recovery.');
 ucAssert(array_key_exists(Settings::UNINSTALL_DATA_OPTION, $ucOptions), 'Retention preference must remain when merchant data is retained.');
-ucAssert(!isset($ucOptions['uc_version']) && !isset($ucOptions['uc_schema_version']), 'Runtime version metadata must always be removed.');
-ucAssert(!isset($ucOptions['uc_capability_version']), 'Capability version marker must always be removed.');
-ucAssert(!isset($ucOptions['uc_lock_abc']) && !isset($ucOptions['uc_idem_def']) && !isset($ucOptions['uc_replay_ghi']), 'Runtime lease/idempotency/replay records must always be removed.');
-ucAssert(!isset($ucOptions['_transient_uc_rl_jkl']) && !isset($ucOptions['_transient_timeout_uc_rl_jkl']), 'UC rate-limit transients must always be removed.');
+ucAssert(!isset($ucOptions['ulticofo_version']) && !isset($ucOptions['ulticofo_schema_version']), 'Runtime version metadata must always be removed.');
+ucAssert(!isset($ucOptions['ulticofo_capability_version']), 'Capability version marker must always be removed.');
+ucAssert(!isset($ucOptions['ulticofo_lock_abc']) && !isset($ucOptions['ulticofo_idem_def']) && !isset($ucOptions['ulticofo_replay_ghi']), 'Runtime lease/idempotency/replay records must always be removed.');
+ucAssert(!isset($ucOptions['_transient_ulticofo_rl_jkl']) && !isset($ucOptions['_transient_timeout_ulticofo_rl_jkl']), 'UC rate-limit transients must always be removed.');
 ucAssert(($ucOptions['woocommerce_currency'] ?? '') === 'GBP', 'WooCommerce-owned options must never be removed.');
 ucAssert(($ucOptions['third_party_option'] ?? '') === 'keep-me', 'Unrelated third-party options must never be removed.');
 ucAssert(($ucUserMeta[1][WishlistStore::metaKey()] ?? array()) === array(10, 11), 'Wishlist personal data must be retained by default.');
@@ -180,18 +180,18 @@ $ucRoles['administrator']->add_cap(Capabilities::VIEW_DIAGNOSTICS);
 $ucRoles['administrator']->add_cap(Capabilities::MANAGE_SETTINGS);
 $ucRoles['shop_manager']->add_cap(Capabilities::VIEW_DIAGNOSTICS);
 Settings::updateDeleteDataOnUninstall(true);
-$ucOptions['uc_version'] = '0.2.0';
-$ucOptions['uc_schema_version'] = '1';
-$ucOptions['uc_capability_version'] = '1';
-$ucOptions['uc_lock_again'] = array();
+$ucOptions['ulticofo_version'] = '0.2.0';
+$ucOptions['ulticofo_schema_version'] = '1';
+$ucOptions['ulticofo_capability_version'] = '1';
+$ucOptions['ulticofo_lock_again'] = array();
 $ucOptions['ultimate_commerce_version'] = '0.1.4';
 $ucOptions['ultimate_commerce_schema_version'] = '1';
 $ucOptions['ultimate_commerce_modules'] = array('legacy' => true);
 
 Uninstall::run();
 
-ucAssert(!isset($ucOptions['uc_modules']), 'Explicit purge must remove canonical module preferences.');
-ucAssert(!isset($ucOptions['uc_secret_store_v1']), 'Explicit purge must remove the UC encrypted secret store.');
+ucAssert(!isset($ucOptions['ulticofo_modules']), 'Explicit purge must remove canonical module preferences.');
+ucAssert(!isset($ucOptions['ulticofo_secret_store_v1']), 'Explicit purge must remove the UC encrypted secret store.');
 ucAssert(!isset($ucOptions[Settings::UNINSTALL_DATA_OPTION]), 'Explicit purge must remove its own uninstall preference.');
 ucAssert(!isset($ucOptions['ultimate_commerce_version']) && !isset($ucOptions['ultimate_commerce_schema_version']) && !isset($ucOptions['ultimate_commerce_modules']), 'Explicit purge must remove retained legacy migration data.');
 ucAssert(($ucOptions['woocommerce_currency'] ?? '') === 'GBP', 'Explicit UC purge must still preserve WooCommerce-owned options.');
