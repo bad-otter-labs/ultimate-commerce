@@ -77,7 +77,7 @@ WooCommerce/Action Scheduler is the local background-work default.
 Use `Jobs\ActionScheduler` for UC-owned jobs. It:
 
 - schedules in the `ultimate-commerce` group
-- creates hooks as `uc_job_<job>`
+- creates hooks as `ulticofo_job_<job>`
 - supports unique scheduling
 - rejects nested job payloads
 - limits argument count/string size
@@ -97,7 +97,7 @@ Jobs should carry object IDs, stable opaque references and flags, then rehydrate
 - default cap: 3600 seconds
 - hard maximum configuration bounds
 
-`ActionScheduler::scheduleRetry()` increments `uc_attempt` and refuses to reschedule after the retry limit.
+`ActionScheduler::scheduleRetry()` increments `ulticofo_attempt` and refuses to reschedule after the retry limit.
 
 A retry loop is not an excuse to hammer a failing provider. Provider-specific adapters should additionally respect HTTP/provider retry semantics and circuit/failure isolation where appropriate.
 
