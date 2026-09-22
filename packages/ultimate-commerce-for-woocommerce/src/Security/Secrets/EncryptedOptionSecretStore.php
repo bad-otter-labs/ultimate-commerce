@@ -8,7 +8,7 @@ defined('ABSPATH') || exit;
 
 final class EncryptedOptionSecretStore implements SecretStore
 {
-    private const OPTION = 'uc_secret_store_v1';
+    private const OPTION = 'ulticofo_secret_store_v1';
     private const VERSION = 1;
 
     /** @return string|\WP_Error|null */
