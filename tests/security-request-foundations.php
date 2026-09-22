@@ -120,7 +120,7 @@ uc_security_assert(isset($adminCaps[Capabilities::VIEW_DIAGNOSTICS]), 'administr
 uc_security_assert(isset($adminCaps[Capabilities::MANAGE_SETTINGS]), 'administrator should receive settings capability');
 uc_security_assert(isset($shopCaps[Capabilities::VIEW_DIAGNOSTICS]), 'shop manager should receive diagnostics capability');
 uc_security_assert(!isset($shopCaps[Capabilities::MANAGE_SETTINGS]), 'shop manager should not receive settings capability by default');
-uc_security_assert(($GLOBALS['uc_test_options']['uc_capability_version'] ?? '') === '1', 'capability version should be stored');
+uc_security_assert(($GLOBALS['uc_test_options']['ulticofo_capability_version'] ?? '') === '2', 'capability version should be stored');
 
 $denied = Authorization::requireCapability(Capabilities::MANAGE_SETTINGS);
 uc_security_assert($denied instanceof WP_Error && $denied->code === 'uc_forbidden' && $denied->data['status'] === 403, 'missing capability should fail closed');
@@ -137,7 +137,7 @@ $GLOBALS['uc_test_user_id'] = 0;
 $authDenied = Authorization::requireAuthenticated();
 uc_security_assert($authDenied instanceof WP_Error && $authDenied->data['status'] === 401, 'guest should receive authentication-required error');
 
-uc_security_assert(Csrf::verify('valid-uc_settings_save', 'settings_save'), 'valid purpose-bound nonce should pass');
+uc_security_assert(Csrf::verify('valid-ulticofo_settings_save', 'settings_save'), 'valid purpose-bound nonce should pass');
 uc_security_assert(!Csrf::verify('wrong', 'settings_save'), 'invalid nonce should fail');
 $csrfDenied = Csrf::require('wrong', 'settings_save');
 uc_security_assert($csrfDenied instanceof WP_Error && $csrfDenied->code === 'uc_invalid_nonce', 'CSRF helper should fail closed');
