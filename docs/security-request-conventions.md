@@ -10,15 +10,15 @@ UC administrative surfaces should use product-specific capabilities rather than 
 
 Initial capabilities:
 
-- `uc_view_diagnostics` — view UC diagnostics/system state
-- `uc_manage_settings` — change UC settings when a settings surface is implemented
+- `ulticofo_view_diagnostics` — view UC diagnostics/system state
+- `ulticofo_manage_settings` — change UC settings when a settings surface is implemented
 
 Default role grants:
 
 - Administrator: both capabilities
 - WooCommerce Shop Manager: diagnostics only
 
-Capability grants are versioned through `uc_capability_version` so future additions can be migrated deliberately.
+Capability grants are versioned through `ulticofo_capability_version` so future additions can be migrated deliberately.
 
 A capability check is authorisation. A nonce is not.
 
@@ -36,7 +36,7 @@ Every customer/resource identifier remains untrusted even after authentication.
 
 ## CSRF / nonces
 
-`BadOtter\UltimateCommerce\Security\Csrf` namespaces nonce actions with `uc_` and provides verify/require helpers.
+`BadOtter\UltimateCommerce\Security\Csrf` namespaces nonce actions with `ulticofo_` and provides verify/require helpers.
 
 Rules:
 
