@@ -201,17 +201,17 @@ msgid "Version"
 msgstr ""
 
 #: src/Admin/DiagnosticsPage.php:105
-#: src/Admin/ModulesPage.php:50
+#: src/Admin/ModulesPage.php:49
 msgid "Module"
 msgstr ""
 
 #: src/Admin/DiagnosticsPage.php:106
-#: src/Admin/ModulesPage.php:51
+#: src/Admin/ModulesPage.php:50
 msgid "Product / tier"
 msgstr ""
 
 #: src/Admin/DiagnosticsPage.php:107
-#: src/Admin/ModulesPage.php:52
+#: src/Admin/ModulesPage.php:51
 msgid "Dependencies"
 msgstr ""
 
@@ -228,7 +228,7 @@ msgid "No Ultimate Commerce modules are registered."
 msgstr ""
 
 #: src/Admin/DiagnosticsPage.php:121
-#: src/Admin/ModulesPage.php:80
+#: src/Admin/ModulesPage.php:79
 msgid "None"
 msgstr ""
 
@@ -260,74 +260,69 @@ msgstr ""
 msgid "Attention needed"
 msgstr ""
 
-#: src/Admin/ModulesPage.php:38
+#: src/Admin/ModulesPage.php:37
 msgid "Ultimate Commerce Modules"
 msgstr ""
 
-#: src/Admin/ModulesPage.php:39
+#: src/Admin/ModulesPage.php:38
 msgid "Enable or disable registered Ultimate Commerce modules. WooCommerce remains the source of truth for products, stock, cart, totals, orders and payments."
 msgstr ""
 
-#: src/Admin/ModulesPage.php:53
+#: src/Admin/ModulesPage.php:52
 msgid "Runtime state"
 msgstr ""
 
-#: src/Admin/ModulesPage.php:54
-#: src/Admin/ModulesPage.php:104
+#: src/Admin/ModulesPage.php:53
+#: src/Admin/ModulesPage.php:103
 msgid "Enabled"
 msgstr ""
 
-#: src/Admin/ModulesPage.php:60
+#: src/Admin/ModulesPage.php:59
 msgid "No Ultimate Commerce modules are currently registered."
 msgstr ""
 
-#: src/Admin/ModulesPage.php:93
+#: src/Admin/ModulesPage.php:92
 msgid "Effective state is currently overridden by code."
 msgstr ""
 
-#: src/Admin/ModulesPage.php:113
+#: src/Admin/ModulesPage.php:112
 msgid "Dependency failures are shown as blocked states. Saving does not silently change other module preferences."
 msgstr ""
 
-#: src/Admin/ModulesPage.php:114
+#: src/Admin/ModulesPage.php:113
 msgid "Save module settings"
 msgstr ""
 
-#: src/Admin/ModulesPage.php:151
-#: src/Admin/SettingsPage.php:185
-msgid "Request rejected"
-msgstr ""
-
-#: src/Admin/ModulesPage.php:161
+#: src/Admin/ModulesPage.php:142
 msgid "You do not have permission to manage Ultimate Commerce modules."
 msgstr ""
 
-#: src/Admin/ModulesPage.php:162
-#: src/Admin/SettingsPage.php:196
+#: src/Admin/ModulesPage.php:143
+#: src/Admin/SettingsPage.php:177
 msgid "Access denied"
 msgstr ""
 
-#: src/Admin/ModulesPage.php:197
+#: src/Admin/ModulesPage.php:178
 msgid "Module settings saved."
 msgstr ""
 
-#: src/Admin/ModulesPage.php:204
+#: src/Admin/ModulesPage.php:185
 msgid "Active"
 msgstr ""
 
-#: src/Admin/ModulesPage.php:206
+#: src/Admin/ModulesPage.php:187
 msgid "Disabled"
 msgstr ""
 
-#: src/Admin/ModulesPage.php:208
+#: src/Admin/ModulesPage.php:189
 msgid "Blocked"
 msgstr ""
 
-#: src/Admin/ModulesPage.php:210
+#: src/Admin/ModulesPage.php:191
 msgid "Starting"
 msgstr ""
 
-#: src/Admin/ModulesPage.php:212
+#: src/Admin/ModulesPage.php:193
 msgid "Registered"
 msgstr ""
 
@@ -355,66 +350,66 @@ msgstr ""
 msgid "Ultimate Commerce Pro is an optional paid companion for advanced conversion, merchandising, customer and retail-operations modules. Ultimate Commerce Free remains usable without Pro, a Bad Otter account or a hosted Bad Otter service."
 msgstr ""
 
-#: src/Admin/SettingsPage.php:34
+#: src/Admin/SettingsPage.php:33
 msgid "Ultimate Commerce Settings"
 msgstr ""
 
-#: src/Admin/SettingsPage.php:35
+#: src/Admin/SettingsPage.php:34
 msgid "Export or import portable Ultimate Commerce merchant settings. Runtime metadata, secrets and caches are never part of this file."
 msgstr ""
 
-#: src/Admin/SettingsPage.php:39
+#: src/Admin/SettingsPage.php:38
 msgid "Export settings"
 msgstr ""
 
-#: src/Admin/SettingsPage.php:40
+#: src/Admin/SettingsPage.php:39
 msgid "Download a JSON file containing supported merchant configuration. The current format includes stored module preferences, including temporarily unavailable extension modules."
 msgstr ""
 
-#: src/Admin/SettingsPage.php:44
+#: src/Admin/SettingsPage.php:43
 msgid "Download settings file"
 msgstr ""
 
-#: src/Admin/SettingsPage.php:49
-#: src/Admin/SettingsPage.php:69
+#: src/Admin/SettingsPage.php:48
+#: src/Admin/SettingsPage.php:68
 msgid "Import settings"
 msgstr ""
 
-#: src/Admin/SettingsPage.php:50
+#: src/Admin/SettingsPage.php:49
 msgid "Import a JSON file previously exported by Ultimate Commerce. Declared module preferences are merged with existing settings, so omitted extension preferences are preserved."
 msgstr ""
 
-#: src/Admin/SettingsPage.php:55
+#: src/Admin/SettingsPage.php:54
 msgid "Settings JSON file"
 msgstr ""
 
 #. translators: %s: Maximum settings file size.
-#: src/Admin/SettingsPage.php:63
+#: src/Admin/SettingsPage.php:62
 #, php-format
 msgid "Maximum file size: %s KB. Imported settings take effect on the next request."
 msgstr ""
 
-#: src/Admin/SettingsPage.php:74
+#: src/Admin/SettingsPage.php:73
 msgid "Data retention"
 msgstr ""
 
-#: src/Admin/SettingsPage.php:75
+#: src/Admin/SettingsPage.php:74
 msgid "Ultimate Commerce keeps merchant configuration by default when the plugin is deleted, making a later reinstall recoverable. Short-lived runtime locks, replay records, idempotency records and rate-limit transients are always removed."
 msgstr ""
 
-#: src/Admin/SettingsPage.php:82
+#: src/Admin/SettingsPage.php:81
 msgid "Delete Ultimate Commerce data when the plugin is deleted"
 msgstr ""
 
-#: src/Admin/SettingsPage.php:85
+#: src/Admin/SettingsPage.php:84
 msgid "When enabled, deletion also removes stored module preferences and Ultimate Commerce encrypted secrets. WooCommerce products, stock, carts, orders, payments and other WooCommerce-owned data are never deleted by this cleanup."
 msgstr ""
 
-#: src/Admin/SettingsPage.php:86
+#: src/Admin/SettingsPage.php:85
 msgid "This destructive local preference is intentionally excluded from settings export/import."
 msgstr ""
 
-#: src/Admin/SettingsPage.php:87
+#: src/Admin/SettingsPage.php:86
 msgid "Save data retention"
 msgstr ""
 
@@ -422,7 +417,7 @@ msgstr ""
 msgid "Settings export failed"
 msgstr ""
 
-#: src/Admin/SettingsPage.php:150
+#: src/Admin/SettingsPage.php:153
 msgid "Choose an Ultimate Commerce settings file to import."
 msgstr ""
 
@@ -434,19 +429,19 @@ msgstr ""
 msgid "The uploaded settings file is empty, unreadable or too large."
 msgstr ""
 
-#: src/Admin/SettingsPage.php:195
+#: src/Admin/SettingsPage.php:176
 msgid "You do not have permission to manage Ultimate Commerce settings."
 msgstr ""
 
-#: src/Admin/SettingsPage.php:229
+#: src/Admin/SettingsPage.php:210
 msgid "Ultimate Commerce settings imported. The imported module preferences are now active."
 msgstr ""
 
-#: src/Admin/SettingsPage.php:234
+#: src/Admin/SettingsPage.php:215
 msgid "Ultimate Commerce data-retention preference saved."
 msgstr ""
 
-#: src/Admin/SettingsPage.php:239
+#: src/Admin/SettingsPage.php:220
 msgid "The settings file was not imported. Use a valid Ultimate Commerce settings export and try again."
 msgstr ""
 
@@ -502,15 +497,15 @@ msgstr ""
 msgid "Audit context string value is too large."
 msgstr ""
 
-#: src/Concurrency/OptionLockStore.php:25
+#: src/Concurrency/OptionLockStore.php:26
 msgid "Lock scope or key is invalid."
 msgstr ""
 
-#: src/Concurrency/OptionLockStore.php:28
+#: src/Concurrency/OptionLockStore.php:29
 msgid "Lock lifetime is outside the allowed range."
 msgstr ""
 
-#: src/Concurrency/OptionLockStore.php:44
+#: src/Concurrency/OptionLockStore.php:45
 msgid "Lock entropy is unavailable."
 msgstr ""
 
@@ -542,19 +537,19 @@ msgstr ""
 msgid "Provider host is not allowlisted."
 msgstr ""
 
-#: src/Idempotency/OptionIdempotencyStore.php:28
+#: src/Idempotency/OptionIdempotencyStore.php:29
 msgid "Idempotency scope or key is invalid."
 msgstr ""
 
-#: src/Idempotency/OptionIdempotencyStore.php:31
+#: src/Idempotency/OptionIdempotencyStore.php:32
 msgid "Idempotency lifetime is outside the allowed range."
 msgstr ""
 
-#: src/Idempotency/OptionIdempotencyStore.php:47
+#: src/Idempotency/OptionIdempotencyStore.php:48
 msgid "Idempotency entropy is unavailable."
 msgstr ""
 
-#: src/Idempotency/OptionIdempotencyStore.php:62
+#: src/Idempotency/OptionIdempotencyStore.php:63
 msgid "Idempotency claim could not be established."
 msgstr ""
 
@@ -731,15 +726,15 @@ msgstr ""
 msgid "Guest token claims are too large."
 msgstr ""
 
-#: src/Security/Replay/OptionReplayStore.php:25
+#: src/Security/Replay/OptionReplayStore.php:28
 msgid "Replay protection key is invalid."
 msgstr ""
 
-#: src/Security/Replay/OptionReplayStore.php:28
+#: src/Security/Replay/OptionReplayStore.php:31
 msgid "Replay protection lifetime is outside the allowed range."
 msgstr ""
 
-#: src/Security/Replay/OptionReplayStore.php:44
+#: src/Security/Replay/OptionReplayStore.php:47
 msgid "Replay protection entropy is unavailable."
 msgstr ""
 
@@ -908,14 +903,14 @@ msgid "View product"
 msgstr ""
 
 #: src/Storefront/ProductCardRenderer.php:124
-#: src/Storefront/VariationViewModel.php:167
+#: src/Storefront/VariationViewModel.php:172
 #: assets/js/variation-controls.js:174
 msgid "Add to cart"
 msgstr ""
 
 #: src/Storefront/ProductCardRenderer.php:125
 #: src/Storefront/ProductCardRenderer.php:189
-#: src/Storefront/VariationViewModel.php:167
+#: src/Storefront/VariationViewModel.php:172
 #: assets/js/variation-controls.js:175
 msgid "Select options"
 msgstr ""
@@ -942,8 +937,8 @@ msgid "Your wishlist is empty."
 msgstr ""
 
 #: src/Storefront/WishlistControls.php:73
-#: assets/js/wishlist.js:139
-#: assets/js/wishlist.js:154
+#: assets/js/wishlist.js:155
+#: assets/js/wishlist.js:170
 msgid "Add to wishlist"
 msgstr ""
 
@@ -999,25 +994,25 @@ msgstr ""
 msgid "Too many module preferences are stored to create a portable settings file."
 msgstr ""
 
-#: src/Wishlist/WishlistStore.php:49
+#: src/Wishlist/WishlistStore.php:59
 msgid "A signed-in customer is required for this wishlist."
 msgstr ""
 
-#: src/Wishlist/WishlistStore.php:52
+#: src/Wishlist/WishlistStore.php:62
 msgid "This product cannot be added to the wishlist."
 msgstr ""
 
-#: src/Wishlist/WishlistStore.php:60
-#: assets/js/wishlist.js:297
+#: src/Wishlist/WishlistStore.php:70
+#: assets/js/wishlist.js:313
 msgid "The wishlist has reached its item limit."
 msgstr ""
 
-#: src/Wishlist/WishlistStore.php:120
-#: src/Wishlist/WishlistStore.php:148
+#: src/Wishlist/WishlistStore.php:130
+#: src/Wishlist/WishlistStore.php:158
 msgid "Ultimate Commerce Wishlist"
 msgstr ""
 
-#: src/Wishlist/WishlistStore.php:152
+#: src/Wishlist/WishlistStore.php:162
 msgid "Product IDs"
 msgstr ""
 
@@ -1062,7 +1057,7 @@ msgid "Increase quantity"
 msgstr ""
 
 #: assets/js/cart-drawer.js:364
-#: assets/js/wishlist.js:192
+#: assets/js/wishlist.js:208
 msgid "Remove"
 msgstr ""
 
@@ -1082,73 +1077,73 @@ msgstr ""
 msgid "Adding to cart…"
 msgstr ""
 
-#: assets/js/recently-viewed.js:130
+#: assets/js/recently-viewed.js:146
 msgid "No recently viewed products."
 msgstr ""
 
-#: assets/js/recently-viewed.js:142
-#: assets/js/recently-viewed.js:177
+#: assets/js/recently-viewed.js:158
+#: assets/js/recently-viewed.js:193
 msgid "Recently viewed products could not be loaded."
 msgstr ""
 
 #. translators: %d: Number of recently viewed products.
-#: assets/js/recently-viewed.js:172
+#: assets/js/recently-viewed.js:188
 #, js-format
 msgid "%d recently viewed product."
 msgid_plural "%d recently viewed products."
 msgstr[0] ""
 msgstr[1] ""
 
-#: assets/js/recently-viewed.js:205
+#: assets/js/recently-viewed.js:221
 msgid "Recently viewed products cleared."
 msgstr ""
 
-#: assets/js/wishlist.js:76
-#: assets/js/wishlist.js:326
+#: assets/js/wishlist.js:92
+#: assets/js/wishlist.js:342
 msgid "The wishlist could not be updated."
 msgstr ""
 
 #. translators: %s: Product name.
-#: assets/js/wishlist.js:127
+#: assets/js/wishlist.js:143
 #, js-format
 msgid "Remove %s from wishlist"
 msgstr ""
 
 #. translators: %s: Product name.
-#: assets/js/wishlist.js:132
+#: assets/js/wishlist.js:148
 #, js-format
 msgid "Add %s to wishlist"
 msgstr ""
 
-#: assets/js/wishlist.js:138
+#: assets/js/wishlist.js:154
 msgid "Remove from wishlist"
 msgstr ""
 
-#: assets/js/wishlist.js:153
+#: assets/js/wishlist.js:169
 msgid "Saved"
 msgstr ""
 
-#: assets/js/wishlist.js:229
+#: assets/js/wishlist.js:245
 msgid "No saved products."
 msgstr ""
 
-#: assets/js/wishlist.js:241
-#: assets/js/wishlist.js:276
+#: assets/js/wishlist.js:257
+#: assets/js/wishlist.js:292
 msgid "Saved products could not be loaded."
 msgstr ""
 
 #. translators: %d: Number of saved products.
-#: assets/js/wishlist.js:270
+#: assets/js/wishlist.js:286
 #, js-format
 msgid "%d saved product."
 msgid_plural "%d saved products."
 msgstr[0] ""
 msgstr[1] ""
 
-#: assets/js/wishlist.js:323
+#: assets/js/wishlist.js:339
 msgid "Removed from wishlist."
 msgstr ""
 
-#: assets/js/wishlist.js:324
+#: assets/js/wishlist.js:340
 msgid "Added to wishlist."
 msgstr ""
