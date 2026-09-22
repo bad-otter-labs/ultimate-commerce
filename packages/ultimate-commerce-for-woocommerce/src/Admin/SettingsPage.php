@@ -91,7 +91,8 @@ final class SettingsPage
 
     public static function export(): void
     {
-        self::authorizeRequest(self::PURPOSE_EXPORT);
+        self::requireCapability();
+        check_admin_referer('ulticofo_' . self::PURPOSE_EXPORT, self::NONCE_FIELD);
 
         $json = SettingsTransfer::exportJson();
         if ($json instanceof \WP_Error) {
@@ -112,9 +113,12 @@ final class SettingsPage
 
     public static function import(): void
     {
-        self::authorizeRequest(self::PURPOSE_IMPORT);
+        self::requireCapability();
+        check_admin_referer('ulticofo_' . self::PURPOSE_IMPORT, self::NONCE_FIELD);
 
-        $json = self::uploadedJson();
+        // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Upload metadata is validated field-by-field by uploadedJson().
+        $file = isset($_FILES['settings_file']) && is_array($_FILES['settings_file']) ? $_FILES['settings_file'] : null;
+        $json = self::uploadedJson($file);
         if ($json instanceof \WP_Error) {
             self::redirect('invalid');
         }
@@ -129,28 +133,25 @@ final class SettingsPage
 
     public static function saveRetention(): void
     {
-        self::authorizeRequest(self::PURPOSE_RETENTION);
+        self::requireCapability();
+        check_admin_referer('ulticofo_' . self::PURPOSE_RETENTION, self::NONCE_FIELD);
 
-        // phpcs:disable WordPress.Security.NonceVerification.Missing -- authorizeRequest() verifies the retention nonce before this mutation input is read.
         $enabled = isset($_POST['delete_data_on_uninstall'])
             && is_scalar($_POST['delete_data_on_uninstall'])
             && sanitize_text_field((string) wp_unslash($_POST['delete_data_on_uninstall'])) === '1';
-        // phpcs:enable WordPress.Security.NonceVerification.Missing
 
         Settings::updateDeleteDataOnUninstall($enabled);
         self::redirect('retention-saved');
     }
 
-    /** @return string|\WP_Error */
-    private static function uploadedJson()
+    /** @param array<string, mixed>|null $file
+     *  @return string|\WP_Error
+     */
+    private static function uploadedJson(?array $file)
     {
-        // phpcs:disable WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- import() verifies the nonce before calling this helper; upload metadata is validated field-by-field and file contents are size-bounded below.
-        if (!isset($_FILES['settings_file']) || !is_array($_FILES['settings_file'])) {
+        if ($file === null) {
             return new \WP_Error('uc_settings_upload_missing', __('Choose an Ultimate Commerce settings file to import.', 'ultimate-commerce-for-woocommerce'));
         }
-
-        $file = $_FILES['settings_file'];
-        // phpcs:enable WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
         $error = isset($file['error']) ? (int) $file['error'] : UPLOAD_ERR_NO_FILE;
         $size = isset($file['size']) ? (int) $file['size'] : 0;
         $tmpName = isset($file['tmp_name']) && is_string($file['tmp_name']) ? $file['tmp_name'] : '';
@@ -166,13 +167,6 @@ final class SettingsPage
         }
 
         return $contents;
-    }
-
-    private static function authorizeRequest(string $purpose): void
-    {
-        self::requireCapability();
-
-        check_admin_referer('ulticofo_' . $purpose, self::NONCE_FIELD);
     }
 
     private static function requireCapability(): void
