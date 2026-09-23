@@ -147,7 +147,7 @@ $ucOptions = array(
     'ulticofo_delete_data_on_uninstall' => false,
     'ulticofo_modules' => array('cart' => false, 'pro_example' => true),
     'ulticofo_secret_store_v1' => array('pro.license' => 'encrypted-value'),
-    'ulticofo_version' => '0.2.0',
+    'ulticofo_version' => '0.2.1',
     'ulticofo_schema_version' => '1',
     'ulticofo_capability_version' => '1',
     'ulticofo_lock_abc' => array('lease' => 'a'),
@@ -180,7 +180,7 @@ $ucRoles['administrator']->add_cap(Capabilities::VIEW_DIAGNOSTICS);
 $ucRoles['administrator']->add_cap(Capabilities::MANAGE_SETTINGS);
 $ucRoles['shop_manager']->add_cap(Capabilities::VIEW_DIAGNOSTICS);
 Settings::updateDeleteDataOnUninstall(true);
-$ucOptions['ulticofo_version'] = '0.2.0';
+$ucOptions['ulticofo_version'] = '0.2.1';
 $ucOptions['ulticofo_schema_version'] = '1';
 $ucOptions['ulticofo_capability_version'] = '1';
 $ucOptions['ulticofo_lock_again'] = array();
