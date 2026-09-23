@@ -94,12 +94,12 @@ final class RecentlyViewed
             'storeProducts' => rest_url('wc/store/v1/products'),
             'maxItems' => self::MAX_ITEMS,
             'storageKey' => (function_exists('is_multisite') && is_multisite() && function_exists('get_current_blog_id'))
-                ? 'uc_recently_viewed_v1_' . (int) get_current_blog_id()
-                : 'uc_recently_viewed_v1',
+                ? 'ulticofo_recently_viewed_v1_' . (int) get_current_blog_id()
+                : 'ulticofo_recently_viewed_v1',
         );
         $json = wp_json_encode($config, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT);
         if (is_string($json)) {
-            wp_add_inline_script(self::SCRIPT_HANDLE, 'window.ucRecentlyViewedConfig = ' . $json . ';', 'before');
+            wp_add_inline_script(self::SCRIPT_HANDLE, 'window.ulticofoRecentlyViewedConfig = ' . $json . ';', 'before');
         }
     }
 }

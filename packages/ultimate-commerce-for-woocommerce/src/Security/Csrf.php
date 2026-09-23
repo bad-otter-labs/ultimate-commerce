@@ -6,7 +6,7 @@ defined('ABSPATH') || exit;
 
 final class Csrf
 {
-    private const ACTION_PREFIX = 'uc_';
+    private const ACTION_PREFIX = 'ulticofo_';
 
     public static function verify(string $nonce, string $action): bool
     {

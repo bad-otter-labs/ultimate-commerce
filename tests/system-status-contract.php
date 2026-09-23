@@ -33,7 +33,7 @@ namespace {
     define('ULTIMATE_COMMERCE_RECENTLY_VIEWED_API_VERSION', '1.0.0');
     define('ULTIMATE_COMMERCE_ACCOUNT_API_VERSION', '1.0.0');
 
-    $ucOptions = array('uc_delete_data_on_uninstall' => false);
+    $ucOptions = array('ulticofo_delete_data_on_uninstall' => false);
 
     function get_option(string $name, $default = false)
     {

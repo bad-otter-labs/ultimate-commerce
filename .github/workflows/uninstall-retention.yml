@@ -43,20 +43,26 @@ jobs:
               raise SystemExit('Canonical uninstall entrypoint must fail closed outside WordPress uninstall context')
           if "Uninstall::run();" not in uninstall_entry:
               raise SystemExit('Canonical uninstall entrypoint must delegate to the bounded uninstall service')
-          for prefix in ('uc_lock_', 'uc_idem_', 'uc_replay_', '_transient_uc_rl_', '_transient_timeout_uc_rl_'):
+          for prefix in (
+              'ulticofo_lock_', 'ulticofo_idem_', 'ulticofo_replay_',
+              '_transient_ulticofo_rl_', '_transient_timeout_ulticofo_rl_',
+              'uc_lock_', 'uc_idem_', 'uc_replay_', '_transient_uc_rl_', '_transient_timeout_uc_rl_',
+          ):
               if prefix not in uninstall:
                   raise SystemExit(f'Runtime cleanup prefix missing: {prefix}')
           if 'woocommerce_' in uninstall.lower() or 'DROP TABLE' in uninstall.upper():
               raise SystemExit('Free uninstall must not delete WooCommerce-owned data or drop arbitrary tables')
-          if "LIKE 'uc_%'" in uninstall or 'uc_%' in uninstall:
-              raise SystemExit('Uninstall must not use a broad uc_* database sweep')
+          if "LIKE 'uc_%'" in uninstall or 'uc_%' in uninstall or "LIKE 'ulticofo_%'" in uninstall or 'ulticofo_%' in uninstall:
+              raise SystemExit('Uninstall must not use a broad plugin-prefix database sweep')
           if 'UNINSTALL_DATA_OPTION' not in settings or 'updateDeleteDataOnUninstall' not in settings:
               raise SystemExit('Merchant uninstall preference contract is missing')
-          if 'admin_post_uc_settings_retention' not in page or "PURPOSE_RETENTION = 'settings_retention'" not in page:
+          if 'admin_post_ulticofo_settings_retention' not in page or "PURPOSE_RETENTION = 'settings_retention'" not in page:
               raise SystemExit('Retention preference must use the settings admin-post/CSRF boundary')
+          if "check_admin_referer('ulticofo_' . self::PURPOSE_RETENTION, self::NONCE_FIELD);" not in page:
+              raise SystemExit('Retention preference must use a reviewer-visible native nonce check')
           if 'Capabilities::MANAGE_SETTINGS' not in page:
               raise SystemExit('Retention preference must require the exact UC settings capability')
-          if 'uc_delete_data_on_uninstall' in transfer:
+          if 'ulticofo_delete_data_on_uninstall' in transfer or 'uc_delete_data_on_uninstall' in transfer:
               raise SystemExit('Destructive local uninstall choice must never be portable through settings transfer')
 
           print('Ultimate Commerce uninstall/data-retention source boundary validated')

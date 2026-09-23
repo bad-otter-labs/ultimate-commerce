@@ -11,26 +11,36 @@ defined('ABSPATH') || exit;
 final class Uninstall
 {
     private const ALWAYS_OPTIONS = array(
+        'ulticofo_version',
+        'ulticofo_schema_version',
         'uc_version',
         'uc_schema_version',
+        'ultimate_commerce_version',
+        'ultimate_commerce_schema_version',
     );
 
     private const PURGE_OPTIONS = array(
+        'ulticofo_modules',
+        'ulticofo_secret_store_v1',
+        Settings::UNINSTALL_DATA_OPTION,
         'uc_modules',
         'uc_secret_store_v1',
-        Settings::UNINSTALL_DATA_OPTION,
-        'ultimate_commerce_version',
-        'ultimate_commerce_schema_version',
+        'uc_delete_data_on_uninstall',
         'ultimate_commerce_modules',
     );
 
     private const RUNTIME_OPTION_PREFIXES = array(
+        'ulticofo_lock_',
+        'ulticofo_idem_',
+        'ulticofo_replay_',
         'uc_lock_',
         'uc_idem_',
         'uc_replay_',
     );
 
     private const RUNTIME_TRANSIENT_PREFIXES = array(
+        '_transient_ulticofo_rl_',
+        '_transient_timeout_ulticofo_rl_',
         '_transient_uc_rl_',
         '_transient_timeout_uc_rl_',
     );
@@ -64,7 +74,7 @@ final class Uninstall
 
         if ($purgeMerchantData) {
             self::deleteOptions(self::PURGE_OPTIONS);
-            self::deleteUserMeta(array(WishlistStore::metaKey()));
+            self::deleteUserMeta(array(WishlistStore::metaKey(), WishlistStore::legacyMetaKey()));
         }
     }
 
@@ -84,7 +94,9 @@ final class Uninstall
         }
 
         foreach ($keys as $key) {
-            if (is_string($key) && str_starts_with($key, WishlistStore::BASE_META_KEY)) {
+            if (is_string($key)
+                && (str_starts_with($key, WishlistStore::BASE_META_KEY)
+                    || str_starts_with($key, WishlistStore::LEGACY_META_KEY))) {
                 delete_metadata('user', 0, $key, '', true);
             }
         }

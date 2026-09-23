@@ -39,14 +39,17 @@ The PHP namespace remains `BadOtter\UltimateCommerce` across the transition. The
 
 ## Option migration
 
-Canonical option names use the architecture-standard `uc_` prefix.
+Canonical WordPress.org option names use the reviewer-safe `ulticofo_` prefix. The earlier `uc_` canonical names and the private 0.1.4 `ultimate_commerce_*` names are migration-only aliases.
 
 The new Free bootstrap performs an idempotent, non-destructive copy when the canonical value does not already exist:
 
 ```text
-ultimate_commerce_version        -> uc_version
-ultimate_commerce_schema_version -> uc_schema_version
-ultimate_commerce_modules        -> uc_modules
+ultimate_commerce_version        -> ulticofo_version
+ultimate_commerce_schema_version -> ulticofo_schema_version
+ultimate_commerce_modules        -> ulticofo_modules
+uc_version                       -> ulticofo_version
+uc_schema_version                -> ulticofo_schema_version
+uc_modules                       -> ulticofo_modules
 ```
 
 Legacy values are intentionally not deleted during Phase 0. This makes rollback and migration verification safer. A later cleanup may remove obsolete keys only after the migration path is established and tested.
@@ -57,7 +60,7 @@ The repository now carries `tests/free-identity-upgrade-fixture.php` as a blocki
 
 The fixture proves that:
 
-1. the three legacy `ultimate_commerce_*` options are copied only when the corresponding canonical `uc_*` value is absent;
+1. legacy `ultimate_commerce_*` and pre-review `uc_*` options are copied only when the corresponding canonical `ulticofo_*` value is absent;
 2. module preferences survive byte-for-byte at the PHP value level;
 3. existing canonical values win and are never overwritten by stale legacy state;
 4. legacy options remain available for rollback/recovery;
