@@ -144,7 +144,7 @@ uc_external_assert($tampered instanceof WP_Error, 'tampered guest token must fai
 $secretStore = new EncryptedOptionSecretStore();
 $stored = $secretStore->put('provider.api_key', 'super-secret-value');
 uc_external_assert($stored === true, 'encrypted secret should store');
-$rawStore = json_encode($GLOBALS['uc_ext_options']['uc_secret_store_v1'] ?? array());
+$rawStore = json_encode($GLOBALS['uc_ext_options']['ulticofo_secret_store_v1'] ?? array());
 uc_external_assert(is_string($rawStore) && !str_contains($rawStore, 'super-secret-value'), 'secret must not be stored in plaintext');
 uc_external_assert($secretStore->get('provider.api_key') === 'super-secret-value', 'encrypted secret should decrypt');
 uc_external_assert(SecretStore::put('provider.second_key', 'second-secret') === true, 'secret facade should use default provider');

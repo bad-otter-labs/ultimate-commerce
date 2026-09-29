@@ -66,7 +66,7 @@ The repository-level PHP quality toolchain is pinned by `composer.lock` and runs
 
 The WPCS ruleset deliberately excludes repository-wide mechanical formatting/naming churn such as tabs, snake_case local variables and brace layout. WordPress security, database, i18n, escaping, API and other review-oriented sniffs remain blocking.
 
-Two admin handlers use the shared `Csrf::require()` contract rather than the nonce helper patterns PHPCS can infer statically; those paths have dedicated request-security regressions. Base64 exclusions are limited to the signed-token/encrypted-secret implementations where base64 is transport encoding rather than obfuscation.
+Admin mutation handlers use WordPress's native nonce helper pattern so PHPCS and Plugin Check can verify the CSRF guard statically; capability checks remain separate. Base64 exclusions are limited to the signed-token/encrypted-secret implementations where base64 is transport encoding rather than obfuscation.
 
 See `docs/php-quality-gate.md` for the exact boundary.
 

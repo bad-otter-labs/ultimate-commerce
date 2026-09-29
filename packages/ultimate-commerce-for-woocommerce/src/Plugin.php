@@ -68,8 +68,8 @@ final class Plugin
     {
         OptionMigrator::migrate();
         Capabilities::install();
-        update_option('uc_version', ULTIMATE_COMMERCE_VERSION, false);
-        update_option('uc_schema_version', ULTIMATE_COMMERCE_SCHEMA_VERSION, false);
+        update_option('ulticofo_version', ULTIMATE_COMMERCE_VERSION, false);
+        update_option('ulticofo_schema_version', ULTIMATE_COMMERCE_SCHEMA_VERSION, false);
     }
 
     public static function registry(): ModuleRegistry

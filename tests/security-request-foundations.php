@@ -24,13 +24,21 @@ final class UcTestRole
     {
         $this->capabilities[$capability] = true;
     }
+
+    public function remove_cap(string $capability): void
+    {
+        unset($this->capabilities[$capability]);
+    }
 }
 
-$GLOBALS['uc_test_options'] = array();
+$GLOBALS['uc_test_options'] = array('uc_capability_version' => '1');
 $GLOBALS['uc_test_roles'] = array(
     'administrator' => new UcTestRole(),
     'shop_manager' => new UcTestRole(),
 );
+$GLOBALS['uc_test_roles']['administrator']->capabilities['uc_view_diagnostics'] = true;
+$GLOBALS['uc_test_roles']['administrator']->capabilities['uc_manage_settings'] = true;
+$GLOBALS['uc_test_roles']['shop_manager']->capabilities['uc_view_diagnostics'] = true;
 $GLOBALS['uc_test_caps'] = array();
 $GLOBALS['uc_test_user_id'] = 0;
 $GLOBALS['uc_test_routes'] = array();
@@ -44,6 +52,13 @@ function update_option($name, $value, $autoload = null): bool
 {
     $GLOBALS['uc_test_options'][$name] = $value;
     return true;
+}
+
+function delete_option($name): bool
+{
+    $existed = array_key_exists($name, $GLOBALS['uc_test_options']);
+    unset($GLOBALS['uc_test_options'][$name]);
+    return $existed;
 }
 
 function get_role($name)
@@ -120,7 +135,10 @@ uc_security_assert(isset($adminCaps[Capabilities::VIEW_DIAGNOSTICS]), 'administr
 uc_security_assert(isset($adminCaps[Capabilities::MANAGE_SETTINGS]), 'administrator should receive settings capability');
 uc_security_assert(isset($shopCaps[Capabilities::VIEW_DIAGNOSTICS]), 'shop manager should receive diagnostics capability');
 uc_security_assert(!isset($shopCaps[Capabilities::MANAGE_SETTINGS]), 'shop manager should not receive settings capability by default');
-uc_security_assert(($GLOBALS['uc_test_options']['uc_capability_version'] ?? '') === '1', 'capability version should be stored');
+uc_security_assert(($GLOBALS['uc_test_options']['ulticofo_capability_version'] ?? '') === '2', 'capability version should be stored');
+uc_security_assert(!isset($GLOBALS['uc_test_options']['uc_capability_version']), 'legacy capability version marker should be removed after migration');
+uc_security_assert(!isset($adminCaps['uc_view_diagnostics']) && !isset($adminCaps['uc_manage_settings']), 'legacy administrator capabilities should be removed after migration');
+uc_security_assert(!isset($shopCaps['uc_view_diagnostics']), 'legacy shop-manager capability should be removed after migration');
 
 $denied = Authorization::requireCapability(Capabilities::MANAGE_SETTINGS);
 uc_security_assert($denied instanceof WP_Error && $denied->code === 'uc_forbidden' && $denied->data['status'] === 403, 'missing capability should fail closed');
@@ -137,7 +155,7 @@ $GLOBALS['uc_test_user_id'] = 0;
 $authDenied = Authorization::requireAuthenticated();
 uc_security_assert($authDenied instanceof WP_Error && $authDenied->data['status'] === 401, 'guest should receive authentication-required error');
 
-uc_security_assert(Csrf::verify('valid-uc_settings_save', 'settings_save'), 'valid purpose-bound nonce should pass');
+uc_security_assert(Csrf::verify('valid-ulticofo_settings_save', 'settings_save'), 'valid purpose-bound nonce should pass');
 uc_security_assert(!Csrf::verify('wrong', 'settings_save'), 'invalid nonce should fail');
 $csrfDenied = Csrf::require('wrong', 'settings_save');
 uc_security_assert($csrfDenied instanceof WP_Error && $csrfDenied->code === 'uc_invalid_nonce', 'CSRF helper should fail closed');

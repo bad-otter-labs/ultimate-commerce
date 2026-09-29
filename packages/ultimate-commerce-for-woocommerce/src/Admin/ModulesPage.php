@@ -4,7 +4,6 @@ namespace BadOtter\UltimateCommerce\Admin;
 
 use BadOtter\UltimateCommerce\Plugin;
 use BadOtter\UltimateCommerce\Security\Capabilities;
-use BadOtter\UltimateCommerce\Security\Csrf;
 use BadOtter\UltimateCommerce\Support\Settings;
 
 defined('ABSPATH') || exit;
@@ -13,12 +12,12 @@ final class ModulesPage
 {
     public const SLUG = 'ultimate-commerce-modules';
 
-    private const NONCE_FIELD = 'uc_modules_nonce';
+    private const NONCE_FIELD = 'ulticofo_modules_nonce';
     private const PURPOSE_SAVE = 'modules_save';
 
     public static function hooks(): void
     {
-        add_action('admin_post_uc_modules_save', array(__CLASS__, 'save'));
+        add_action('admin_post_ulticofo_modules_save', array(__CLASS__, 'save'));
     }
 
     public static function render(): void
@@ -41,8 +40,8 @@ final class ModulesPage
             <?php self::renderNotice(self::noticeCode()); ?>
 
             <form class="uc-card uc-modules-card" method="post" action="<?php echo esc_url(admin_url('admin-post.php')); ?>">
-                <input type="hidden" name="action" value="uc_modules_save">
-                <?php wp_nonce_field('uc_' . self::PURPOSE_SAVE, self::NONCE_FIELD); ?>
+                <input type="hidden" name="action" value="ulticofo_modules_save">
+                <?php wp_nonce_field('ulticofo_' . self::PURPOSE_SAVE, self::NONCE_FIELD); ?>
 
                 <table class="widefat striped uc-data-table uc-modules-table">
                     <thead>
@@ -119,13 +118,14 @@ final class ModulesPage
 
     public static function save(): void
     {
-        self::authorizeRequest();
+        self::requireCapability();
+        check_admin_referer('ulticofo_' . self::PURPOSE_SAVE, self::NONCE_FIELD);
 
-        // phpcs:disable WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- authorizeRequest() verifies the nonce first; only registry-owned array keys are inspected and submitted values are ignored.
+        // phpcs:disable WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Only registry-owned array keys are inspected; submitted values are ignored.
         $posted = isset($_POST['modules']) && is_array($_POST['modules'])
             ? wp_unslash($_POST['modules'])
             : array();
-        // phpcs:enable WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+        // phpcs:enable WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
         $states = array();
         foreach (array_keys(Plugin::registry()->all()) as $key) {
             $states[$key] = array_key_exists($key, $posted);
@@ -133,25 +133,6 @@ final class ModulesPage
 
         Settings::updateModuleStates($states);
         self::redirect('saved');
-    }
-
-    private static function authorizeRequest(): void
-    {
-        self::requireCapability();
-
-        // phpcs:disable WordPress.Security.NonceVerification.Missing -- This reads the nonce field solely so the shared Csrf::require() verifier can validate it below.
-        $nonce = isset($_POST[self::NONCE_FIELD]) && is_scalar($_POST[self::NONCE_FIELD])
-            ? sanitize_text_field((string) wp_unslash($_POST[self::NONCE_FIELD]))
-            : '';
-        // phpcs:enable WordPress.Security.NonceVerification.Missing
-        $verified = Csrf::require($nonce, self::PURPOSE_SAVE);
-        if ($verified instanceof \WP_Error) {
-            wp_die(
-                esc_html($verified->get_error_message()),
-                esc_html__('Request rejected', 'ultimate-commerce-for-woocommerce'),
-                array('response' => 403)
-            );
-        }
     }
 
     private static function requireCapability(): void
@@ -170,7 +151,7 @@ final class ModulesPage
         $url = add_query_arg(
             array(
                 'page' => self::SLUG,
-                'uc_modules_status' => sanitize_key($status),
+                'ulticofo_modules_status' => sanitize_key($status),
             ),
             admin_url('admin.php')
         );
@@ -181,10 +162,10 @@ final class ModulesPage
     private static function noticeCode(): string
     {
         // phpcs:disable WordPress.Security.NonceVerification.Recommended -- Read-only, sanitized admin notice state; it does not authorize or mutate data.
-        if (!isset($_GET['uc_modules_status']) || !is_scalar($_GET['uc_modules_status'])) {
+        if (!isset($_GET['ulticofo_modules_status']) || !is_scalar($_GET['ulticofo_modules_status'])) {
             return '';
         }
-        $code = sanitize_key((string) wp_unslash($_GET['uc_modules_status']));
+        $code = sanitize_key((string) wp_unslash($_GET['ulticofo_modules_status']));
         // phpcs:enable WordPress.Security.NonceVerification.Recommended
         return $code;
     }

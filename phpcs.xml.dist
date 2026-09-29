@@ -49,12 +49,6 @@
         </properties>
     </rule>
 
-    <!-- These handlers verify the submitted nonce through the shared Csrf::require() contract. -->
-    <rule ref="WordPress.Security.NonceVerification">
-        <exclude-pattern>*/src/Admin/ModulesPage.php</exclude-pattern>
-        <exclude-pattern>*/src/Admin/SettingsPage.php</exclude-pattern>
-    </rule>
-
     <!-- Base64 is an encoding primitive here, not obfuscation. Cryptographic integrity is enforced separately. -->
     <rule ref="WordPress.PHP.DiscouragedPHPFunctions">
         <exclude-pattern>*/src/Security/GuestToken.php</exclude-pattern>

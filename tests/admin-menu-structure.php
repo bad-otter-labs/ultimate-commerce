@@ -14,6 +14,12 @@ if (!is_string($ucOverviewSource)) {
     throw new RuntimeException('Unable to read Ultimate Commerce Overview source.');
 }
 
+$ucModulesSource = file_get_contents(__DIR__ . '/../packages/ultimate-commerce-for-woocommerce/src/Admin/ModulesPage.php');
+$ucSettingsSource = file_get_contents(__DIR__ . '/../packages/ultimate-commerce-for-woocommerce/src/Admin/SettingsPage.php');
+if (!is_string($ucModulesSource) || !is_string($ucSettingsSource)) {
+    throw new RuntimeException('Unable to read Ultimate Commerce admin mutation sources.');
+}
+
 function __(string $text, string $domain = ''): string
 {
     return $text;
@@ -105,5 +111,14 @@ ucAssert(str_contains($ucOverviewSource, 'Free remains usable without Pro'), 'Pr
 ucAssert(str_contains($ucOverviewSource, 'https://github.com/bad-otter-labs/ultimate-commerce/tree/main/docs'), 'Overview documentation link must point to public project docs.');
 ucAssert(!str_contains($ucOverviewSource, "add_action('admin_notices'"), 'Pro discovery must not become a site-wide admin notice.');
 ucAssert(!str_contains($ucOverviewSource, "add_action('wp_dashboard_setup'"), 'Pro discovery must not become a dashboard widget.');
+
+ucAssert(str_contains($ucModulesSource, "check_admin_referer('ulticofo_' . self::PURPOSE_SAVE, self::NONCE_FIELD);"), 'Module settings mutation must use a reviewer-visible native nonce check.');
+ucAssert(str_contains($ucSettingsSource, "check_admin_referer('ulticofo_' . self::PURPOSE_EXPORT, self::NONCE_FIELD);"), 'Settings export must use a reviewer-visible native nonce check.');
+ucAssert(str_contains($ucSettingsSource, "check_admin_referer('ulticofo_' . self::PURPOSE_IMPORT, self::NONCE_FIELD);"), 'Settings import must use a reviewer-visible native nonce check.');
+ucAssert(str_contains($ucSettingsSource, "check_admin_referer('ulticofo_' . self::PURPOSE_RETENTION, self::NONCE_FIELD);"), 'Settings retention mutation must use a reviewer-visible native nonce check.');
+ucAssert(str_contains($ucModulesSource, 'self::requireCapability();'), 'Module settings mutation must keep capability authorization separate from CSRF verification.');
+ucAssert(str_contains($ucSettingsSource, 'self::requireCapability();'), 'Settings mutations must keep capability authorization separate from CSRF verification.');
+ucAssert(!str_contains($ucModulesSource, 'admin_post_uc_'), 'Module admin-post action must not use the short legacy prefix.');
+ucAssert(!str_contains($ucSettingsSource, 'admin_post_uc_'), 'Settings admin-post actions must not use the short legacy prefix.');
 
 echo "Ultimate Commerce admin menu contract passed.\n";

@@ -112,7 +112,7 @@ jobs:
               raise SystemExit('UC diagnostics must use a dedicated UC capability')
           if 'Capabilities::VIEW_DIAGNOSTICS' not in diagnostics:
               raise SystemExit('UC diagnostics capability check is missing')
-          if "uc_view_diagnostics" not in capabilities or "uc_manage_settings" not in capabilities:
+          if "ulticofo_view_diagnostics" not in capabilities or "ulticofo_manage_settings" not in capabilities:
               raise SystemExit('Required Phase 1 capability constants are missing')
           if "permission_callback" not in routes or "register_rest_route" not in routes:
               raise SystemExit('Strict UC REST route registrar is incomplete')
@@ -190,12 +190,15 @@ jobs:
               raise SystemExit('Canonical WordPress.org Free package must not contain the Bad Otter product manifest')
           if 'ReturnsModule' in modules:
               raise SystemExit('Premium returns implementation must not be registered in canonical Free')
-          if "private const MODULE_OPTION = 'uc_modules';" not in settings:
-              raise SystemExit('Canonical module settings must use the uc_ prefix')
+          if "private const MODULE_OPTION = 'ulticofo_modules';" not in settings:
+              raise SystemExit('Canonical module settings must use the ulticofo_ prefix')
           for legacy, canonical in {
-              'ultimate_commerce_version': 'uc_version',
-              'ultimate_commerce_schema_version': 'uc_schema_version',
-              'ultimate_commerce_modules': 'uc_modules',
+              'ultimate_commerce_version': 'ulticofo_version',
+              'ultimate_commerce_schema_version': 'ulticofo_schema_version',
+              'ultimate_commerce_modules': 'ulticofo_modules',
+              'uc_version': 'ulticofo_version',
+              'uc_schema_version': 'ulticofo_schema_version',
+              'uc_modules': 'ulticofo_modules',
           }.items():
               if legacy not in migrator or canonical not in migrator:
                   raise SystemExit(f'Missing legacy option migration {legacy} -> {canonical}')

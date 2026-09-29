@@ -9,7 +9,8 @@ defined('ABSPATH') || exit;
 
 final class WishlistStore
 {
-    public const BASE_META_KEY = 'uc_wishlist_product_ids';
+    public const BASE_META_KEY = 'ulticofo_wishlist_product_ids';
+    public const LEGACY_META_KEY = 'uc_wishlist_product_ids';
     public const MAX_ITEMS = 100;
 
     private static bool $hooksRegistered = false;
@@ -30,6 +31,15 @@ final class WishlistStore
         }
 
         return self::BASE_META_KEY;
+    }
+
+    public static function legacyMetaKey(): string
+    {
+        if (function_exists('is_multisite') && is_multisite() && function_exists('get_current_blog_id')) {
+            return self::LEGACY_META_KEY . '_' . (int) get_current_blog_id();
+        }
+
+        return self::LEGACY_META_KEY;
     }
 
     /** @return list<int> */
@@ -173,6 +183,7 @@ final class WishlistStore
 
         $hadItems = self::storedIds((int) $user->ID) !== array();
         delete_user_meta((int) $user->ID, self::metaKey());
+        delete_user_meta((int) $user->ID, self::legacyMetaKey());
 
         return array(
             'items_removed' => $hadItems,
@@ -189,7 +200,18 @@ final class WishlistStore
             return array();
         }
         $stored = get_user_meta($userId, self::metaKey(), true);
-        return self::normalizeIds(is_array($stored) ? $stored : array(), false);
+        if (is_array($stored)) {
+            return self::normalizeIds($stored, false);
+        }
+
+        $legacy = get_user_meta($userId, self::legacyMetaKey(), true);
+        if (!is_array($legacy)) {
+            return array();
+        }
+
+        $ids = self::normalizeIds($legacy, false);
+        update_user_meta($userId, self::metaKey(), $ids);
+        return $ids;
     }
 
     /** @param array<mixed> $values
@@ -234,6 +256,7 @@ final class WishlistStore
     private static function save(int $userId, array $ids): void
     {
         $ids = self::normalizeIds($ids, false);
+        delete_user_meta($userId, self::legacyMetaKey());
         if ($ids === array()) {
             delete_user_meta($userId, self::metaKey());
         } else {

@@ -6,11 +6,11 @@ defined('ABSPATH') || exit;
 
 final class Capabilities
 {
-    private const VERSION = '1';
-    private const VERSION_OPTION = 'uc_capability_version';
+    private const VERSION = '2';
+    private const VERSION_OPTION = 'ulticofo_capability_version';
 
-    public const VIEW_DIAGNOSTICS = 'uc_view_diagnostics';
-    public const MANAGE_SETTINGS = 'uc_manage_settings';
+    public const VIEW_DIAGNOSTICS = 'ulticofo_view_diagnostics';
+    public const MANAGE_SETTINGS = 'ulticofo_manage_settings';
 
     /** @return list<string> */
     public static function all(): array
@@ -18,6 +18,15 @@ final class Capabilities
         return array(
             self::VIEW_DIAGNOSTICS,
             self::MANAGE_SETTINGS,
+        );
+    }
+
+    /** @return list<string> */
+    private static function legacy(): array
+    {
+        return array(
+            'uc_view_diagnostics',
+            'uc_manage_settings',
         );
     }
 
@@ -44,7 +53,17 @@ final class Capabilities
             $shopManager->add_cap(self::VIEW_DIAGNOSTICS);
         }
 
+        foreach (array($administrator, $shopManager) as $role) {
+            if (!$role || !method_exists($role, 'remove_cap')) {
+                continue;
+            }
+            foreach (self::legacy() as $capability) {
+                $role->remove_cap($capability);
+            }
+        }
+
         update_option(self::VERSION_OPTION, self::VERSION, false);
+        delete_option('uc_capability_version');
     }
 
     public static function remove(): void
@@ -54,11 +73,12 @@ final class Capabilities
             if (!$role || !method_exists($role, 'remove_cap')) {
                 continue;
             }
-            foreach (self::all() as $capability) {
+            foreach (array_merge(self::all(), self::legacy()) as $capability) {
                 $role->remove_cap($capability);
             }
         }
 
         delete_option(self::VERSION_OPTION);
+        delete_option('uc_capability_version');
     }
 }

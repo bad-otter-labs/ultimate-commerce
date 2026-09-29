@@ -53,6 +53,7 @@ jobs:
               raise SystemExit('Diagnostics page must not fall back to broad manage_options access')
 
           forbidden = (
+              'ulticofo_secret_store_v1',
               'uc_secret_store_v1',
               'wc_get_orders',
               'get_users(',

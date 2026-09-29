@@ -172,6 +172,12 @@ $context = array(
     'image_ids' => array(),
     'truncated' => false,
 );
+$variationSource = file_get_contents(__DIR__ . '/../packages/ultimate-commerce-for-woocommerce/src/Storefront/VariationViewModel.php');
+uc_storefront_assert(is_string($variationSource), 'Variation view-model source must be readable.');
+uc_storefront_assert(str_contains($variationSource, "'ulticofo_swatch_color'"), 'Swatch colour meta must use the reviewer-safe canonical prefix.');
+uc_storefront_assert(str_contains($variationSource, "'ulticofo_swatch_image_id'"), 'Swatch image meta must use the reviewer-safe canonical prefix.');
+uc_storefront_assert(str_contains($variationSource, "'uc_swatch_color'") && str_contains($variationSource, "'uc_swatch_image_id'"), 'Legacy swatch meta must remain a read-only compatibility fallback.');
+
 $variation = VariationViewModel::forProduct($parent, array(), $context);
 uc_storefront_assert($variation['selection']['pa_colour'] === 'navy' && $variation['selection']['pa_size'] === 'm', 'default taxonomy selection must be preserved');
 uc_storefront_assert($variation['selection']['cut-style'] === 'regular-fit', 'local/custom attribute keys must use Woo-compatible sanitized titles');

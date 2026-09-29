@@ -8,7 +8,8 @@ defined('ABSPATH') || exit;
 
 final class OptionLockStore implements LockStore
 {
-    private const PREFIX = 'uc_lock_';
+    private const PREFIX = 'ulticofo_lock_';
+    private const LEGACY_PREFIX = 'uc_lock_';
     private const DELETE_HOOK = 'ultimate_commerce_lock_store_delete';
     private const MIN_TTL = 5;
     private const MAX_TTL = 86400;
@@ -75,7 +76,8 @@ final class OptionLockStore implements LockStore
 
     public static function deleteScheduled(string $option, string $lease): void
     {
-        if (!str_starts_with($option, self::PREFIX) || !self::validLease($lease)) {
+        if ((!str_starts_with($option, self::PREFIX) && !str_starts_with($option, self::LEGACY_PREFIX))
+            || !self::validLease($lease)) {
             return;
         }
 

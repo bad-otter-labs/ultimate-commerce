@@ -117,7 +117,7 @@ $cycle->boot();
 uc_assert(!$cycle->isBooted('cycle_a') && !$cycle->isBooted('cycle_b'), 'circular dependencies must not boot');
 uc_assert(isset($cycle->issues()['cycle_a']) || isset($cycle->issues()['cycle_b']), 'circular dependency should expose an issue');
 
-$GLOBALS['uc_test_options']['uc_modules'] = array('disabled_base' => false);
+$GLOBALS['uc_test_options']['ulticofo_modules'] = array('disabled_base' => false);
 $disabled = new ModuleRegistry();
 uc_assert($disabled->register(new FixtureModule('disabled_base')), 'disabled dependency should register');
 uc_assert($disabled->register(new FixtureModule('needs_disabled', array('disabled_base'))), 'dependent on disabled module should register');

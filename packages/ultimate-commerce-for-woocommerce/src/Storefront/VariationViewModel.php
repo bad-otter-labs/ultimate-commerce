@@ -9,6 +9,11 @@ final class VariationViewModel
     public const MAX_VARIATIONS_PER_PRODUCT = 100;
     public const MAX_VARIATIONS_PER_PAGE = 1000;
 
+    private const SWATCH_COLOR_META = 'ulticofo_swatch_color';
+    private const SWATCH_IMAGE_META = 'ulticofo_swatch_image_id';
+    private const LEGACY_SWATCH_COLOR_META = 'uc_swatch_color';
+    private const LEGACY_SWATCH_IMAGE_META = 'uc_swatch_image_id';
+
     /** @param array<int, \WC_Product> $products @return array<string, mixed> */
     public static function primeForProducts(array $products): array
     {
@@ -268,9 +273,10 @@ final class VariationViewModel
                 update_termmeta_cache($resolvedIds);
             }
             foreach ((array) $terms as $term) {
+                $termId = (int) $term->term_id;
                 $defaultSwatch = array(
-                    'color' => (string) get_term_meta((int) $term->term_id, 'uc_swatch_color', true),
-                    'image_id' => absint(get_term_meta((int) $term->term_id, 'uc_swatch_image_id', true)),
+                    'color' => (string) self::swatchMeta($termId, self::SWATCH_COLOR_META, self::LEGACY_SWATCH_COLOR_META),
+                    'image_id' => absint(self::swatchMeta($termId, self::SWATCH_IMAGE_META, self::LEGACY_SWATCH_IMAGE_META)),
                 );
                 $filteredSwatch = apply_filters('ultimate_commerce_variation_swatch_data', $defaultSwatch, $term, $taxonomy);
                 $filteredSwatch = is_array($filteredSwatch) ? $filteredSwatch : $defaultSwatch;
@@ -288,6 +294,17 @@ final class VariationViewModel
             }
         }
         return $map;
+    }
+
+    /** @return mixed */
+    private static function swatchMeta(int $termId, string $canonicalKey, string $legacyKey)
+    {
+        $value = get_term_meta($termId, $canonicalKey, true);
+        if ($value !== '' && $value !== null) {
+            return $value;
+        }
+
+        return get_term_meta($termId, $legacyKey, true);
     }
 
     /** @return array<int, array<string, mixed>> */

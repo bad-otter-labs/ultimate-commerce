@@ -23,7 +23,7 @@ Frontend catalogue/product HTML stays public-cache-safe: login state, account wi
 
 ## Guests
 
-Guests use a browser `localStorage` key containing product IDs only. Single-site installs use `uc_wishlist_v1`; multisite installs suffix the current blog ID so subdirectory stores on the same origin cannot share guest wishlist state. Product snapshots, prices and stock are never stored there.
+Guests use a browser `localStorage` key containing product IDs only. Single-site installs use `ulticofo_wishlist_v1`; multisite installs suffix the current blog ID so subdirectory stores on the same origin cannot share guest wishlist state. Product snapshots, prices and stock are never stored there.
 
 When a customer is authenticated, guest IDs are merged into the server wishlist and the local guest key is cleared after a successful merge.
 

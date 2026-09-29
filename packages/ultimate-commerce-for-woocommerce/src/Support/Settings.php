@@ -6,8 +6,8 @@ defined('ABSPATH') || exit;
 
 final class Settings
 {
-    private const MODULE_OPTION = 'uc_modules';
-    public const UNINSTALL_DATA_OPTION = 'uc_delete_data_on_uninstall';
+    private const MODULE_OPTION = 'ulticofo_modules';
+    public const UNINSTALL_DATA_OPTION = 'ulticofo_delete_data_on_uninstall';
 
     public static function moduleEnabled(string $key): bool
     {

@@ -4,8 +4,9 @@
     var __ = wp.i18n.__;
     var _n = wp.i18n._n;
     var sprintf = wp.i18n.sprintf;
-    var config = window.ucWishlistConfig || {};
-    var LOCAL_KEY = String(config.storageKey || 'uc_wishlist_v1');
+    var config = window.ulticofoWishlistConfig || {};
+    var LOCAL_KEY = String(config.storageKey || 'ulticofo_wishlist_v1');
+    var LEGACY_LOCAL_KEY = LOCAL_KEY.replace(/^ulticofo_/, 'uc_');
     var ids = [];
     var loggedIn = false;
     var nonce = '';
@@ -29,7 +30,20 @@
 
     function readLocal() {
         try {
-            return normalize(JSON.parse(window.localStorage.getItem(LOCAL_KEY) || '[]'));
+            var current = window.localStorage.getItem(LOCAL_KEY);
+            if (current !== null) {
+                return normalize(JSON.parse(current || '[]'));
+            }
+
+            var legacy = window.localStorage.getItem(LEGACY_LOCAL_KEY);
+            if (legacy === null) {
+                return [];
+            }
+
+            var migrated = normalize(JSON.parse(legacy || '[]'));
+            window.localStorage.setItem(LOCAL_KEY, JSON.stringify(migrated));
+            window.localStorage.removeItem(LEGACY_LOCAL_KEY);
+            return migrated;
         } catch (error) {
             return [];
         }
@@ -38,6 +52,7 @@
     function writeLocal(values) {
         try {
             window.localStorage.setItem(LOCAL_KEY, JSON.stringify(normalize(values)));
+            window.localStorage.removeItem(LEGACY_LOCAL_KEY);
             return true;
         } catch (error) {
             return false;
@@ -47,6 +62,7 @@
     function clearLocal() {
         try {
             window.localStorage.removeItem(LOCAL_KEY);
+            window.localStorage.removeItem(LEGACY_LOCAL_KEY);
         } catch (error) {
             return;
         }

@@ -5,7 +5,7 @@ declare(strict_types=1);
 define('ABSPATH', __DIR__ . '/');
 
 $ucTestOptions = array(
-    'uc_modules' => array(
+    'ulticofo_modules' => array(
         'stale_extension' => false,
     ),
 );

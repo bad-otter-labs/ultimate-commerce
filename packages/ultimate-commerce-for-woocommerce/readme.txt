@@ -4,7 +4,7 @@ Tags: woocommerce, ecommerce, wishlist, variations, cart
 Requires at least: 6.6
 Tested up to: 7.1
 Requires PHP: 8.1
-Stable tag: 0.2.0
+Stable tag: 0.2.1
 Requires Plugins: woocommerce
 WC requires at least: 9.8
 WC tested up to: 11.1
@@ -112,6 +112,11 @@ The deterministic WordPress.org release ZIP is built from the canonical Free sou
 The resulting ZIP is audited by `scripts/check-wordpress-org-package.py` and by the official WordPress Plugin Check workflow before release.
 
 == Changelog ==
+
+= 0.2.1 =
+* Harden WordPress.org review compliance with native admin nonce verification and capability checks.
+* Move WordPress-global and persistent identifiers to the distinctive `ulticofo_` prefix while preserving legacy migration and cleanup compatibility.
+* Update scheduled actions, wishlist/recently-viewed storage, capabilities, tests and release validation for the new prefix.
 
 = 0.2.0 =
 * Establish the canonical WordPress.org Free package identity and remove the private Bad Otter updater from the Free runtime.

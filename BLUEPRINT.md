@@ -44,7 +44,7 @@ The product must remain reusable across verticals. Apparel is an important provi
 | Future commercial tier | **Ultimate Commerce Business / Enterprise** — plan/tier, not a fragmented add-on marketplace |
 | Vendor | **Bad Otter Labs** |
 | Canonical PHP namespace | `BadOtter\UltimateCommerce` |
-| Canonical storage prefix | `uc_` |
+| Canonical storage prefix | `ulticofo_` |
 | Canonical REST namespace | `ultimate-commerce/v1` |
 | Internal Bad Otter product identity | `ultimate-commerce` |
 | Marketing shorthand | **UC** |
@@ -1760,19 +1760,19 @@ UC requires:
 
 Conceptual capabilities include:
 
-- `uc_manage_settings`
-- `uc_manage_merchandising`
-- `uc_manage_promotions`
-- `uc_manage_returns`
-- `uc_manage_integrations`
-- `uc_view_analytics`
-- `uc_view_inventory`
-- `uc_adjust_inventory`
-- `uc_receive_inventory`
-- `uc_manage_catalogue`
-- `uc_publish_products`
-- `uc_manage_gift_cards`
-- `uc_manage_purchasing`
+- `ulticofo_manage_settings`
+- `ulticofo_manage_merchandising`
+- `ulticofo_manage_promotions`
+- `ulticofo_manage_returns`
+- `ulticofo_manage_integrations`
+- `ulticofo_view_analytics`
+- `ulticofo_view_inventory`
+- `ulticofo_adjust_inventory`
+- `ulticofo_receive_inventory`
+- `ulticofo_manage_catalogue`
+- `ulticofo_publish_products`
+- `ulticofo_manage_gift_cards`
+- `ulticofo_manage_purchasing`
 
 Do not scatter `manage_options` as a substitute for product-specific permissions.
 

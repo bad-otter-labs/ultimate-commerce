@@ -168,7 +168,9 @@ Canonical PHP namespace:
 
 Canonical option/table prefix:
 
-`uc_`
+`ulticofo_`
+
+The pre-WordPress.org `uc_` prefix is legacy-only and may be read or removed solely for migration/cleanup compatibility.
 
 Canonical REST namespace for genuinely UC-owned routes:
 
@@ -721,12 +723,12 @@ Required practices include:
 
 Expected capability families include concepts such as:
 
-- `uc_manage_settings`
-- `uc_manage_merchandising`
-- `uc_manage_returns`
-- `uc_manage_integrations`
-- `uc_view_analytics`
-- `uc_manage_promotions`
+- `ulticofo_manage_settings`
+- `ulticofo_manage_merchandising`
+- `ulticofo_manage_returns`
+- `ulticofo_manage_integrations`
+- `ulticofo_view_analytics`
+- `ulticofo_manage_promotions`
 
 High-impact actions such as manual refund initiation, return override, exchange override, credential changes or operational status manipulation should record actor, timestamp and reason/context where appropriate.
 
