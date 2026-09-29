@@ -114,6 +114,7 @@ The resulting ZIP is audited by `scripts/check-wordpress-org-package.py` and by 
 == Changelog ==
 
 = 0.2.1 =
+* Extend the Storefront API contract to v1.1 with bounded, canonical WooCommerce product-search state for extension-safe search merchandising.
 * Harden WordPress.org review compliance with native admin nonce verification and capability checks.
 * Move WordPress-global and persistent identifiers to the distinctive `ulticofo_` prefix while preserving legacy migration and cleanup compatibility.
 * Update scheduled actions, wishlist/recently-viewed storage, capabilities, tests and release validation for the new prefix.
