@@ -33,7 +33,7 @@ final class ProductCardRenderer
         if (!empty($view['rating'])) {
             $ratingLabel = sprintf(
                 /* translators: 1: Average product rating, 2: Number of product reviews. */
-                __('Rated %1$s out of 5 from %2$d reviews.', 'ultimate-commerce-for-woocommerce'),
+                __('Rated %1$s out of 5 from %2$d reviews.', 'bad-otter-ultimate-commerce-woocommerce'),
                 (string) $view['rating']['average'],
                 (int) $view['rating']['count']
             );
@@ -74,14 +74,14 @@ final class ProductCardRenderer
             );
         }
         wp_enqueue_script(self::VARIATION_SCRIPT_HANDLE);
-        wp_set_script_translations(self::VARIATION_SCRIPT_HANDLE, 'ultimate-commerce-for-woocommerce', ULTIMATE_COMMERCE_DIR . 'languages');
+        wp_set_script_translations(self::VARIATION_SCRIPT_HANDLE, 'bad-otter-ultimate-commerce-woocommerce', ULTIMATE_COMMERCE_DIR . 'languages');
     }
 
     private static function media(array $view): void
     {
         $primary = $view['media']['primary'] ?? null;
         $secondary = $view['media']['secondary'] ?? null;
-        $mediaLabel = (string) ($view['name'] ?? __('View product', 'ultimate-commerce-for-woocommerce'));
+        $mediaLabel = (string) ($view['name'] ?? __('View product', 'bad-otter-ultimate-commerce-woocommerce'));
         echo '<a class="uc-product-card__media" href="' . esc_url((string) $view['url']) . '" aria-label="' . esc_attr($mediaLabel) . '">';
         if (is_array($primary) && !empty($primary['src'])) {
             echo '<img class="uc-product-card__image uc-product-card__image--primary" src="' . esc_url((string) $primary['src']) . '" alt="' . esc_attr((string) ($primary['alt'] ?? '')) . '" loading="lazy"';
@@ -102,7 +102,7 @@ final class ProductCardRenderer
     private static function action(array $view): void
     {
         $action = (array) ($view['action'] ?? array());
-        $label = (string) ($action['label'] ?? __('View product', 'ultimate-commerce-for-woocommerce'));
+        $label = (string) ($action['label'] ?? __('View product', 'bad-otter-ultimate-commerce-woocommerce'));
         $url = (string) ($action['url'] ?? $view['url']);
         echo '<a class="uc-product-card__action" href="' . esc_url($url) . '"';
         if (!empty($action['aria_label'])) {
@@ -121,9 +121,9 @@ final class ProductCardRenderer
             'variations' => array_values((array) ($state['variations'] ?? array())),
             'availability_complete' => !empty($state['availability_complete']),
             'labels' => array(
-                'add_to_cart' => __('Add to cart', 'ultimate-commerce-for-woocommerce'),
-                'select_options' => __('Select options', 'ultimate-commerce-for-woocommerce'),
-                'unavailable' => __('Unavailable', 'ultimate-commerce-for-woocommerce'),
+                'add_to_cart' => __('Add to cart', 'bad-otter-ultimate-commerce-woocommerce'),
+                'select_options' => __('Select options', 'bad-otter-ultimate-commerce-woocommerce'),
+                'unavailable' => __('Unavailable', 'bad-otter-ultimate-commerce-woocommerce'),
             ),
         );
         $json = wp_json_encode($payload, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT);
@@ -186,7 +186,7 @@ final class ProductCardRenderer
         echo '<input type="hidden" name="add-to-cart" value="' . esc_attr((string) $view['id']) . '">';
         echo '<input type="hidden" name="product_id" value="' . esc_attr((string) $view['id']) . '">';
         echo '<input type="hidden" name="variation_id" value="' . esc_attr((string) ($action['variation_id'] ?? 0)) . '">';
-        echo '<button type="submit" class="uc-product-card__action button" data-uc-variation-submit="1"' . ($enabled ? '' : ' disabled') . '>' . esc_html((string) ($action['label'] ?? __('Select options', 'ultimate-commerce-for-woocommerce'))) . '</button>';
+        echo '<button type="submit" class="uc-product-card__action button" data-uc-variation-submit="1"' . ($enabled ? '' : ' disabled') . '>' . esc_html((string) ($action['label'] ?? __('Select options', 'bad-otter-ultimate-commerce-woocommerce'))) . '</button>';
         echo '<script type="application/json" data-uc-variation-data="1">' . $json . '</script>'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- JSON_HEX_* encoding prevents HTML/script injection.
         echo '</form>';
         return (string) ob_get_clean();

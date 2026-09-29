@@ -85,6 +85,6 @@ final class Plugin
         if (!current_user_can('activate_plugins')) {
             return;
         }
-        echo '<div class="notice notice-error"><p>' . esc_html__('Ultimate Commerce for WooCommerce requires WooCommerce to be installed and active.', 'ultimate-commerce-for-woocommerce') . '</p></div>';
+        echo '<div class="notice notice-error"><p>' . esc_html__('Ultimate Commerce for WooCommerce requires WooCommerce to be installed and active.', 'bad-otter-ultimate-commerce-woocommerce') . '</p></div>';
     }
 }

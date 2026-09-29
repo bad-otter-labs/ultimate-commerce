@@ -6,7 +6,7 @@ ROOT = Path(__file__).resolve().parents[1]
 PACKAGE = ROOT / 'packages' / 'ultimate-commerce-for-woocommerce'
 if not PACKAGE.exists():
     PACKAGE = ROOT
-DOMAIN = 'ultimate-commerce-for-woocommerce'
+DOMAIN = 'bad-otter-ultimate-commerce-woocommerce'
 
 plugin = (PACKAGE / 'ultimate-commerce-for-woocommerce.php').read_text()
 if 'Text Domain: ' + DOMAIN not in plugin:

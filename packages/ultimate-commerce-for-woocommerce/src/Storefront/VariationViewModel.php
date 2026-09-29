@@ -164,7 +164,7 @@ final class VariationViewModel
         $action = array(
             'type' => $enabled ? 'add_to_cart' : 'select_options',
             'enabled' => $enabled,
-            'label' => $enabled ? __('Add to cart', 'ultimate-commerce-for-woocommerce') : __('Select options', 'ultimate-commerce-for-woocommerce'),
+            'label' => $enabled ? __('Add to cart', 'bad-otter-ultimate-commerce-woocommerce') : __('Select options', 'bad-otter-ultimate-commerce-woocommerce'),
             'product_id' => $product->get_id(),
             'variation_id' => $matched instanceof \WC_Product_Variation ? $matched->get_id() : 0,
             'attributes' => $selection,

@@ -73,7 +73,7 @@
                 if (!response.ok) {
                     var message = payload && payload.message
                         ? String(payload.message)
-                        : __('The wishlist could not be updated.', 'ultimate-commerce-for-woocommerce');
+                        : __('The wishlist could not be updated.', 'bad-otter-ultimate-commerce-woocommerce');
                     throw new Error(message);
                 }
                 return payload || {};
@@ -124,19 +124,19 @@
             return saved
                 ? sprintf(
                     /* translators: %s: Product name. */
-                    __('Remove %s from wishlist', 'ultimate-commerce-for-woocommerce'),
+                    __('Remove %s from wishlist', 'bad-otter-ultimate-commerce-woocommerce'),
                     productName
                 )
                 : sprintf(
                     /* translators: %s: Product name. */
-                    __('Add %s to wishlist', 'ultimate-commerce-for-woocommerce'),
+                    __('Add %s to wishlist', 'bad-otter-ultimate-commerce-woocommerce'),
                     productName
                 );
         }
 
         return saved
-            ? __('Remove from wishlist', 'ultimate-commerce-for-woocommerce')
-            : __('Add to wishlist', 'ultimate-commerce-for-woocommerce');
+            ? __('Remove from wishlist', 'bad-otter-ultimate-commerce-woocommerce')
+            : __('Add to wishlist', 'bad-otter-ultimate-commerce-woocommerce');
     }
 
     function syncButtons() {
@@ -150,8 +150,8 @@
             var labelNode = button.querySelector('[data-uc-wishlist-label="1"]');
             if (labelNode) {
                 labelNode.textContent = saved
-                    ? __('Saved', 'ultimate-commerce-for-woocommerce')
-                    : __('Add to wishlist', 'ultimate-commerce-for-woocommerce');
+                    ? __('Saved', 'bad-otter-ultimate-commerce-woocommerce')
+                    : __('Add to wishlist', 'bad-otter-ultimate-commerce-woocommerce');
             } else {
                 button.textContent = label;
             }
@@ -189,7 +189,7 @@
         remove.setAttribute('data-product-id', String(product.id || ''));
         remove.setAttribute('data-product-name', String(product.name || ''));
         remove.setAttribute('aria-pressed', 'true');
-        remove.textContent = __('Remove', 'ultimate-commerce-for-woocommerce');
+        remove.textContent = __('Remove', 'bad-otter-ultimate-commerce-woocommerce');
         article.appendChild(remove);
 
         return article;
@@ -226,7 +226,7 @@
                     empty.hidden = false;
                 }
             });
-            setStatus(__('No saved products.', 'ultimate-commerce-for-woocommerce'));
+            setStatus(__('No saved products.', 'bad-otter-ultimate-commerce-woocommerce'));
             return;
         }
 
@@ -238,7 +238,7 @@
         fetch(productQueryUrl(endpoint, ids), { credentials: 'same-origin', cache: 'no-store' })
             .then(function (response) {
                 if (!response.ok) {
-                    throw new Error(__('Saved products could not be loaded.', 'ultimate-commerce-for-woocommerce'));
+                    throw new Error(__('Saved products could not be loaded.', 'bad-otter-ultimate-commerce-woocommerce'));
                 }
                 return response.json();
             })
@@ -267,13 +267,13 @@
 
                 setStatus(sprintf(
                     /* translators: %d: Number of saved products. */
-                    _n('%d saved product.', '%d saved products.', ids.length, 'ultimate-commerce-for-woocommerce'),
+                    _n('%d saved product.', '%d saved products.', ids.length, 'bad-otter-ultimate-commerce-woocommerce'),
                     ids.length
                 ));
                 syncButtons();
             })
             .catch(function (error) {
-                setStatus(error && error.message ? String(error.message) : __('Saved products could not be loaded.', 'ultimate-commerce-for-woocommerce'));
+                setStatus(error && error.message ? String(error.message) : __('Saved products could not be loaded.', 'bad-otter-ultimate-commerce-woocommerce'));
             });
     }
 
@@ -294,7 +294,7 @@
 
         var saved = ids.indexOf(productId) !== -1;
         if (!saved && ids.length >= maxItems()) {
-            setStatus(__('The wishlist has reached its item limit.', 'ultimate-commerce-for-woocommerce'));
+            setStatus(__('The wishlist has reached its item limit.', 'bad-otter-ultimate-commerce-woocommerce'));
             return;
         }
 
@@ -320,10 +320,10 @@
         promise.then(function (payload) {
             setIds(payload.product_ids || [], false);
             setStatus(saved
-                ? __('Removed from wishlist.', 'ultimate-commerce-for-woocommerce')
-                : __('Added to wishlist.', 'ultimate-commerce-for-woocommerce'));
+                ? __('Removed from wishlist.', 'bad-otter-ultimate-commerce-woocommerce')
+                : __('Added to wishlist.', 'bad-otter-ultimate-commerce-woocommerce'));
         }).catch(function (error) {
-            setStatus(error && error.message ? String(error.message) : __('The wishlist could not be updated.', 'ultimate-commerce-for-woocommerce'));
+            setStatus(error && error.message ? String(error.message) : __('The wishlist could not be updated.', 'bad-otter-ultimate-commerce-woocommerce'));
         }).finally(function () {
             if (button) {
                 button.disabled = false;

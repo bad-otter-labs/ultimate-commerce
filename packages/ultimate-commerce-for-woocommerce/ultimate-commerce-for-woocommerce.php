@@ -1,6 +1,6 @@
 <?php
 /**
- * Plugin Name: Ultimate Commerce for WooCommerce
+ * Plugin Name: Bad Otter Ultimate Commerce for WooCommerce
  * Plugin URI: https://badotter.io/ultimate-commerce
  * Description: A modular commerce experience enhancement platform for WooCommerce.
  * Version: 0.2.0
@@ -11,7 +11,7 @@
  * WC tested up to: 11.1
  * Author: Bad Otter Labs
  * Author URI: https://badotter.io
- * Text Domain: ultimate-commerce-for-woocommerce
+ * Text Domain: bad-otter-ultimate-commerce-woocommerce
  * Domain Path: /languages
  * License: GPL v2 or later
  * License URI: https://www.gnu.org/licenses/gpl-2.0.html

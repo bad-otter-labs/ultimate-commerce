@@ -23,7 +23,7 @@ final class AccountViewModel
         if (!is_object($user)) {
             return new \WP_Error(
                 'uc_account_not_found',
-                __('Customer account not found.', 'ultimate-commerce-for-woocommerce'),
+                __('Customer account not found.', 'bad-otter-ultimate-commerce-woocommerce'),
                 array('status' => 404)
             );
         }

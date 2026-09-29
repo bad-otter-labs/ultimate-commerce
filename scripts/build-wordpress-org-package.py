@@ -13,6 +13,7 @@ ROOT = Path(__file__).resolve().parents[1]
 FIXED_TIME = (1980, 1, 1, 0, 0, 0)
 SKIP_NAMES = {'.DS_Store'}
 SKIP_SUFFIXES = {'.zip', '.sha256'}
+PACKAGE_SLUG = 'bad-otter-ultimate-commerce-woocommerce'
 
 
 def fail(message: str) -> None:
@@ -55,8 +56,9 @@ def main() -> int:
     if not plugin_dir.is_dir():
         fail(f'Plugin source does not exist: {plugin_dir}')
 
-    slug = plugin_dir.name
-    main_file = plugin_dir / f'{slug}.php'
+    source_slug = plugin_dir.name
+    slug = PACKAGE_SLUG
+    main_file = plugin_dir / f'{source_slug}.php'
     if not main_file.is_file():
         fail(f'Missing plugin entry file {main_file.name}')
 

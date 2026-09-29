@@ -26,7 +26,7 @@ final class OrderViewModel
         if (!$order instanceof \WC_Order) {
             return new \WP_Error(
                 'uc_order_not_found',
-                __('Order not found.', 'ultimate-commerce-for-woocommerce'),
+                __('Order not found.', 'bad-otter-ultimate-commerce-woocommerce'),
                 array('status' => 404)
             );
         }

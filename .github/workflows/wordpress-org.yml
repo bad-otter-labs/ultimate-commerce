@@ -42,7 +42,7 @@ jobs:
           python3 scripts/check-wordpress-org-package.py "$package"
           mkdir -p wporg-check
           unzip -q "$package" -d wporg-check
-          test -f wporg-check/ultimate-commerce-for-woocommerce/ultimate-commerce-for-woocommerce.php
+          test -f wporg-check/bad-otter-ultimate-commerce-woocommerce/ultimate-commerce-for-woocommerce.php
 
       # plugin-check-action@v1 installs @wordpress/env@latest internally. Pin
       # the Docker-based toolchain here so an upstream npm publication race cannot
@@ -69,7 +69,7 @@ jobs:
             "port": 8880,
             "testsPort": 8881,
             "mappings": {
-              "wp-content/plugins/ultimate-commerce-for-woocommerce": "$(realpath wporg-check/ultimate-commerce-for-woocommerce)"
+              "wp-content/plugins/bad-otter-ultimate-commerce-woocommerce": "$(realpath wporg-check/bad-otter-ultimate-commerce-woocommerce)"
             }
           }
           EOF
@@ -82,14 +82,14 @@ jobs:
           set -euo pipefail
           wp-env run cli wp plugin install plugin-check --activate
           wp-env run cli wp plugin install woocommerce --activate
-          wp-env run cli wp plugin activate ultimate-commerce-for-woocommerce
+          wp-env run cli wp plugin activate bad-otter-ultimate-commerce-woocommerce
 
           results="$RUNNER_TEMP/plugin-check-results.txt"
-          wp-env run cli wp plugin check ultimate-commerce-for-woocommerce \
+          wp-env run cli wp plugin check bad-otter-ultimate-commerce-woocommerce \
             --format=json \
             --ignore-codes=WordPress.WP.I18n.NonSingularStringLiteralText \
             --exclude-files=.wp-env.json \
-            --slug=ultimate-commerce-for-woocommerce \
+            --slug=bad-otter-ultimate-commerce-woocommerce \
             --require=./wp-content/plugins/plugin-check/cli.php > "$results"
 
           cat "$results"
@@ -106,7 +106,7 @@ jobs:
       - name: Retain exact validated WordPress.org candidate
         uses: actions/upload-artifact@v4
         with:
-          name: ultimate-commerce-for-woocommerce-wporg-${{ github.sha }}
+          name: bad-otter-ultimate-commerce-woocommerce-wporg-${{ github.sha }}
           path: |
             dist-wporg/*.zip
             dist-wporg/*.sha256

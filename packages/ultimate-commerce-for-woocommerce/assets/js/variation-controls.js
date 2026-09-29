@@ -171,8 +171,8 @@
         if ( submit ) {
             submit.disabled = ! usable;
             submit.textContent = usable
-                ? String( data.labels?.add_to_cart || __( 'Add to cart', 'ultimate-commerce-for-woocommerce' ) )
-                : String( variation ? ( data.labels?.unavailable || __( 'Unavailable', 'ultimate-commerce-for-woocommerce' ) ) : ( data.labels?.select_options || __( 'Select options', 'ultimate-commerce-for-woocommerce' ) ) );
+                ? String( data.labels?.add_to_cart || __( 'Add to cart', 'bad-otter-ultimate-commerce-woocommerce' ) )
+                : String( variation ? ( data.labels?.unavailable || __( 'Unavailable', 'bad-otter-ultimate-commerce-woocommerce' ) ) : ( data.labels?.select_options || __( 'Select options', 'bad-otter-ultimate-commerce-woocommerce' ) ) );
         }
         updatePrice( price, variation );
         setImage( form, variation?.media || null, variation ? '' : swatchImage );

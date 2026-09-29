@@ -49,14 +49,14 @@ final class WishlistControls
     public static function shortcode(array $atts = array()): string
     {
         self::enqueueAssets();
-        $atts = shortcode_atts(array('title' => __('Wishlist', 'ultimate-commerce-for-woocommerce')), $atts, 'ultimate_commerce_wishlist');
+        $atts = shortcode_atts(array('title' => __('Wishlist', 'bad-otter-ultimate-commerce-woocommerce')), $atts, 'ultimate_commerce_wishlist');
 
         ob_start();
         ?>
         <section class="uc-wishlist" data-uc-wishlist-list="1">
             <h2 class="uc-wishlist__title"><?php echo esc_html((string) $atts['title']); ?></h2>
             <p class="uc-wishlist__status" data-uc-wishlist-status="1" aria-live="polite"></p>
-            <p class="uc-wishlist__empty" data-uc-wishlist-empty="1" hidden><?php echo esc_html__('Your wishlist is empty.', 'ultimate-commerce-for-woocommerce'); ?></p>
+            <p class="uc-wishlist__empty" data-uc-wishlist-empty="1" hidden><?php echo esc_html__('Your wishlist is empty.', 'bad-otter-ultimate-commerce-woocommerce'); ?></p>
             <div class="uc-wishlist__items" data-uc-wishlist-items="1"></div>
         </section>
         <?php
@@ -70,7 +70,7 @@ final class WishlistControls
         }
 
         self::enqueueAssets();
-        $label = __('Add to wishlist', 'ultimate-commerce-for-woocommerce');
+        $label = __('Add to wishlist', 'bad-otter-ultimate-commerce-woocommerce');
 
         return '<button type="button" class="uc-wishlist-toggle" data-uc-wishlist-toggle="1" data-product-id="'
             . esc_attr((string) $productId)
@@ -102,7 +102,7 @@ final class WishlistControls
         }
 
         wp_enqueue_script(self::SCRIPT_HANDLE);
-        wp_set_script_translations(self::SCRIPT_HANDLE, 'ultimate-commerce-for-woocommerce', ULTIMATE_COMMERCE_DIR . 'languages');
+        wp_set_script_translations(self::SCRIPT_HANDLE, 'bad-otter-ultimate-commerce-woocommerce', ULTIMATE_COMMERCE_DIR . 'languages');
         wp_enqueue_style(self::STYLE_HANDLE);
 
         if (self::$configured) {

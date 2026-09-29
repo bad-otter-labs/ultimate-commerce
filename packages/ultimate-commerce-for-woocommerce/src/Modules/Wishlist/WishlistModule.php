@@ -20,12 +20,12 @@ final class WishlistModule extends AbstractModule
 
     public function name(): string
     {
-        return __('Wishlist', 'ultimate-commerce-for-woocommerce');
+        return __('Wishlist', 'bad-otter-ultimate-commerce-woocommerce');
     }
 
     public function product(): string
     {
-        return 'ultimate-commerce-for-woocommerce';
+        return 'bad-otter-ultimate-commerce-woocommerce';
     }
 
     public function tier(): string

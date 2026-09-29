@@ -19,12 +19,12 @@ final class CatalogFilterRegistry
         $definitions = array(
             'price' => array(
                 'id' => 'price',
-                'label' => __('Price', 'ultimate-commerce-for-woocommerce'),
+                'label' => __('Price', 'bad-otter-ultimate-commerce-woocommerce'),
                 'type' => 'price',
             ),
             'availability' => array(
                 'id' => 'availability',
-                'label' => __('Availability', 'ultimate-commerce-for-woocommerce'),
+                'label' => __('Availability', 'bad-otter-ultimate-commerce-woocommerce'),
                 'type' => 'availability',
             ),
         );
@@ -63,17 +63,17 @@ final class CatalogFilterRegistry
     {
         $definitions = array(
             'newest' => array(
-                'label' => __('Newest', 'ultimate-commerce-for-woocommerce'),
+                'label' => __('Newest', 'bad-otter-ultimate-commerce-woocommerce'),
                 'orderby' => 'date',
                 'order' => 'desc',
             ),
             'price_asc' => array(
-                'label' => __('Price: low to high', 'ultimate-commerce-for-woocommerce'),
+                'label' => __('Price: low to high', 'bad-otter-ultimate-commerce-woocommerce'),
                 'orderby' => 'price',
                 'order' => 'asc',
             ),
             'price_desc' => array(
-                'label' => __('Price: high to low', 'ultimate-commerce-for-woocommerce'),
+                'label' => __('Price: high to low', 'bad-otter-ultimate-commerce-woocommerce'),
                 'orderby' => 'price',
                 'order' => 'desc',
             ),
@@ -167,9 +167,9 @@ final class CatalogFilterRegistry
             } elseif ($type === 'availability') {
                 $selected = (array) ($state['availability'] ?? array());
                 $labels = array(
-                    'in_stock' => __('In stock', 'ultimate-commerce-for-woocommerce'),
-                    'out_of_stock' => __('Out of stock', 'ultimate-commerce-for-woocommerce'),
-                    'on_backorder' => __('On backorder', 'ultimate-commerce-for-woocommerce'),
+                    'in_stock' => __('In stock', 'bad-otter-ultimate-commerce-woocommerce'),
+                    'out_of_stock' => __('Out of stock', 'bad-otter-ultimate-commerce-woocommerce'),
+                    'on_backorder' => __('On backorder', 'bad-otter-ultimate-commerce-woocommerce'),
                 );
                 $descriptor['selected'] = $selected;
                 $descriptor['options'] = array_map(
@@ -389,7 +389,7 @@ final class CatalogFilterRegistry
         }
         if (!isset($valid['newest'])) {
             $valid['newest'] = array(
-                'label' => __('Newest', 'ultimate-commerce-for-woocommerce'),
+                'label' => __('Newest', 'bad-otter-ultimate-commerce-woocommerce'),
                 'orderby' => 'date',
                 'order' => 'desc',
             );

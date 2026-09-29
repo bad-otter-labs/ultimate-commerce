@@ -17,12 +17,12 @@ final class AccountModule extends AbstractModule
 
     public function name(): string
     {
-        return __('Account', 'ultimate-commerce-for-woocommerce');
+        return __('Account', 'bad-otter-ultimate-commerce-woocommerce');
     }
 
     public function product(): string
     {
-        return 'ultimate-commerce-for-woocommerce';
+        return 'bad-otter-ultimate-commerce-woocommerce';
     }
 
     public function tier(): string

@@ -17,12 +17,12 @@ final class RecentlyViewedModule extends AbstractModule
 
     public function name(): string
     {
-        return __('Recently Viewed', 'ultimate-commerce-for-woocommerce');
+        return __('Recently Viewed', 'bad-otter-ultimate-commerce-woocommerce');
     }
 
     public function product(): string
     {
-        return 'ultimate-commerce-for-woocommerce';
+        return 'bad-otter-ultimate-commerce-woocommerce';
     }
 
     public function tier(): string

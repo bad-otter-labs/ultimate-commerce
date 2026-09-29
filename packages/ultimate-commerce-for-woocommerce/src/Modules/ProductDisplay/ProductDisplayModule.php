@@ -16,12 +16,12 @@ final class ProductDisplayModule extends AbstractModule
 
     public function name(): string
     {
-        return __('Product Display', 'ultimate-commerce-for-woocommerce');
+        return __('Product Display', 'bad-otter-ultimate-commerce-woocommerce');
     }
 
     public function product(): string
     {
-        return 'ultimate-commerce-for-woocommerce';
+        return 'bad-otter-ultimate-commerce-woocommerce';
     }
 
     public function tier(): string

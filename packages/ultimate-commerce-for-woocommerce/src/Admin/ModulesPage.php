@@ -35,8 +35,8 @@ final class ModulesPage
         );
         ?>
         <div class="wrap uc-admin uc-admin--modules">
-            <h1 class="uc-admin__title"><?php echo esc_html__('Ultimate Commerce Modules', 'ultimate-commerce-for-woocommerce'); ?></h1>
-            <p class="uc-admin__lede"><?php echo esc_html__('Enable or disable registered Ultimate Commerce modules. WooCommerce remains the source of truth for products, stock, cart, totals, orders and payments.', 'ultimate-commerce-for-woocommerce'); ?></p>
+            <h1 class="uc-admin__title"><?php echo esc_html__('Ultimate Commerce Modules', 'bad-otter-ultimate-commerce-woocommerce'); ?></h1>
+            <p class="uc-admin__lede"><?php echo esc_html__('Enable or disable registered Ultimate Commerce modules. WooCommerce remains the source of truth for products, stock, cart, totals, orders and payments.', 'bad-otter-ultimate-commerce-woocommerce'); ?></p>
 
             <?php self::renderNotice(self::noticeCode()); ?>
 
@@ -47,17 +47,17 @@ final class ModulesPage
                 <table class="widefat striped uc-data-table uc-modules-table">
                     <thead>
                         <tr>
-                            <th scope="col"><?php echo esc_html__('Module', 'ultimate-commerce-for-woocommerce'); ?></th>
-                            <th scope="col"><?php echo esc_html__('Product / tier', 'ultimate-commerce-for-woocommerce'); ?></th>
-                            <th scope="col"><?php echo esc_html__('Dependencies', 'ultimate-commerce-for-woocommerce'); ?></th>
-                            <th scope="col"><?php echo esc_html__('Runtime state', 'ultimate-commerce-for-woocommerce'); ?></th>
-                            <th scope="col"><?php echo esc_html__('Enabled', 'ultimate-commerce-for-woocommerce'); ?></th>
+                            <th scope="col"><?php echo esc_html__('Module', 'bad-otter-ultimate-commerce-woocommerce'); ?></th>
+                            <th scope="col"><?php echo esc_html__('Product / tier', 'bad-otter-ultimate-commerce-woocommerce'); ?></th>
+                            <th scope="col"><?php echo esc_html__('Dependencies', 'bad-otter-ultimate-commerce-woocommerce'); ?></th>
+                            <th scope="col"><?php echo esc_html__('Runtime state', 'bad-otter-ultimate-commerce-woocommerce'); ?></th>
+                            <th scope="col"><?php echo esc_html__('Enabled', 'bad-otter-ultimate-commerce-woocommerce'); ?></th>
                         </tr>
                     </thead>
                     <tbody>
                         <?php if ($statuses === array()) : ?>
                             <tr>
-                                <td class="uc-empty-state" colspan="5"><?php echo esc_html__('No Ultimate Commerce modules are currently registered.', 'ultimate-commerce-for-woocommerce'); ?></td>
+                                <td class="uc-empty-state" colspan="5"><?php echo esc_html__('No Ultimate Commerce modules are currently registered.', 'bad-otter-ultimate-commerce-woocommerce'); ?></td>
                             </tr>
                         <?php else : ?>
                             <?php foreach ($statuses as $key => $status) : ?>
@@ -77,7 +77,7 @@ final class ModulesPage
                                     </td>
                                     <td>
                                         <?php if ($dependencies === array()) : ?>
-                                            <?php echo esc_html__('None', 'ultimate-commerce-for-woocommerce'); ?>
+                                            <?php echo esc_html__('None', 'bad-otter-ultimate-commerce-woocommerce'); ?>
                                         <?php else : ?>
                                             <?php foreach ($dependencies as $dependency) : ?>
                                                 <code><?php echo esc_html($dependency); ?></code><br>
@@ -90,7 +90,7 @@ final class ModulesPage
                                             <p class="description"><code><?php echo esc_html((string) $status['issue']); ?></code></p>
                                         <?php endif; ?>
                                         <?php if ($storedEnabled !== $effectiveEnabled) : ?>
-                                            <p class="description"><?php echo esc_html__('Effective state is currently overridden by code.', 'ultimate-commerce-for-woocommerce'); ?></p>
+                                            <p class="description"><?php echo esc_html__('Effective state is currently overridden by code.', 'bad-otter-ultimate-commerce-woocommerce'); ?></p>
                                         <?php endif; ?>
                                     </td>
                                     <td>
@@ -101,7 +101,7 @@ final class ModulesPage
                                                 value="1"
                                                 <?php checked($storedEnabled); ?>
                                             >
-                                            <?php echo esc_html__('Enabled', 'ultimate-commerce-for-woocommerce'); ?>
+                                            <?php echo esc_html__('Enabled', 'bad-otter-ultimate-commerce-woocommerce'); ?>
                                         </label>
                                     </td>
                                 </tr>
@@ -110,8 +110,8 @@ final class ModulesPage
                     </tbody>
                 </table>
 
-                <p class="description"><?php echo esc_html__('Dependency failures are shown as blocked states. Saving does not silently change other module preferences.', 'ultimate-commerce-for-woocommerce'); ?></p>
-                <?php submit_button(__('Save module settings', 'ultimate-commerce-for-woocommerce')); ?>
+                <p class="description"><?php echo esc_html__('Dependency failures are shown as blocked states. Saving does not silently change other module preferences.', 'bad-otter-ultimate-commerce-woocommerce'); ?></p>
+                <?php submit_button(__('Save module settings', 'bad-otter-ultimate-commerce-woocommerce')); ?>
             </form>
         </div>
         <?php
@@ -148,7 +148,7 @@ final class ModulesPage
         if ($verified instanceof \WP_Error) {
             wp_die(
                 esc_html($verified->get_error_message()),
-                esc_html__('Request rejected', 'ultimate-commerce-for-woocommerce'),
+                esc_html__('Request rejected', 'bad-otter-ultimate-commerce-woocommerce'),
                 array('response' => 403)
             );
         }
@@ -158,8 +158,8 @@ final class ModulesPage
     {
         if (!current_user_can(Capabilities::MANAGE_SETTINGS)) {
             wp_die(
-                esc_html__('You do not have permission to manage Ultimate Commerce modules.', 'ultimate-commerce-for-woocommerce'),
-                esc_html__('Access denied', 'ultimate-commerce-for-woocommerce'),
+                esc_html__('You do not have permission to manage Ultimate Commerce modules.', 'bad-otter-ultimate-commerce-woocommerce'),
+                esc_html__('Access denied', 'bad-otter-ultimate-commerce-woocommerce'),
                 array('response' => 403)
             );
         }
@@ -194,22 +194,22 @@ final class ModulesPage
         if ($code !== 'saved') {
             return;
         }
-        echo '<div class="notice notice-success is-dismissible"><p>' . esc_html__('Module settings saved.', 'ultimate-commerce-for-woocommerce') . '</p></div>';
+        echo '<div class="notice notice-success is-dismissible"><p>' . esc_html__('Module settings saved.', 'bad-otter-ultimate-commerce-woocommerce') . '</p></div>';
     }
 
     private static function statusLabel(string $status): string
     {
         switch ($status) {
             case 'booted':
-                return __('Active', 'ultimate-commerce-for-woocommerce');
+                return __('Active', 'bad-otter-ultimate-commerce-woocommerce');
             case 'disabled':
-                return __('Disabled', 'ultimate-commerce-for-woocommerce');
+                return __('Disabled', 'bad-otter-ultimate-commerce-woocommerce');
             case 'blocked':
-                return __('Blocked', 'ultimate-commerce-for-woocommerce');
+                return __('Blocked', 'bad-otter-ultimate-commerce-woocommerce');
             case 'booting':
-                return __('Starting', 'ultimate-commerce-for-woocommerce');
+                return __('Starting', 'bad-otter-ultimate-commerce-woocommerce');
             default:
-                return __('Registered', 'ultimate-commerce-for-woocommerce');
+                return __('Registered', 'bad-otter-ultimate-commerce-woocommerce');
         }
     }
 }

@@ -20,8 +20,8 @@ final class AdminMenu
     public static function register(): void
     {
         add_menu_page(
-            __('Ultimate Commerce', 'ultimate-commerce-for-woocommerce'),
-            __('Ultimate Commerce', 'ultimate-commerce-for-woocommerce'),
+            __('Ultimate Commerce', 'bad-otter-ultimate-commerce-woocommerce'),
+            __('Ultimate Commerce', 'bad-otter-ultimate-commerce-woocommerce'),
             Capabilities::VIEW_DIAGNOSTICS,
             self::ROOT_SLUG,
             array(OverviewPage::class, 'render'),
@@ -31,8 +31,8 @@ final class AdminMenu
 
         add_submenu_page(
             self::ROOT_SLUG,
-            __('Overview', 'ultimate-commerce-for-woocommerce'),
-            __('Overview', 'ultimate-commerce-for-woocommerce'),
+            __('Overview', 'bad-otter-ultimate-commerce-woocommerce'),
+            __('Overview', 'bad-otter-ultimate-commerce-woocommerce'),
             Capabilities::VIEW_DIAGNOSTICS,
             self::ROOT_SLUG,
             array(OverviewPage::class, 'render')
@@ -40,8 +40,8 @@ final class AdminMenu
 
         add_submenu_page(
             self::ROOT_SLUG,
-            __('Modules', 'ultimate-commerce-for-woocommerce'),
-            __('Modules', 'ultimate-commerce-for-woocommerce'),
+            __('Modules', 'bad-otter-ultimate-commerce-woocommerce'),
+            __('Modules', 'bad-otter-ultimate-commerce-woocommerce'),
             Capabilities::MANAGE_SETTINGS,
             ModulesPage::SLUG,
             array(ModulesPage::class, 'render')
@@ -49,8 +49,8 @@ final class AdminMenu
 
         add_submenu_page(
             self::ROOT_SLUG,
-            __('Settings', 'ultimate-commerce-for-woocommerce'),
-            __('Settings', 'ultimate-commerce-for-woocommerce'),
+            __('Settings', 'bad-otter-ultimate-commerce-woocommerce'),
+            __('Settings', 'bad-otter-ultimate-commerce-woocommerce'),
             Capabilities::MANAGE_SETTINGS,
             SettingsPage::SLUG,
             array(SettingsPage::class, 'render')
@@ -58,8 +58,8 @@ final class AdminMenu
 
         add_submenu_page(
             self::ROOT_SLUG,
-            __('Diagnostics', 'ultimate-commerce-for-woocommerce'),
-            __('Diagnostics', 'ultimate-commerce-for-woocommerce'),
+            __('Diagnostics', 'bad-otter-ultimate-commerce-woocommerce'),
+            __('Diagnostics', 'bad-otter-ultimate-commerce-woocommerce'),
             Capabilities::VIEW_DIAGNOSTICS,
             self::DIAGNOSTICS_SLUG,
             array(DiagnosticsPage::class, 'render')

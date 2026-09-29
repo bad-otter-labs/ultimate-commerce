@@ -17,12 +17,12 @@ final class VariationsModule extends AbstractModule
 
     public function name(): string
     {
-        return __('Variants & Swatches', 'ultimate-commerce-for-woocommerce');
+        return __('Variants & Swatches', 'bad-otter-ultimate-commerce-woocommerce');
     }
 
     public function product(): string
     {
-        return 'ultimate-commerce-for-woocommerce';
+        return 'bad-otter-ultimate-commerce-woocommerce';
     }
 
     public function tier(): string

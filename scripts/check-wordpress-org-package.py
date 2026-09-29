@@ -8,8 +8,9 @@ import stat
 import zipfile
 from pathlib import PurePosixPath
 
-SLUG = 'ultimate-commerce-for-woocommerce'
-MAIN = f'{SLUG}/{SLUG}.php'
+SLUG = 'bad-otter-ultimate-commerce-woocommerce'
+SOURCE_MAIN = 'ultimate-commerce-for-woocommerce.php'
+MAIN = f'{SLUG}/{SOURCE_MAIN}'
 README = f'{SLUG}/readme.txt'
 COMPOSER = f'{SLUG}/composer.json'
 POT = f'{SLUG}/languages/{SLUG}.pot'
@@ -111,13 +112,13 @@ def main() -> int:
         version = header(plugin, 'Version')
         if stable_tag(readme) != version:
             fail(f'Plugin Version {version} does not match readme Stable tag {stable_tag(readme)}')
-        if header(plugin, 'Plugin Name') != 'Ultimate Commerce for WooCommerce':
+        if header(plugin, 'Plugin Name') != 'Bad Otter Ultimate Commerce for WooCommerce':
             fail('Canonical plugin name changed unexpectedly')
         if header(plugin, 'Text Domain') != SLUG:
             fail('Canonical text domain changed unexpectedly')
         if re.search(r'^\s*\*\s*Update URI:', plugin, re.M):
             fail('WordPress.org Free package must not define Update URI')
-        if '"X-Domain: ultimate-commerce-for-woocommerce\\n"' not in pot:
+        if '"X-Domain: bad-otter-ultimate-commerce-woocommerce\\n"' not in pot:
             fail('Packaged POT must declare the canonical translation domain')
         if '"POT-Creation-Date: \\n"' not in pot:
             fail('Packaged POT creation date must remain blank for deterministic regeneration')

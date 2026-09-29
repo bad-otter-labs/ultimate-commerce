@@ -44,5 +44,5 @@ jobs:
           set -euo pipefail
           rm -rf translation-check
           mkdir -p translation-check
-          tools/i18n/vendor/bin/wp i18n make-pot             packages/ultimate-commerce-for-woocommerce             translation-check/ultimate-commerce-for-woocommerce.pot             --domain=ultimate-commerce-for-woocommerce             --package-name="Ultimate Commerce for WooCommerce"             --headers='{"POT-Creation-Date":"","Report-Msgid-Bugs-To":"https://github.com/bad-otter-labs/ultimate-commerce/issues"}'
-          cmp             packages/ultimate-commerce-for-woocommerce/languages/ultimate-commerce-for-woocommerce.pot             translation-check/ultimate-commerce-for-woocommerce.pot
+          tools/i18n/vendor/bin/wp i18n make-pot             packages/ultimate-commerce-for-woocommerce             translation-check/bad-otter-ultimate-commerce-woocommerce.pot             --domain=bad-otter-ultimate-commerce-woocommerce             --package-name="Bad Otter Ultimate Commerce for WooCommerce"             --headers='{"POT-Creation-Date":"","Report-Msgid-Bugs-To":"https://github.com/bad-otter-labs/ultimate-commerce/issues"}'
+          cmp             packages/ultimate-commerce-for-woocommerce/languages/bad-otter-ultimate-commerce-woocommerce.pot             translation-check/ultimate-commerce-for-woocommerce.pot

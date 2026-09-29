@@ -51,16 +51,16 @@ final class PersonalDataRegistry
         $name = trim($name);
 
         if (!preg_match('/^[a-z][a-z0-9_-]{0,63}$/', $key)) {
-            return self::error('uc_privacy_handler_key', __('Personal-data handler key is invalid.', 'ultimate-commerce-for-woocommerce'));
+            return self::error('uc_privacy_handler_key', __('Personal-data handler key is invalid.', 'bad-otter-ultimate-commerce-woocommerce'));
         }
         if ($name === '' || strlen($name) > 120) {
-            return self::error('uc_privacy_handler_name', __('Personal-data handler name is invalid.', 'ultimate-commerce-for-woocommerce'));
+            return self::error('uc_privacy_handler_name', __('Personal-data handler name is invalid.', 'bad-otter-ultimate-commerce-woocommerce'));
         }
         if (!DataRetention::valid($retention)) {
-            return self::error('uc_privacy_retention', __('Personal-data retention class is invalid.', 'ultimate-commerce-for-woocommerce'));
+            return self::error('uc_privacy_retention', __('Personal-data retention class is invalid.', 'bad-otter-ultimate-commerce-woocommerce'));
         }
         if (isset($this->handlers[$key])) {
-            return self::error('uc_privacy_handler_duplicate', __('A personal-data handler is already registered with this key.', 'ultimate-commerce-for-woocommerce'));
+            return self::error('uc_privacy_handler_duplicate', __('A personal-data handler is already registered with this key.', 'bad-otter-ultimate-commerce-woocommerce'));
         }
 
         $this->handlers[$key] = array(

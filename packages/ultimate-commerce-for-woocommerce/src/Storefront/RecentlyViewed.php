@@ -35,7 +35,7 @@ final class RecentlyViewed
     {
         $atts = shortcode_atts(
             array(
-                'title' => __('Recently viewed', 'ultimate-commerce-for-woocommerce'),
+                'title' => __('Recently viewed', 'bad-otter-ultimate-commerce-woocommerce'),
                 'limit' => 8,
             ),
             $atts,
@@ -50,10 +50,10 @@ final class RecentlyViewed
         <section class="uc-recently-viewed" data-uc-recently-viewed-list="1" data-limit="<?php echo esc_attr((string) $limit); ?>">
             <div class="uc-recently-viewed__header">
                 <h2 class="uc-recently-viewed__title"><?php echo esc_html((string) $atts['title']); ?></h2>
-                <button type="button" class="uc-recently-viewed__clear" data-uc-recently-viewed-clear="1"><?php echo esc_html__('Clear', 'ultimate-commerce-for-woocommerce'); ?></button>
+                <button type="button" class="uc-recently-viewed__clear" data-uc-recently-viewed-clear="1"><?php echo esc_html__('Clear', 'bad-otter-ultimate-commerce-woocommerce'); ?></button>
             </div>
             <p class="uc-recently-viewed__status" data-uc-recently-viewed-status="1" aria-live="polite"></p>
-            <p class="uc-recently-viewed__empty" data-uc-recently-viewed-empty="1" hidden><?php echo esc_html__('No recently viewed products yet.', 'ultimate-commerce-for-woocommerce'); ?></p>
+            <p class="uc-recently-viewed__empty" data-uc-recently-viewed-empty="1" hidden><?php echo esc_html__('No recently viewed products yet.', 'bad-otter-ultimate-commerce-woocommerce'); ?></p>
             <div class="uc-recently-viewed__items" data-uc-recently-viewed-items="1"></div>
         </section>
         <?php
@@ -81,7 +81,7 @@ final class RecentlyViewed
         }
 
         wp_enqueue_script(self::SCRIPT_HANDLE);
-        wp_set_script_translations(self::SCRIPT_HANDLE, 'ultimate-commerce-for-woocommerce', ULTIMATE_COMMERCE_DIR . 'languages');
+        wp_set_script_translations(self::SCRIPT_HANDLE, 'bad-otter-ultimate-commerce-woocommerce', ULTIMATE_COMMERCE_DIR . 'languages');
         wp_enqueue_style(self::STYLE_HANDLE);
 
         if (self::$configured) {

@@ -135,7 +135,7 @@ final class ProductCardViewModel
         return array(
             'type' => $enabled ? 'add_to_cart' : 'view_product',
             'enabled' => $enabled,
-            'label' => $enabled ? $product->add_to_cart_text() : __('View product', 'ultimate-commerce-for-woocommerce'),
+            'label' => $enabled ? $product->add_to_cart_text() : __('View product', 'bad-otter-ultimate-commerce-woocommerce'),
             'aria_label' => $product->add_to_cart_description(),
             'url' => $enabled ? $product->add_to_cart_url() : $product->get_permalink(),
             'product_id' => $product->get_id(),

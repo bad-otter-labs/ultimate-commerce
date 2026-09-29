@@ -12,30 +12,30 @@ msgstr ""
 "POT-Creation-Date: \n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
-"X-Domain: ultimate-commerce-for-woocommerce\n"
+"X-Domain: bad-otter-ultimate-commerce-woocommerce\n"
 
 #. Plugin Name of the plugin
-#: ultimate-commerce-for-woocommerce.php:3
+#: bad-otter-ultimate-commerce-woocommerce.php:3
 msgid "Ultimate Commerce for WooCommerce"
 msgstr ""
 
 #. Plugin URI of the plugin
-#: ultimate-commerce-for-woocommerce.php:4
+#: bad-otter-ultimate-commerce-woocommerce.php:4
 msgid "https://badotter.io/ultimate-commerce"
 msgstr ""
 
 #. Description of the plugin
-#: ultimate-commerce-for-woocommerce.php:5
+#: bad-otter-ultimate-commerce-woocommerce.php:5
 msgid "A modular commerce experience enhancement platform for WooCommerce."
 msgstr ""
 
 #. Author of the plugin
-#: ultimate-commerce-for-woocommerce.php:12
+#: bad-otter-ultimate-commerce-woocommerce.php:12
 msgid "Bad Otter Labs"
 msgstr ""
 
 #. Author URI of the plugin
-#: ultimate-commerce-for-woocommerce.php:13
+#: bad-otter-ultimate-commerce-woocommerce.php:13
 msgid "https://badotter.io"
 msgstr ""
 

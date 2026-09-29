@@ -17,12 +17,12 @@ final class CartModule extends AbstractModule
 
     public function name(): string
     {
-        return __('Cart', 'ultimate-commerce-for-woocommerce');
+        return __('Cart', 'bad-otter-ultimate-commerce-woocommerce');
     }
 
     public function product(): string
     {
-        return 'ultimate-commerce-for-woocommerce';
+        return 'bad-otter-ultimate-commerce-woocommerce';
     }
 
     public function tier(): string

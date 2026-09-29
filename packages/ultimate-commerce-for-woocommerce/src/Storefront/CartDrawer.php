@@ -72,8 +72,8 @@ final class CartDrawer
                 data-uc-cart-panel="1"
             >
                 <header class="uc-cart-drawer__header">
-                    <h2 id="<?php echo esc_attr($titleId); ?>" class="uc-cart-drawer__title"><?php echo esc_html__('Your cart', 'ultimate-commerce-for-woocommerce'); ?></h2>
-                    <button type="button" class="uc-cart-drawer__close" data-uc-cart-close="1" aria-label="<?php echo esc_attr__('Close cart', 'ultimate-commerce-for-woocommerce'); ?>">&times;</button>
+                    <h2 id="<?php echo esc_attr($titleId); ?>" class="uc-cart-drawer__title"><?php echo esc_html__('Your cart', 'bad-otter-ultimate-commerce-woocommerce'); ?></h2>
+                    <button type="button" class="uc-cart-drawer__close" data-uc-cart-close="1" aria-label="<?php echo esc_attr__('Close cart', 'bad-otter-ultimate-commerce-woocommerce'); ?>">&times;</button>
                 </header>
 
                 <p class="uc-cart-drawer__status" data-uc-cart-status="1" aria-live="polite"></p>
@@ -81,13 +81,13 @@ final class CartDrawer
 
                 <?php self::slot('before_items', $context); ?>
                 <div class="uc-cart-drawer__items" data-uc-cart-items="1"></div>
-                <p class="uc-cart-drawer__empty" data-uc-cart-empty="1" hidden><?php echo esc_html__('Your cart is empty.', 'ultimate-commerce-for-woocommerce'); ?></p>
+                <p class="uc-cart-drawer__empty" data-uc-cart-empty="1" hidden><?php echo esc_html__('Your cart is empty.', 'bad-otter-ultimate-commerce-woocommerce'); ?></p>
                 <?php self::slot('after_items', $context); ?>
 
                 <div class="uc-cart-drawer__summary" data-uc-cart-summary="1" hidden>
                     <?php self::slot('before_totals', $context); ?>
                     <div class="uc-cart-drawer__total-row">
-                        <span><?php echo esc_html__('Total', 'ultimate-commerce-for-woocommerce'); ?></span>
+                        <span><?php echo esc_html__('Total', 'bad-otter-ultimate-commerce-woocommerce'); ?></span>
                         <strong data-uc-cart-total="1"></strong>
                     </div>
                     <?php self::slot('after_totals', $context); ?>
@@ -95,8 +95,8 @@ final class CartDrawer
 
                 <?php self::slot('before_footer', $context); ?>
                 <footer class="uc-cart-drawer__footer">
-                    <a class="uc-cart-drawer__cart-link" href="<?php echo esc_url(wc_get_cart_url()); ?>"><?php echo esc_html__('View cart', 'ultimate-commerce-for-woocommerce'); ?></a>
-                    <a class="uc-cart-drawer__checkout button" href="<?php echo esc_url(wc_get_checkout_url()); ?>" data-uc-cart-checkout="1"><?php echo esc_html__('Checkout', 'ultimate-commerce-for-woocommerce'); ?></a>
+                    <a class="uc-cart-drawer__cart-link" href="<?php echo esc_url(wc_get_cart_url()); ?>"><?php echo esc_html__('View cart', 'bad-otter-ultimate-commerce-woocommerce'); ?></a>
+                    <a class="uc-cart-drawer__checkout button" href="<?php echo esc_url(wc_get_checkout_url()); ?>" data-uc-cart-checkout="1"><?php echo esc_html__('Checkout', 'bad-otter-ultimate-commerce-woocommerce'); ?></a>
                 </footer>
                 <?php self::slot('after_footer', $context); ?>
             </section>
@@ -115,7 +115,7 @@ final class CartDrawer
     {
         $label = isset($args['label']) && is_scalar($args['label'])
             ? (string) $args['label']
-            : __('Cart', 'ultimate-commerce-for-woocommerce');
+            : __('Cart', 'bad-otter-ultimate-commerce-woocommerce');
         $class = isset($args['class']) && is_scalar($args['class'])
             ? sanitize_html_class((string) $args['class'])
             : 'uc-cart-trigger';
@@ -148,7 +148,7 @@ final class CartDrawer
         }
 
         wp_enqueue_script(self::SCRIPT_HANDLE);
-        wp_set_script_translations(self::SCRIPT_HANDLE, 'ultimate-commerce-for-woocommerce', ULTIMATE_COMMERCE_DIR . 'languages');
+        wp_set_script_translations(self::SCRIPT_HANDLE, 'bad-otter-ultimate-commerce-woocommerce', ULTIMATE_COMMERCE_DIR . 'languages');
         wp_enqueue_style(self::STYLE_HANDLE);
     }
 

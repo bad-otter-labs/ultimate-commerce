@@ -31,28 +31,28 @@ final class SettingsPage
         $deleteDataOnUninstall = Settings::deleteDataOnUninstall();
         ?>
         <div class="wrap uc-admin uc-admin--settings">
-            <h1 class="uc-admin__title"><?php echo esc_html__('Ultimate Commerce Settings', 'ultimate-commerce-for-woocommerce'); ?></h1>
-            <p class="uc-admin__lede"><?php echo esc_html__('Export or import portable Ultimate Commerce merchant settings. Runtime metadata, secrets and caches are never part of this file.', 'ultimate-commerce-for-woocommerce'); ?></p>
+            <h1 class="uc-admin__title"><?php echo esc_html__('Ultimate Commerce Settings', 'bad-otter-ultimate-commerce-woocommerce'); ?></h1>
+            <p class="uc-admin__lede"><?php echo esc_html__('Export or import portable Ultimate Commerce merchant settings. Runtime metadata, secrets and caches are never part of this file.', 'bad-otter-ultimate-commerce-woocommerce'); ?></p>
 
             <?php self::renderNotice(self::noticeCode()); ?>
 
-            <section class="uc-card uc-settings-card"><h2 class="uc-card__title"><?php echo esc_html__('Export settings', 'ultimate-commerce-for-woocommerce'); ?></h2>
-            <p><?php echo esc_html__('Download a JSON file containing supported merchant configuration. The current format includes stored module preferences, including temporarily unavailable extension modules.', 'ultimate-commerce-for-woocommerce'); ?></p>
+            <section class="uc-card uc-settings-card"><h2 class="uc-card__title"><?php echo esc_html__('Export settings', 'bad-otter-ultimate-commerce-woocommerce'); ?></h2>
+            <p><?php echo esc_html__('Download a JSON file containing supported merchant configuration. The current format includes stored module preferences, including temporarily unavailable extension modules.', 'bad-otter-ultimate-commerce-woocommerce'); ?></p>
             <form method="post" action="<?php echo esc_url(admin_url('admin-post.php')); ?>">
                 <input type="hidden" name="action" value="uc_settings_export">
                 <?php wp_nonce_field('uc_' . self::PURPOSE_EXPORT, self::NONCE_FIELD); ?>
-                <?php submit_button(__('Download settings file', 'ultimate-commerce-for-woocommerce'), 'secondary', 'submit', false); ?>
+                <?php submit_button(__('Download settings file', 'bad-otter-ultimate-commerce-woocommerce'), 'secondary', 'submit', false); ?>
             </form></section>
 
             <div class="uc-section-gap" aria-hidden="true"></div>
 
-            <section class="uc-card uc-settings-card"><h2 class="uc-card__title"><?php echo esc_html__('Import settings', 'ultimate-commerce-for-woocommerce'); ?></h2>
-            <p><?php echo esc_html__('Import a JSON file previously exported by Ultimate Commerce. Declared module preferences are merged with existing settings, so omitted extension preferences are preserved.', 'ultimate-commerce-for-woocommerce'); ?></p>
+            <section class="uc-card uc-settings-card"><h2 class="uc-card__title"><?php echo esc_html__('Import settings', 'bad-otter-ultimate-commerce-woocommerce'); ?></h2>
+            <p><?php echo esc_html__('Import a JSON file previously exported by Ultimate Commerce. Declared module preferences are merged with existing settings, so omitted extension preferences are preserved.', 'bad-otter-ultimate-commerce-woocommerce'); ?></p>
             <form class="uc-settings-form" method="post" enctype="multipart/form-data" action="<?php echo esc_url(admin_url('admin-post.php')); ?>">
                 <input type="hidden" name="action" value="uc_settings_import">
                 <?php wp_nonce_field('uc_' . self::PURPOSE_IMPORT, self::NONCE_FIELD); ?>
                 <p>
-                    <label for="uc-settings-file"><strong><?php echo esc_html__('Settings JSON file', 'ultimate-commerce-for-woocommerce'); ?></strong></label><br>
+                    <label for="uc-settings-file"><strong><?php echo esc_html__('Settings JSON file', 'bad-otter-ultimate-commerce-woocommerce'); ?></strong></label><br>
                     <input class="uc-file-input" id="uc-settings-file" name="settings_file" type="file" accept=".json,application/json" required>
                 </p>
                 <p class="description">
@@ -60,31 +60,31 @@ final class SettingsPage
                     echo esc_html(
                         sprintf(
                             /* translators: %s: Maximum settings file size. */
-                            __('Maximum file size: %s KB. Imported settings take effect on the next request.', 'ultimate-commerce-for-woocommerce'),
+                            __('Maximum file size: %s KB. Imported settings take effect on the next request.', 'bad-otter-ultimate-commerce-woocommerce'),
                             (string) (SettingsTransfer::MAX_BYTES / 1024)
                         )
                     );
                     ?>
                 </p>
-                <?php submit_button(__('Import settings', 'ultimate-commerce-for-woocommerce'), 'primary', 'submit', false); ?>
+                <?php submit_button(__('Import settings', 'bad-otter-ultimate-commerce-woocommerce'), 'primary', 'submit', false); ?>
             </form></section>
 
             <div class="uc-section-gap" aria-hidden="true"></div>
 
-            <section class="uc-card uc-settings-card uc-settings-card--danger"><h2 class="uc-card__title"><?php echo esc_html__('Data retention', 'ultimate-commerce-for-woocommerce'); ?></h2>
-            <p><?php echo esc_html__('Ultimate Commerce keeps merchant configuration by default when the plugin is deleted, making a later reinstall recoverable. Short-lived runtime locks, replay records, idempotency records and rate-limit transients are always removed.', 'ultimate-commerce-for-woocommerce'); ?></p>
+            <section class="uc-card uc-settings-card uc-settings-card--danger"><h2 class="uc-card__title"><?php echo esc_html__('Data retention', 'bad-otter-ultimate-commerce-woocommerce'); ?></h2>
+            <p><?php echo esc_html__('Ultimate Commerce keeps merchant configuration by default when the plugin is deleted, making a later reinstall recoverable. Short-lived runtime locks, replay records, idempotency records and rate-limit transients are always removed.', 'bad-otter-ultimate-commerce-woocommerce'); ?></p>
             <form class="uc-settings-form" method="post" action="<?php echo esc_url(admin_url('admin-post.php')); ?>">
                 <input type="hidden" name="action" value="uc_settings_retention">
                 <?php wp_nonce_field('uc_' . self::PURPOSE_RETENTION, self::NONCE_FIELD); ?>
                 <p>
                     <label class="uc-toggle uc-toggle--danger">
                         <input type="checkbox" name="delete_data_on_uninstall" value="1" <?php checked($deleteDataOnUninstall); ?>>
-                        <strong><?php echo esc_html__('Delete Ultimate Commerce data when the plugin is deleted', 'ultimate-commerce-for-woocommerce'); ?></strong>
+                        <strong><?php echo esc_html__('Delete Ultimate Commerce data when the plugin is deleted', 'bad-otter-ultimate-commerce-woocommerce'); ?></strong>
                     </label>
                 </p>
-                <p class="description"><?php echo esc_html__('When enabled, deletion also removes stored module preferences and Ultimate Commerce encrypted secrets. WooCommerce products, stock, carts, orders, payments and other WooCommerce-owned data are never deleted by this cleanup.', 'ultimate-commerce-for-woocommerce'); ?></p>
-                <p class="description"><?php echo esc_html__('This destructive local preference is intentionally excluded from settings export/import.', 'ultimate-commerce-for-woocommerce'); ?></p>
-                <?php submit_button(__('Save data retention', 'ultimate-commerce-for-woocommerce'), 'secondary', 'submit', false); ?>
+                <p class="description"><?php echo esc_html__('When enabled, deletion also removes stored module preferences and Ultimate Commerce encrypted secrets. WooCommerce products, stock, carts, orders, payments and other WooCommerce-owned data are never deleted by this cleanup.', 'bad-otter-ultimate-commerce-woocommerce'); ?></p>
+                <p class="description"><?php echo esc_html__('This destructive local preference is intentionally excluded from settings export/import.', 'bad-otter-ultimate-commerce-woocommerce'); ?></p>
+                <?php submit_button(__('Save data retention', 'bad-otter-ultimate-commerce-woocommerce'), 'secondary', 'submit', false); ?>
             </form></section>
         </div>
         <?php
@@ -98,7 +98,7 @@ final class SettingsPage
         if ($json instanceof \WP_Error) {
             wp_die(
                 esc_html($json->get_error_message()),
-                esc_html__('Settings export failed', 'ultimate-commerce-for-woocommerce'),
+                esc_html__('Settings export failed', 'bad-otter-ultimate-commerce-woocommerce'),
                 array('response' => 400)
             );
         }
@@ -147,7 +147,7 @@ final class SettingsPage
     {
         // phpcs:disable WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- import() verifies the nonce before calling this helper; upload metadata is validated field-by-field and file contents are size-bounded below.
         if (!isset($_FILES['settings_file']) || !is_array($_FILES['settings_file'])) {
-            return new \WP_Error('uc_settings_upload_missing', __('Choose an Ultimate Commerce settings file to import.', 'ultimate-commerce-for-woocommerce'));
+            return new \WP_Error('uc_settings_upload_missing', __('Choose an Ultimate Commerce settings file to import.', 'bad-otter-ultimate-commerce-woocommerce'));
         }
 
         $file = $_FILES['settings_file'];
@@ -157,13 +157,13 @@ final class SettingsPage
         $tmpName = isset($file['tmp_name']) && is_string($file['tmp_name']) ? $file['tmp_name'] : '';
 
         if ($error !== UPLOAD_ERR_OK || $tmpName === '' || $size > SettingsTransfer::MAX_BYTES || !is_uploaded_file($tmpName)) {
-            return new \WP_Error('uc_settings_upload_invalid', __('The uploaded settings file could not be accepted.', 'ultimate-commerce-for-woocommerce'));
+            return new \WP_Error('uc_settings_upload_invalid', __('The uploaded settings file could not be accepted.', 'bad-otter-ultimate-commerce-woocommerce'));
         }
 
         // phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents -- Reading a locally validated uploaded file, not a remote URL.
         $contents = file_get_contents($tmpName, false, null, 0, SettingsTransfer::MAX_BYTES + 1);
         if (!is_string($contents) || $contents === '' || strlen($contents) > SettingsTransfer::MAX_BYTES) {
-            return new \WP_Error('uc_settings_upload_read', __('The uploaded settings file is empty, unreadable or too large.', 'ultimate-commerce-for-woocommerce'));
+            return new \WP_Error('uc_settings_upload_read', __('The uploaded settings file is empty, unreadable or too large.', 'bad-otter-ultimate-commerce-woocommerce'));
         }
 
         return $contents;
@@ -182,7 +182,7 @@ final class SettingsPage
         if ($verified instanceof \WP_Error) {
             wp_die(
                 esc_html($verified->get_error_message()),
-                esc_html__('Request rejected', 'ultimate-commerce-for-woocommerce'),
+                esc_html__('Request rejected', 'bad-otter-ultimate-commerce-woocommerce'),
                 array('response' => 403)
             );
         }
@@ -192,8 +192,8 @@ final class SettingsPage
     {
         if (!current_user_can(Capabilities::MANAGE_SETTINGS)) {
             wp_die(
-                esc_html__('You do not have permission to manage Ultimate Commerce settings.', 'ultimate-commerce-for-woocommerce'),
-                esc_html__('Access denied', 'ultimate-commerce-for-woocommerce'),
+                esc_html__('You do not have permission to manage Ultimate Commerce settings.', 'bad-otter-ultimate-commerce-woocommerce'),
+                esc_html__('Access denied', 'bad-otter-ultimate-commerce-woocommerce'),
                 array('response' => 403)
             );
         }
@@ -226,17 +226,17 @@ final class SettingsPage
     private static function renderNotice(string $code): void
     {
         if ($code === 'imported') {
-            echo '<div class="notice notice-success is-dismissible"><p>' . esc_html__('Ultimate Commerce settings imported. The imported module preferences are now active.', 'ultimate-commerce-for-woocommerce') . '</p></div>';
+            echo '<div class="notice notice-success is-dismissible"><p>' . esc_html__('Ultimate Commerce settings imported. The imported module preferences are now active.', 'bad-otter-ultimate-commerce-woocommerce') . '</p></div>';
             return;
         }
 
         if ($code === 'retention-saved') {
-            echo '<div class="notice notice-success is-dismissible"><p>' . esc_html__('Ultimate Commerce data-retention preference saved.', 'ultimate-commerce-for-woocommerce') . '</p></div>';
+            echo '<div class="notice notice-success is-dismissible"><p>' . esc_html__('Ultimate Commerce data-retention preference saved.', 'bad-otter-ultimate-commerce-woocommerce') . '</p></div>';
             return;
         }
 
         if ($code === 'invalid') {
-            echo '<div class="notice notice-error"><p>' . esc_html__('The settings file was not imported. Use a valid Ultimate Commerce settings export and try again.', 'ultimate-commerce-for-woocommerce') . '</p></div>';
+            echo '<div class="notice notice-error"><p>' . esc_html__('The settings file was not imported. Use a valid Ultimate Commerce settings export and try again.', 'bad-otter-ultimate-commerce-woocommerce') . '</p></div>';
         }
     }
 }

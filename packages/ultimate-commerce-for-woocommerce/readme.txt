@@ -1,4 +1,4 @@
-=== Ultimate Commerce for WooCommerce ===
+=== Bad Otter Ultimate Commerce for WooCommerce ===
 Contributors: badotterlabs
 Tags: woocommerce, ecommerce, wishlist, variations, cart
 Requires at least: 6.6

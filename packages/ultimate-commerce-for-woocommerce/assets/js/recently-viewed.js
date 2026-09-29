@@ -127,7 +127,7 @@
                     empty.hidden = false;
                 }
             });
-            setStatus(__('No recently viewed products.', 'ultimate-commerce-for-woocommerce'));
+            setStatus(__('No recently viewed products.', 'bad-otter-ultimate-commerce-woocommerce'));
             return;
         }
 
@@ -139,7 +139,7 @@
         fetch(productQueryUrl(endpoint, requested), { credentials: 'same-origin', cache: 'no-store' })
             .then(function (response) {
                 if (!response.ok) {
-                    throw new Error(__('Recently viewed products could not be loaded.', 'ultimate-commerce-for-woocommerce'));
+                    throw new Error(__('Recently viewed products could not be loaded.', 'bad-otter-ultimate-commerce-woocommerce'));
                 }
                 return response.json();
             })
@@ -169,12 +169,12 @@
 
                 setStatus(sprintf(
                     /* translators: %d: Number of recently viewed products. */
-                    _n('%d recently viewed product.', '%d recently viewed products.', requested.length, 'ultimate-commerce-for-woocommerce'),
+                    _n('%d recently viewed product.', '%d recently viewed products.', requested.length, 'bad-otter-ultimate-commerce-woocommerce'),
                     requested.length
                 ));
             })
             .catch(function (error) {
-                setStatus(error && error.message ? String(error.message) : __('Recently viewed products could not be loaded.', 'ultimate-commerce-for-woocommerce'));
+                setStatus(error && error.message ? String(error.message) : __('Recently viewed products could not be loaded.', 'bad-otter-ultimate-commerce-woocommerce'));
             });
     }
 
@@ -202,7 +202,7 @@
             clearLocal();
             renderLists();
             emit();
-            setStatus(__('Recently viewed products cleared.', 'ultimate-commerce-for-woocommerce'));
+            setStatus(__('Recently viewed products cleared.', 'bad-otter-ultimate-commerce-woocommerce'));
         });
 
         renderLists();

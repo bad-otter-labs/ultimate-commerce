@@ -20,7 +20,7 @@ final class Authorization
 
         return new \WP_Error(
             'uc_forbidden',
-            __('You do not have permission to perform this action.', 'ultimate-commerce-for-woocommerce'),
+            __('You do not have permission to perform this action.', 'bad-otter-ultimate-commerce-woocommerce'),
             array('status' => 403)
         );
     }
@@ -40,7 +40,7 @@ final class Authorization
 
         return new \WP_Error(
             'uc_object_forbidden',
-            __('You do not have permission to access this resource.', 'ultimate-commerce-for-woocommerce'),
+            __('You do not have permission to access this resource.', 'bad-otter-ultimate-commerce-woocommerce'),
             array('status' => 403)
         );
     }
@@ -54,7 +54,7 @@ final class Authorization
 
         return new \WP_Error(
             'uc_authentication_required',
-            __('Authentication is required.', 'ultimate-commerce-for-woocommerce'),
+            __('Authentication is required.', 'bad-otter-ultimate-commerce-woocommerce'),
             array('status' => 401)
         );
     }

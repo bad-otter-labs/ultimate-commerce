@@ -46,10 +46,10 @@ final class WishlistStore
     public static function add(int $userId, int $productId)
     {
         if ($userId <= 0) {
-            return self::error('uc_wishlist_user_invalid', __('A signed-in customer is required for this wishlist.', 'ultimate-commerce-for-woocommerce'), 401);
+            return self::error('uc_wishlist_user_invalid', __('A signed-in customer is required for this wishlist.', 'bad-otter-ultimate-commerce-woocommerce'), 401);
         }
         if (!self::productAllowed($productId)) {
-            return self::error('uc_wishlist_product_invalid', __('This product cannot be added to the wishlist.', 'ultimate-commerce-for-woocommerce'), 404);
+            return self::error('uc_wishlist_product_invalid', __('This product cannot be added to the wishlist.', 'bad-otter-ultimate-commerce-woocommerce'), 404);
         }
 
         $ids = self::ids($userId);
@@ -57,7 +57,7 @@ final class WishlistStore
             return $ids;
         }
         if (count($ids) >= self::MAX_ITEMS) {
-            return self::error('uc_wishlist_full', __('The wishlist has reached its item limit.', 'ultimate-commerce-for-woocommerce'), 409);
+            return self::error('uc_wishlist_full', __('The wishlist has reached its item limit.', 'bad-otter-ultimate-commerce-woocommerce'), 409);
         }
 
         $ids[] = $productId;
@@ -117,7 +117,7 @@ final class WishlistStore
     {
         $registry->register(
             'wishlist',
-            __('Ultimate Commerce Wishlist', 'ultimate-commerce-for-woocommerce'),
+            __('Ultimate Commerce Wishlist', 'bad-otter-ultimate-commerce-woocommerce'),
             array(__CLASS__, 'privacyExporter'),
             array(__CLASS__, 'privacyEraser'),
             DataRetention::ACCOUNT_LIFETIME
@@ -145,11 +145,11 @@ final class WishlistStore
             'data' => array(
                 array(
                     'group_id' => 'ultimate-commerce-wishlist',
-                    'group_label' => __('Ultimate Commerce Wishlist', 'ultimate-commerce-for-woocommerce'),
+                    'group_label' => __('Ultimate Commerce Wishlist', 'bad-otter-ultimate-commerce-woocommerce'),
                     'item_id' => 'wishlist-' . (int) $user->ID,
                     'data' => array(
                         array(
-                            'name' => __('Product IDs', 'ultimate-commerce-for-woocommerce'),
+                            'name' => __('Product IDs', 'bad-otter-ultimate-commerce-woocommerce'),
                             'value' => implode(', ', array_map('strval', $ids)),
                         ),
                     ),

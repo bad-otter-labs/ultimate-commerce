@@ -35,7 +35,7 @@ final class SignedWebhook
             return $lease;
         }
         if ($lease === false) {
-            return self::error('uc_webhook_replay', __('This webhook event has already been accepted.', 'ultimate-commerce-for-woocommerce'), 409);
+            return self::error('uc_webhook_replay', __('This webhook event has already been accepted.', 'bad-otter-ultimate-commerce-woocommerce'), 409);
         }
 
         $verified['lease'] = $lease;
@@ -55,30 +55,30 @@ final class SignedWebhook
     ) {
         if (!preg_match('/^[a-z][a-z0-9_.:-]{0,63}$/', $scope)
             || !preg_match('/^[A-Za-z0-9][A-Za-z0-9_.:-]{0,190}$/', $eventId)) {
-            return self::error('uc_webhook_identity', __('Webhook identity is invalid.', 'ultimate-commerce-for-woocommerce'), 400);
+            return self::error('uc_webhook_identity', __('Webhook identity is invalid.', 'bad-otter-ultimate-commerce-woocommerce'), 400);
         }
         if ($secret === '' || strlen($secret) < 16) {
-            return self::error('uc_webhook_secret', __('Webhook secret is not configured securely.', 'ultimate-commerce-for-woocommerce'), 500);
+            return self::error('uc_webhook_secret', __('Webhook secret is not configured securely.', 'bad-otter-ultimate-commerce-woocommerce'), 500);
         }
         if ($toleranceSeconds < 30 || $toleranceSeconds > 3600) {
-            return self::error('uc_webhook_tolerance', __('Webhook timestamp tolerance is invalid.', 'ultimate-commerce-for-woocommerce'), 500);
+            return self::error('uc_webhook_tolerance', __('Webhook timestamp tolerance is invalid.', 'bad-otter-ultimate-commerce-woocommerce'), 500);
         }
         if (strlen($rawBody) > self::MAX_BODY_BYTES) {
-            return self::error('uc_webhook_body_too_large', __('Webhook payload is too large.', 'ultimate-commerce-for-woocommerce'), 413);
+            return self::error('uc_webhook_body_too_large', __('Webhook payload is too large.', 'bad-otter-ultimate-commerce-woocommerce'), 413);
         }
         if (!preg_match('/^[0-9]{10,}$/', $timestamp)) {
-            return self::error('uc_webhook_timestamp', __('Webhook timestamp is invalid.', 'ultimate-commerce-for-woocommerce'), 401);
+            return self::error('uc_webhook_timestamp', __('Webhook timestamp is invalid.', 'bad-otter-ultimate-commerce-woocommerce'), 401);
         }
 
         $now = $now ?? time();
         $eventTime = (int) $timestamp;
         if (abs($now - $eventTime) > $toleranceSeconds) {
-            return self::error('uc_webhook_timestamp', __('Webhook timestamp is outside the accepted window.', 'ultimate-commerce-for-woocommerce'), 401);
+            return self::error('uc_webhook_timestamp', __('Webhook timestamp is outside the accepted window.', 'bad-otter-ultimate-commerce-woocommerce'), 401);
         }
 
         $candidates = self::signatureCandidates($signature);
         if ($candidates === array()) {
-            return self::error('uc_webhook_signature', __('Webhook signature is invalid.', 'ultimate-commerce-for-woocommerce'), 401);
+            return self::error('uc_webhook_signature', __('Webhook signature is invalid.', 'bad-otter-ultimate-commerce-woocommerce'), 401);
         }
 
         $message = $timestamp . '.' . $eventId . '.' . $rawBody;
@@ -91,7 +91,7 @@ final class SignedWebhook
             }
         }
         if (!$matched) {
-            return self::error('uc_webhook_signature', __('Webhook signature verification failed.', 'ultimate-commerce-for-woocommerce'), 401);
+            return self::error('uc_webhook_signature', __('Webhook signature verification failed.', 'bad-otter-ultimate-commerce-woocommerce'), 401);
         }
 
         return array(
