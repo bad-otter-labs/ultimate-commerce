@@ -38,7 +38,7 @@ jobs:
           required_transfer = (
               "public const MAX_BYTES = 65536;",
               "private const FORMAT = 'ultimate-commerce-settings';",
-              "private const PRODUCT = 'ultimate-commerce-for-woocommerce';",
+              "private const PRODUCT = 'bad-otter-ultimate-commerce-woocommerce';",
               "private const MAX_MODULES = 128;",
               'Settings::updateModuleStates($states)',
           )

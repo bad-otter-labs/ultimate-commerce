@@ -2,7 +2,7 @@
 # This file is distributed under the GPL v2 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: Ultimate Commerce for WooCommerce 0.2.0\n"
+"Project-Id-Version: Bad Otter Ultimate Commerce for WooCommerce 0.2.0\n"
 "Report-Msgid-Bugs-To: https://github.com/bad-otter-labs/ultimate-commerce/issues\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,7 +16,7 @@ msgstr ""
 
 #. Plugin Name of the plugin
 #: bad-otter-ultimate-commerce-woocommerce.php:3
-msgid "Ultimate Commerce for WooCommerce"
+msgid "Bad Otter Ultimate Commerce for WooCommerce"
 msgstr ""
 
 #. Plugin URI of the plugin
