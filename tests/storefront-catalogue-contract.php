@@ -15,6 +15,7 @@ function apply_filters($tag, $value, ...$args) { return $value; }
 function do_action($tag, ...$args): void {}
 function sanitize_key($value): string { return strtolower((string) preg_replace('/[^a-z0-9_\-]/i', '', (string) $value)); }
 function sanitize_title($value): string { return trim(strtolower((string) preg_replace('/[^a-z0-9_\-]+/i', '-', (string) $value)), '-'); }
+function sanitize_text_field($value): string { return trim(strip_tags((string) $value)); }
 function sanitize_html_class($value): string { return sanitize_key($value); }
 function esc_attr($value): string { return htmlspecialchars((string) $value, ENT_QUOTES, 'UTF-8'); }
 function esc_html($value): string { return htmlspecialchars((string) $value, ENT_QUOTES, 'UTF-8'); }
@@ -142,6 +143,7 @@ $state = CatalogFilterRegistry::normalize(array(
     'min_price' => '50',
     'max_price' => '250',
     'availability' => 'in_stock',
+    'search' => "  waterproof \n jacket  ",
     'sort' => 'price_asc',
     'page' => 0,
     'per_page' => 999,
@@ -150,9 +152,21 @@ uc_storefront_assert($state['page'] === 1, 'page must be bounded');
 uc_storefront_assert($state['per_page'] === 48, 'per_page must be capped at 48');
 uc_storefront_assert($state['filters']['colour'] === array('navy', 'olive'), 'colour state must be normalized');
 uc_storefront_assert($state['sort'] === 'price_asc', 'allowed sort must survive normalization');
+uc_storefront_assert($state['search'] === 'waterproof jacket', 'search must be normalized into bounded catalogue state');
+uc_storefront_assert(strlen(CatalogFilterRegistry::normaliseSearchTerm(str_repeat('x', 200))) === 120, 'search must be capped at 120 characters');
 $canonical = CatalogFilterRegistry::canonicalQuery($state);
 uc_storefront_assert(($canonical['filter_colour'] ?? '') === 'navy,olive', 'canonical filter URL must be deterministic');
 uc_storefront_assert(($canonical['availability'] ?? '') === 'in_stock', 'availability must use flat canonical state');
+uc_storefront_assert(($canonical['search'] ?? '') === 'waterproof jacket', 'search must survive canonical catalogue state');
+
+$catalogQuerySource = file_get_contents(__DIR__ . '/../packages/ultimate-commerce-for-woocommerce/src/Storefront/CatalogQuery.php');
+uc_storefront_assert(is_string($catalogQuerySource), 'catalog query source must be readable');
+uc_storefront_assert(str_contains($catalogQuerySource, "'search' => (string)"), 'catalog query must pass bounded search state to Woo Store API');
+uc_storefront_assert(str_contains($catalogQuerySource, 'CatalogFilterRegistry::normaliseSearchTerm'), 'catalog query extension output must rebound search through the public bound');
+
+$pluginSource = file_get_contents(__DIR__ . '/../packages/ultimate-commerce-for-woocommerce/ultimate-commerce-for-woocommerce.php');
+uc_storefront_assert(is_string($pluginSource), 'plugin source must be readable');
+uc_storefront_assert(str_contains($pluginSource, "ULTIMATE_COMMERCE_STOREFRONT_API_VERSION', '1.1.0"), 'Storefront API version must advertise bounded search support');
 
 $parent = new WC_Product_Variable();
 $navyM = new WC_Product_Variation(11, array('pa_colour' => 'navy', 'pa_size' => 'm', 'cut-style' => 'regular-fit'), true);
