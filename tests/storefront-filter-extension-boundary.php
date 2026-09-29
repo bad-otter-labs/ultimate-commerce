@@ -13,6 +13,7 @@ function wc_attribute_taxonomy_name($name): string { return 'pa_' . sanitize_key
 function wc_get_attribute_taxonomies(): array {
     return array((object) array('attribute_name' => 'colour', 'attribute_label' => 'Colour'));
 }
+function sanitize_text_field($value): string { return trim(strip_tags((string) $value)); }
 function taxonomy_exists($taxonomy): bool { return $taxonomy === 'pa_colour'; }
 function is_object_in_taxonomy($object, $taxonomy): bool { return $object === 'product' && $taxonomy === 'pa_colour'; }
 
