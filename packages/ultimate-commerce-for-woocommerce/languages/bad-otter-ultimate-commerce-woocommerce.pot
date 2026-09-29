@@ -15,27 +15,27 @@ msgstr ""
 "X-Domain: bad-otter-ultimate-commerce-woocommerce\n"
 
 #. Plugin Name of the plugin
-#: bad-otter-ultimate-commerce-woocommerce.php:3
+#: ultimate-commerce-for-woocommerce.php:3
 msgid "Bad Otter Ultimate Commerce for WooCommerce"
 msgstr ""
 
 #. Plugin URI of the plugin
-#: bad-otter-ultimate-commerce-woocommerce.php:4
+#: ultimate-commerce-for-woocommerce.php:4
 msgid "https://badotter.io/ultimate-commerce"
 msgstr ""
 
 #. Description of the plugin
-#: bad-otter-ultimate-commerce-woocommerce.php:5
+#: ultimate-commerce-for-woocommerce.php:5
 msgid "A modular commerce experience enhancement platform for WooCommerce."
 msgstr ""
 
 #. Author of the plugin
-#: bad-otter-ultimate-commerce-woocommerce.php:12
+#: ultimate-commerce-for-woocommerce.php:12
 msgid "Bad Otter Labs"
 msgstr ""
 
 #. Author URI of the plugin
-#: bad-otter-ultimate-commerce-woocommerce.php:13
+#: ultimate-commerce-for-woocommerce.php:13
 msgid "https://badotter.io"
 msgstr ""
 

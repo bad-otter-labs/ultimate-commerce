@@ -109,7 +109,11 @@ jobs:
               raise SystemExit(0)
 
           try:
-              issues = json.loads(text)
+              start = text.find('[')
+              end = text.rfind(']')
+              if start == -1 or end == -1 or end < start:
+                  raise json.JSONDecodeError('JSON array not found', text, 0)
+              issues = json.loads(text[start:end + 1])
           except json.JSONDecodeError as exc:
               raise SystemExit(f'Plugin Check returned unparseable output (exit {status}): {exc}')
 
