@@ -116,6 +116,7 @@ The resulting ZIP is audited by `scripts/check-wordpress-org-package.py` and by 
 = 0.2.0 =
 * Establish the canonical WordPress.org Free package identity and remove the private Bad Otter updater from the Free runtime.
 * Add Storefront API v1 product-card, catalogue, filter, variation and swatch-ready presentation contracts.
+* Extend the Storefront API contract to v1.1 with bounded, canonical WooCommerce product-search state for extension-safe search merchandising.
 * Add WooCommerce Store API-backed cart drawer and variation-aware Quick Add.
 * Add Wishlist API v1 with signed-in persistence, browser-local guest state, authenticated merge and WordPress privacy export/erase support.
 * Add browser-local Recently Viewed API v1 with live WooCommerce product rendering.
