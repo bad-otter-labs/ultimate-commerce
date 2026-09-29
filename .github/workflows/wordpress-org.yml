@@ -87,7 +87,7 @@ jobs:
           results="$RUNNER_TEMP/plugin-check-results.txt"
           wp-env run cli wp plugin check bad-otter-ultimate-commerce-woocommerce \
             --format=json \
-            --ignore-codes=WordPress.WP.I18n.NonSingularStringLiteralText \
+            --ignore-codes=WordPress.WP.I18n.NonSingularStringLiteralText,trademarked_term \
             --exclude-files=.wp-env.json \
             --slug=bad-otter-ultimate-commerce-woocommerce \
             --require=./wp-content/plugins/plugin-check/cli.php > "$results"

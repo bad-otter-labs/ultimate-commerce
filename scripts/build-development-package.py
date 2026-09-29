@@ -62,7 +62,7 @@ def patch_entry(entry: Path, dev_version: str) -> None:
     if 'Update URI:' in text:
         fail('Canonical source unexpectedly already has Update URI')
     text, uri_count = re.subn(
-        r'(^\s*\*\s*Text Domain:\s*ultimate-commerce-for-woocommerce\s*$)',
+        r'(^\s*\*\s*Text Domain:\s*bad-otter-ultimate-commerce-woocommerce\s*$)',
         r'\1\n * Update URI: https://badotter.io/ultimate-commerce-for-woocommerce-dev',
         text,
         count=1,

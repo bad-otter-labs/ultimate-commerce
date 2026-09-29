@@ -103,7 +103,7 @@ $decoded = json_decode($export);
 ucAssert($decoded instanceof stdClass, 'Export must decode to a JSON object.');
 ucAssert($decoded->format === 'ultimate-commerce-settings', 'Export format identifier mismatch.');
 ucAssert($decoded->schema_version === 1, 'Export schema version mismatch.');
-ucAssert($decoded->product === 'ultimate-commerce-for-woocommerce', 'Export product identity mismatch.');
+ucAssert($decoded->product === 'bad-otter-ultimate-commerce-woocommerce', 'Export product identity mismatch.');
 ucAssert($decoded->settings instanceof stdClass, 'Export settings must be an object.');
 ucAssert($decoded->settings->modules instanceof stdClass, 'Export modules must be an object.');
 ucAssert($decoded->settings->modules->cart === true, 'Stored cart preference missing from export.');
@@ -115,7 +115,7 @@ ucAssert(strpos($export, 'uc_schema_version') === false, 'Runtime schema metadat
 $valid = json_encode(array(
     'format' => 'ultimate-commerce-settings',
     'schema_version' => 1,
-    'product' => 'ultimate-commerce-for-woocommerce',
+    'product' => 'bad-otter-ultimate-commerce-woocommerce',
     'settings' => array(
         'modules' => (object) array(
             'cart' => false,
@@ -132,7 +132,7 @@ ucAssert($ucOptions['uc_modules']['extension_absent'] === false, 'Import must pr
 $emptyModules = json_encode(array(
     'format' => 'ultimate-commerce-settings',
     'schema_version' => 1,
-    'product' => 'ultimate-commerce-for-woocommerce',
+    'product' => 'bad-otter-ultimate-commerce-woocommerce',
     'settings' => array('modules' => (object) array()),
 ));
 $beforeEmpty = $ucOptions;
@@ -147,7 +147,7 @@ ucImportError('{not json}', 'uc_settings_import_json');
 $wrongShape = json_encode(array(
     'format' => 'ultimate-commerce-settings',
     'schema_version' => 1,
-    'product' => 'ultimate-commerce-for-woocommerce',
+    'product' => 'bad-otter-ultimate-commerce-woocommerce',
     'settings' => array('modules' => (object) array()),
     'extra' => true,
 ));
@@ -164,7 +164,7 @@ ucImportError((string) $wrongProduct, 'uc_settings_import_product');
 $wrongSchema = json_encode(array(
     'format' => 'ultimate-commerce-settings',
     'schema_version' => 2,
-    'product' => 'ultimate-commerce-for-woocommerce',
+    'product' => 'bad-otter-ultimate-commerce-woocommerce',
     'settings' => array('modules' => (object) array()),
 ));
 ucImportError((string) $wrongSchema, 'uc_settings_import_schema');
@@ -172,7 +172,7 @@ ucImportError((string) $wrongSchema, 'uc_settings_import_schema');
 $unknownSettings = json_encode(array(
     'format' => 'ultimate-commerce-settings',
     'schema_version' => 1,
-    'product' => 'ultimate-commerce-for-woocommerce',
+    'product' => 'bad-otter-ultimate-commerce-woocommerce',
     'settings' => array(
         'modules' => (object) array(),
         'secrets' => (object) array('token' => 'nope'),
@@ -183,7 +183,7 @@ ucImportError((string) $unknownSettings, 'uc_settings_import_settings');
 $listModules = json_encode(array(
     'format' => 'ultimate-commerce-settings',
     'schema_version' => 1,
-    'product' => 'ultimate-commerce-for-woocommerce',
+    'product' => 'bad-otter-ultimate-commerce-woocommerce',
     'settings' => array('modules' => array('cart')),
 ));
 ucImportError((string) $listModules, 'uc_settings_import_modules');
@@ -191,7 +191,7 @@ ucImportError((string) $listModules, 'uc_settings_import_modules');
 $invalidValue = json_encode(array(
     'format' => 'ultimate-commerce-settings',
     'schema_version' => 1,
-    'product' => 'ultimate-commerce-for-woocommerce',
+    'product' => 'bad-otter-ultimate-commerce-woocommerce',
     'settings' => array('modules' => (object) array('cart' => 1)),
 ));
 ucImportError((string) $invalidValue, 'uc_settings_import_module_value');
@@ -199,7 +199,7 @@ ucImportError((string) $invalidValue, 'uc_settings_import_module_value');
 $invalidKey = json_encode(array(
     'format' => 'ultimate-commerce-settings',
     'schema_version' => 1,
-    'product' => 'ultimate-commerce-for-woocommerce',
+    'product' => 'bad-otter-ultimate-commerce-woocommerce',
     'settings' => array('modules' => (object) array('Bad Key' => true)),
 ));
 ucImportError((string) $invalidKey, 'uc_settings_import_module_value');
@@ -211,7 +211,7 @@ for ($index = 0; $index < 129; $index++) {
 $tooManyJson = json_encode(array(
     'format' => 'ultimate-commerce-settings',
     'schema_version' => 1,
-    'product' => 'ultimate-commerce-for-woocommerce',
+    'product' => 'bad-otter-ultimate-commerce-woocommerce',
     'settings' => array('modules' => (object) $tooMany),
 ));
 ucImportError((string) $tooManyJson, 'uc_settings_import_module_limit');

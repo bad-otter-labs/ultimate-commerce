@@ -172,8 +172,8 @@ jobs:
           migrator = (root / 'src/Support/OptionMigrator.php').read_text()
 
           required_headers = {
-              'Plugin Name': 'Ultimate Commerce for WooCommerce',
-              'Text Domain': 'ultimate-commerce-for-woocommerce',
+              'Plugin Name': 'Bad Otter Ultimate Commerce for WooCommerce',
+              'Text Domain': 'bad-otter-ultimate-commerce-woocommerce',
               'License': 'GPL v2 or later',
               'Requires Plugins': 'woocommerce',
           }
@@ -254,7 +254,7 @@ jobs:
           import zipfile
           from pathlib import Path
           package = next(Path('dist-free-a').glob('*.zip'))
-          root = 'ultimate-commerce-for-woocommerce/'
+          root = 'bad-otter-ultimate-commerce-woocommerce/'
           with zipfile.ZipFile(package) as zf:
               names = zf.namelist()
               if not names or any(not name.startswith(root) for name in names):
