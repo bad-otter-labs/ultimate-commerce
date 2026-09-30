@@ -7,10 +7,10 @@ defined('ABSPATH') || exit;
 final class Capabilities
 {
     private const VERSION = '1';
-    private const VERSION_OPTION = 'uc_capability_version';
+    private const VERSION_OPTION = 'badotulc_capability_version';
 
-    public const VIEW_DIAGNOSTICS = 'uc_view_diagnostics';
-    public const MANAGE_SETTINGS = 'uc_manage_settings';
+    public const VIEW_DIAGNOSTICS = 'badotulc_view_diagnostics';
+    public const MANAGE_SETTINGS = 'badotulc_manage_settings';
 
     /** @return list<string> */
     public static function all(): array

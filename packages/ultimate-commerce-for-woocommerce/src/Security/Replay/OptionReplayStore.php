@@ -8,8 +8,8 @@ defined('ABSPATH') || exit;
 
 final class OptionReplayStore implements ReplayStore
 {
-    private const PREFIX = 'uc_replay_';
-    private const DELETE_HOOK = 'uc_replay_store_delete';
+    private const PREFIX = 'badotulc_replay_';
+    private const DELETE_HOOK = 'badotulc_replay_store_delete';
     private const MIN_TTL = 60;
     private const MAX_TTL = 604800;
 
@@ -22,10 +22,10 @@ final class OptionReplayStore implements ReplayStore
     public function claim(string $scope, string $eventId, int $ttlSeconds = 86400)
     {
         if (!self::validScope($scope) || !self::validEventId($eventId)) {
-            return self::error('uc_replay_key_invalid', __('Replay protection key is invalid.', 'bad-otter-ultimate-commerce-woocommerce'));
+            return self::error('badotulc_replay_key_invalid', __('Replay protection key is invalid.', 'bad-otter-ultimate-commerce-woocommerce'));
         }
         if ($ttlSeconds < self::MIN_TTL || $ttlSeconds > self::MAX_TTL) {
-            return self::error('uc_replay_ttl_invalid', __('Replay protection lifetime is outside the allowed range.', 'bad-otter-ultimate-commerce-woocommerce'));
+            return self::error('badotulc_replay_ttl_invalid', __('Replay protection lifetime is outside the allowed range.', 'bad-otter-ultimate-commerce-woocommerce'));
         }
 
         $name = self::optionName($scope, $eventId);
@@ -41,7 +41,7 @@ final class OptionReplayStore implements ReplayStore
         try {
             $lease = bin2hex(random_bytes(16));
         } catch (\Throwable $exception) {
-            return self::error('uc_replay_entropy', __('Replay protection entropy is unavailable.', 'bad-otter-ultimate-commerce-woocommerce'));
+            return self::error('badotulc_replay_entropy', __('Replay protection entropy is unavailable.', 'bad-otter-ultimate-commerce-woocommerce'));
         }
 
         $expires = $now + $ttlSeconds;

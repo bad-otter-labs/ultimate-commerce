@@ -13,7 +13,7 @@ final class CatalogQuery
     {
         if (!class_exists('Automattic\\WooCommerce\\StoreApi\\Utilities\\ProductQuery') || !class_exists('WP_REST_Request')) {
             return new \WP_Error(
-                'uc_catalog_unavailable',
+                'badotulc_catalog_unavailable',
                 __('WooCommerce Store API product querying is unavailable.', 'bad-otter-ultimate-commerce-woocommerce'),
                 array('status' => 503)
             );
@@ -32,7 +32,7 @@ final class CatalogQuery
             $results = $productQuery->get_results($request);
         } catch (\Throwable $exception) {
             return new \WP_Error(
-                'uc_catalog_query_failed',
+                'badotulc_catalog_query_failed',
                 __('The product catalogue could not be queried.', 'bad-otter-ultimate-commerce-woocommerce'),
                 array('status' => 500)
             );

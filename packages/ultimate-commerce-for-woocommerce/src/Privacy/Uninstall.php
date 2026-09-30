@@ -11,13 +11,13 @@ defined('ABSPATH') || exit;
 final class Uninstall
 {
     private const ALWAYS_OPTIONS = array(
-        'uc_version',
-        'uc_schema_version',
+        'badotulc_version',
+        'badotulc_schema_version',
     );
 
     private const PURGE_OPTIONS = array(
-        'uc_modules',
-        'uc_secret_store_v1',
+        'badotulc_modules',
+        'badotulc_secret_store_v1',
         Settings::UNINSTALL_DATA_OPTION,
         'ultimate_commerce_version',
         'ultimate_commerce_schema_version',
@@ -25,14 +25,14 @@ final class Uninstall
     );
 
     private const RUNTIME_OPTION_PREFIXES = array(
-        'uc_lock_',
-        'uc_idem_',
-        'uc_replay_',
+        'badotulc_lock_',
+        'badotulc_idem_',
+        'badotulc_replay_',
     );
 
     private const RUNTIME_TRANSIENT_PREFIXES = array(
-        '_transient_uc_rl_',
-        '_transient_timeout_uc_rl_',
+        '_transient_badotulc_rl_',
+        '_transient_timeout_badotulc_rl_',
     );
 
     public static function run(): void

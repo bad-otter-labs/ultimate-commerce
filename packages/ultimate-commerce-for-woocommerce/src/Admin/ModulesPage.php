@@ -13,12 +13,12 @@ final class ModulesPage
 {
     public const SLUG = 'ultimate-commerce-modules';
 
-    private const NONCE_FIELD = 'uc_modules_nonce';
+    private const NONCE_FIELD = 'badotulc_modules_nonce';
     private const PURPOSE_SAVE = 'modules_save';
 
     public static function hooks(): void
     {
-        add_action('admin_post_uc_modules_save', array(__CLASS__, 'save'));
+        add_action('admin_post_badotulc_modules_save', array(__CLASS__, 'save'));
     }
 
     public static function render(): void
@@ -41,8 +41,8 @@ final class ModulesPage
             <?php self::renderNotice(self::noticeCode()); ?>
 
             <form class="uc-card uc-modules-card" method="post" action="<?php echo esc_url(admin_url('admin-post.php')); ?>">
-                <input type="hidden" name="action" value="uc_modules_save">
-                <?php wp_nonce_field('uc_' . self::PURPOSE_SAVE, self::NONCE_FIELD); ?>
+                <input type="hidden" name="action" value="badotulc_modules_save">
+                <?php wp_nonce_field('badotulc_' . self::PURPOSE_SAVE, self::NONCE_FIELD); ?>
 
                 <table class="widefat striped uc-data-table uc-modules-table">
                     <thead>
@@ -170,7 +170,7 @@ final class ModulesPage
         $url = add_query_arg(
             array(
                 'page' => self::SLUG,
-                'uc_modules_status' => sanitize_key($status),
+                'badotulc_modules_status' => sanitize_key($status),
             ),
             admin_url('admin.php')
         );
@@ -181,10 +181,10 @@ final class ModulesPage
     private static function noticeCode(): string
     {
         // phpcs:disable WordPress.Security.NonceVerification.Recommended -- Read-only, sanitized admin notice state; it does not authorize or mutate data.
-        if (!isset($_GET['uc_modules_status']) || !is_scalar($_GET['uc_modules_status'])) {
+        if (!isset($_GET['badotulc_modules_status']) || !is_scalar($_GET['badotulc_modules_status'])) {
             return '';
         }
-        $code = sanitize_key((string) wp_unslash($_GET['uc_modules_status']));
+        $code = sanitize_key((string) wp_unslash($_GET['badotulc_modules_status']));
         // phpcs:enable WordPress.Security.NonceVerification.Recommended
         return $code;
     }

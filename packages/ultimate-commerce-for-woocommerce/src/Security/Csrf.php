@@ -6,7 +6,7 @@ defined('ABSPATH') || exit;
 
 final class Csrf
 {
-    private const ACTION_PREFIX = 'uc_';
+    private const ACTION_PREFIX = 'badotulc_';
 
     public static function verify(string $nonce, string $action): bool
     {
@@ -26,7 +26,7 @@ final class Csrf
         }
 
         return new \WP_Error(
-            'uc_invalid_nonce',
+            'badotulc_invalid_nonce',
             __('The request could not be verified.', 'bad-otter-ultimate-commerce-woocommerce'),
             array('status' => 403)
         );

@@ -7,9 +7,9 @@ defined('ABSPATH') || exit;
 final class OptionMigrator
 {
     private const LEGACY_OPTIONS = array(
-        'ultimate_commerce_version' => 'uc_version',
-        'ultimate_commerce_schema_version' => 'uc_schema_version',
-        'ultimate_commerce_modules' => 'uc_modules',
+        'ultimate_commerce_version' => 'badotulc_version',
+        'ultimate_commerce_schema_version' => 'badotulc_schema_version',
+        'ultimate_commerce_modules' => 'badotulc_modules',
     );
 
     public static function migrate(): void

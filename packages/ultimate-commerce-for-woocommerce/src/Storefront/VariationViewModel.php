@@ -269,8 +269,8 @@ final class VariationViewModel
             }
             foreach ((array) $terms as $term) {
                 $defaultSwatch = array(
-                    'color' => (string) get_term_meta((int) $term->term_id, 'uc_swatch_color', true),
-                    'image_id' => absint(get_term_meta((int) $term->term_id, 'uc_swatch_image_id', true)),
+                    'color' => (string) get_term_meta((int) $term->term_id, 'badotulc_swatch_color', true),
+                    'image_id' => absint(get_term_meta((int) $term->term_id, 'badotulc_swatch_image_id', true)),
                 );
                 $filteredSwatch = apply_filters('ultimate_commerce_variation_swatch_data', $defaultSwatch, $term, $taxonomy);
                 $filteredSwatch = is_array($filteredSwatch) ? $filteredSwatch : $defaultSwatch;

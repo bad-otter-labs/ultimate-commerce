@@ -12,7 +12,7 @@ final class OptionIdempotencyStore implements IdempotencyStore
     public const STATUS_IN_PROGRESS = 'in_progress';
     public const STATUS_COMPLETED = 'completed';
 
-    private const PREFIX = 'uc_idem_';
+    private const PREFIX = 'badotulc_idem_';
     private const DELETE_HOOK = 'ultimate_commerce_idempotency_store_delete';
     private const MIN_TTL = 60;
     private const MAX_TTL = 604800;
@@ -25,10 +25,10 @@ final class OptionIdempotencyStore implements IdempotencyStore
     public function claim(string $scope, string $key, int $ttlSeconds = 86400)
     {
         if (!self::validScope($scope) || !self::validKey($key)) {
-            return self::error('uc_idempotency_key_invalid', __('Idempotency scope or key is invalid.', 'bad-otter-ultimate-commerce-woocommerce'));
+            return self::error('badotulc_idempotency_key_invalid', __('Idempotency scope or key is invalid.', 'bad-otter-ultimate-commerce-woocommerce'));
         }
         if ($ttlSeconds < self::MIN_TTL || $ttlSeconds > self::MAX_TTL) {
-            return self::error('uc_idempotency_ttl_invalid', __('Idempotency lifetime is outside the allowed range.', 'bad-otter-ultimate-commerce-woocommerce'));
+            return self::error('badotulc_idempotency_ttl_invalid', __('Idempotency lifetime is outside the allowed range.', 'bad-otter-ultimate-commerce-woocommerce'));
         }
 
         $option = self::optionName($scope, $key);
@@ -44,7 +44,7 @@ final class OptionIdempotencyStore implements IdempotencyStore
         try {
             $lease = bin2hex(random_bytes(16));
         } catch (\Throwable $exception) {
-            return self::error('uc_idempotency_entropy', __('Idempotency entropy is unavailable.', 'bad-otter-ultimate-commerce-woocommerce'));
+            return self::error('badotulc_idempotency_entropy', __('Idempotency entropy is unavailable.', 'bad-otter-ultimate-commerce-woocommerce'));
         }
 
         $expires = $now + $ttlSeconds;
@@ -59,7 +59,7 @@ final class OptionIdempotencyStore implements IdempotencyStore
             if (is_array($raced) && (int) ($raced['expires'] ?? 0) > $now) {
                 return self::publicRecord($raced);
             }
-            return self::error('uc_idempotency_claim_failed', __('Idempotency claim could not be established.', 'bad-otter-ultimate-commerce-woocommerce'));
+            return self::error('badotulc_idempotency_claim_failed', __('Idempotency claim could not be established.', 'bad-otter-ultimate-commerce-woocommerce'));
         }
 
         if (function_exists('wp_schedule_single_event')) {

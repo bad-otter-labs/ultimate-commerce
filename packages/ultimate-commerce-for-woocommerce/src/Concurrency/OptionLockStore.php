@@ -8,7 +8,7 @@ defined('ABSPATH') || exit;
 
 final class OptionLockStore implements LockStore
 {
-    private const PREFIX = 'uc_lock_';
+    private const PREFIX = 'badotulc_lock_';
     private const DELETE_HOOK = 'ultimate_commerce_lock_store_delete';
     private const MIN_TTL = 5;
     private const MAX_TTL = 86400;
@@ -22,10 +22,10 @@ final class OptionLockStore implements LockStore
     public function acquire(string $scope, string $key, int $ttlSeconds = 300)
     {
         if (!self::validScope($scope) || !self::validKey($key)) {
-            return self::error('uc_lock_key_invalid', __('Lock scope or key is invalid.', 'bad-otter-ultimate-commerce-woocommerce'));
+            return self::error('badotulc_lock_key_invalid', __('Lock scope or key is invalid.', 'bad-otter-ultimate-commerce-woocommerce'));
         }
         if ($ttlSeconds < self::MIN_TTL || $ttlSeconds > self::MAX_TTL) {
-            return self::error('uc_lock_ttl_invalid', __('Lock lifetime is outside the allowed range.', 'bad-otter-ultimate-commerce-woocommerce'));
+            return self::error('badotulc_lock_ttl_invalid', __('Lock lifetime is outside the allowed range.', 'bad-otter-ultimate-commerce-woocommerce'));
         }
 
         $option = self::optionName($scope, $key);
@@ -41,7 +41,7 @@ final class OptionLockStore implements LockStore
         try {
             $lease = bin2hex(random_bytes(16));
         } catch (\Throwable $exception) {
-            return self::error('uc_lock_entropy', __('Lock entropy is unavailable.', 'bad-otter-ultimate-commerce-woocommerce'));
+            return self::error('badotulc_lock_entropy', __('Lock entropy is unavailable.', 'bad-otter-ultimate-commerce-woocommerce'));
         }
 
         $expires = $now + $ttlSeconds;

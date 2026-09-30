@@ -6,7 +6,7 @@ defined('ABSPATH') || exit;
 
 final class WishlistBootstrap
 {
-    public const ACTION = 'uc_wishlist_bootstrap';
+    public const ACTION = 'badotulc_wishlist_bootstrap';
 
     private static bool $hooksRegistered = false;
 

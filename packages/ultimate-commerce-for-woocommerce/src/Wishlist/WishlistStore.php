@@ -9,7 +9,7 @@ defined('ABSPATH') || exit;
 
 final class WishlistStore
 {
-    public const BASE_META_KEY = 'uc_wishlist_product_ids';
+    public const BASE_META_KEY = 'badotulc_wishlist_product_ids';
     public const MAX_ITEMS = 100;
 
     private static bool $hooksRegistered = false;
@@ -46,10 +46,10 @@ final class WishlistStore
     public static function add(int $userId, int $productId)
     {
         if ($userId <= 0) {
-            return self::error('uc_wishlist_user_invalid', __('A signed-in customer is required for this wishlist.', 'bad-otter-ultimate-commerce-woocommerce'), 401);
+            return self::error('badotulc_wishlist_user_invalid', __('A signed-in customer is required for this wishlist.', 'bad-otter-ultimate-commerce-woocommerce'), 401);
         }
         if (!self::productAllowed($productId)) {
-            return self::error('uc_wishlist_product_invalid', __('This product cannot be added to the wishlist.', 'bad-otter-ultimate-commerce-woocommerce'), 404);
+            return self::error('badotulc_wishlist_product_invalid', __('This product cannot be added to the wishlist.', 'bad-otter-ultimate-commerce-woocommerce'), 404);
         }
 
         $ids = self::ids($userId);
@@ -57,7 +57,7 @@ final class WishlistStore
             return $ids;
         }
         if (count($ids) >= self::MAX_ITEMS) {
-            return self::error('uc_wishlist_full', __('The wishlist has reached its item limit.', 'bad-otter-ultimate-commerce-woocommerce'), 409);
+            return self::error('badotulc_wishlist_full', __('The wishlist has reached its item limit.', 'bad-otter-ultimate-commerce-woocommerce'), 409);
         }
 
         $ids[] = $productId;

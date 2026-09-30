@@ -5,7 +5,7 @@
     var _n = wp.i18n._n;
     var sprintf = wp.i18n.sprintf;
     var config = window.ucRecentlyViewedConfig || {};
-    var LOCAL_KEY = String(config.storageKey || 'uc_recently_viewed_v1');
+    var LOCAL_KEY = String(config.storageKey || 'badotulc_recently_viewed_v1');
     var ids = [];
 
     function maxItems() {

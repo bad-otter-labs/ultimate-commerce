@@ -13,16 +13,16 @@ final class SettingsPage
 {
     public const SLUG = 'ultimate-commerce-settings';
 
-    private const NONCE_FIELD = 'uc_settings_transfer_nonce';
+    private const NONCE_FIELD = 'badotulc_settings_transfer_nonce';
     private const PURPOSE_EXPORT = 'settings_export';
     private const PURPOSE_IMPORT = 'settings_import';
     private const PURPOSE_RETENTION = 'settings_retention';
 
     public static function hooks(): void
     {
-        add_action('admin_post_uc_settings_export', array(__CLASS__, 'export'));
-        add_action('admin_post_uc_settings_import', array(__CLASS__, 'import'));
-        add_action('admin_post_uc_settings_retention', array(__CLASS__, 'saveRetention'));
+        add_action('admin_post_badotulc_settings_export', array(__CLASS__, 'export'));
+        add_action('admin_post_badotulc_settings_import', array(__CLASS__, 'import'));
+        add_action('admin_post_badotulc_settings_retention', array(__CLASS__, 'saveRetention'));
     }
 
     public static function render(): void
@@ -39,8 +39,8 @@ final class SettingsPage
             <section class="uc-card uc-settings-card"><h2 class="uc-card__title"><?php echo esc_html__('Export settings', 'bad-otter-ultimate-commerce-woocommerce'); ?></h2>
             <p><?php echo esc_html__('Download a JSON file containing supported merchant configuration. The current format includes stored module preferences, including temporarily unavailable extension modules.', 'bad-otter-ultimate-commerce-woocommerce'); ?></p>
             <form method="post" action="<?php echo esc_url(admin_url('admin-post.php')); ?>">
-                <input type="hidden" name="action" value="uc_settings_export">
-                <?php wp_nonce_field('uc_' . self::PURPOSE_EXPORT, self::NONCE_FIELD); ?>
+                <input type="hidden" name="action" value="badotulc_settings_export">
+                <?php wp_nonce_field('badotulc_' . self::PURPOSE_EXPORT, self::NONCE_FIELD); ?>
                 <?php submit_button(__('Download settings file', 'bad-otter-ultimate-commerce-woocommerce'), 'secondary', 'submit', false); ?>
             </form></section>
 
@@ -49,8 +49,8 @@ final class SettingsPage
             <section class="uc-card uc-settings-card"><h2 class="uc-card__title"><?php echo esc_html__('Import settings', 'bad-otter-ultimate-commerce-woocommerce'); ?></h2>
             <p><?php echo esc_html__('Import a JSON file previously exported by Ultimate Commerce. Declared module preferences are merged with existing settings, so omitted extension preferences are preserved.', 'bad-otter-ultimate-commerce-woocommerce'); ?></p>
             <form class="uc-settings-form" method="post" enctype="multipart/form-data" action="<?php echo esc_url(admin_url('admin-post.php')); ?>">
-                <input type="hidden" name="action" value="uc_settings_import">
-                <?php wp_nonce_field('uc_' . self::PURPOSE_IMPORT, self::NONCE_FIELD); ?>
+                <input type="hidden" name="action" value="badotulc_settings_import">
+                <?php wp_nonce_field('badotulc_' . self::PURPOSE_IMPORT, self::NONCE_FIELD); ?>
                 <p>
                     <label for="uc-settings-file"><strong><?php echo esc_html__('Settings JSON file', 'bad-otter-ultimate-commerce-woocommerce'); ?></strong></label><br>
                     <input class="uc-file-input" id="uc-settings-file" name="settings_file" type="file" accept=".json,application/json" required>
@@ -74,8 +74,8 @@ final class SettingsPage
             <section class="uc-card uc-settings-card uc-settings-card--danger"><h2 class="uc-card__title"><?php echo esc_html__('Data retention', 'bad-otter-ultimate-commerce-woocommerce'); ?></h2>
             <p><?php echo esc_html__('Ultimate Commerce keeps merchant configuration by default when the plugin is deleted, making a later reinstall recoverable. Short-lived runtime locks, replay records, idempotency records and rate-limit transients are always removed.', 'bad-otter-ultimate-commerce-woocommerce'); ?></p>
             <form class="uc-settings-form" method="post" action="<?php echo esc_url(admin_url('admin-post.php')); ?>">
-                <input type="hidden" name="action" value="uc_settings_retention">
-                <?php wp_nonce_field('uc_' . self::PURPOSE_RETENTION, self::NONCE_FIELD); ?>
+                <input type="hidden" name="action" value="badotulc_settings_retention">
+                <?php wp_nonce_field('badotulc_' . self::PURPOSE_RETENTION, self::NONCE_FIELD); ?>
                 <p>
                     <label class="uc-toggle uc-toggle--danger">
                         <input type="checkbox" name="delete_data_on_uninstall" value="1" <?php checked($deleteDataOnUninstall); ?>>
@@ -147,7 +147,7 @@ final class SettingsPage
     {
         // phpcs:disable WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- import() verifies the nonce before calling this helper; upload metadata is validated field-by-field and file contents are size-bounded below.
         if (!isset($_FILES['settings_file']) || !is_array($_FILES['settings_file'])) {
-            return new \WP_Error('uc_settings_upload_missing', __('Choose an Ultimate Commerce settings file to import.', 'bad-otter-ultimate-commerce-woocommerce'));
+            return new \WP_Error('badotulc_settings_upload_missing', __('Choose an Ultimate Commerce settings file to import.', 'bad-otter-ultimate-commerce-woocommerce'));
         }
 
         $file = $_FILES['settings_file'];
@@ -157,13 +157,13 @@ final class SettingsPage
         $tmpName = isset($file['tmp_name']) && is_string($file['tmp_name']) ? $file['tmp_name'] : '';
 
         if ($error !== UPLOAD_ERR_OK || $tmpName === '' || $size > SettingsTransfer::MAX_BYTES || !is_uploaded_file($tmpName)) {
-            return new \WP_Error('uc_settings_upload_invalid', __('The uploaded settings file could not be accepted.', 'bad-otter-ultimate-commerce-woocommerce'));
+            return new \WP_Error('badotulc_settings_upload_invalid', __('The uploaded settings file could not be accepted.', 'bad-otter-ultimate-commerce-woocommerce'));
         }
 
         // phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents -- Reading a locally validated uploaded file, not a remote URL.
         $contents = file_get_contents($tmpName, false, null, 0, SettingsTransfer::MAX_BYTES + 1);
         if (!is_string($contents) || $contents === '' || strlen($contents) > SettingsTransfer::MAX_BYTES) {
-            return new \WP_Error('uc_settings_upload_read', __('The uploaded settings file is empty, unreadable or too large.', 'bad-otter-ultimate-commerce-woocommerce'));
+            return new \WP_Error('badotulc_settings_upload_read', __('The uploaded settings file is empty, unreadable or too large.', 'bad-otter-ultimate-commerce-woocommerce'));
         }
 
         return $contents;
@@ -204,7 +204,7 @@ final class SettingsPage
         $url = add_query_arg(
             array(
                 'page' => self::SLUG,
-                'uc_settings_status' => sanitize_key($status),
+                'badotulc_settings_status' => sanitize_key($status),
             ),
             admin_url('admin.php')
         );
@@ -215,10 +215,10 @@ final class SettingsPage
     private static function noticeCode(): string
     {
         // phpcs:disable WordPress.Security.NonceVerification.Recommended -- Read-only, sanitized admin notice state; it does not authorize or mutate data.
-        if (!isset($_GET['uc_settings_status']) || !is_scalar($_GET['uc_settings_status'])) {
+        if (!isset($_GET['badotulc_settings_status']) || !is_scalar($_GET['badotulc_settings_status'])) {
             return '';
         }
-        $code = sanitize_key((string) wp_unslash($_GET['uc_settings_status']));
+        $code = sanitize_key((string) wp_unslash($_GET['badotulc_settings_status']));
         // phpcs:enable WordPress.Security.NonceVerification.Recommended
         return $code;
     }

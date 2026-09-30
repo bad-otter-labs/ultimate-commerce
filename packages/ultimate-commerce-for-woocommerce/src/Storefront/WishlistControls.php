@@ -116,8 +116,8 @@ final class WishlistControls
             'storeProducts' => rest_url('wc/store/v1/products'),
             'maxItems' => WishlistStore::MAX_ITEMS,
             'storageKey' => (function_exists('is_multisite') && is_multisite() && function_exists('get_current_blog_id'))
-                ? 'uc_wishlist_v1_' . (int) get_current_blog_id()
-                : 'uc_wishlist_v1',
+                ? 'badotulc_wishlist_v1_' . (int) get_current_blog_id()
+                : 'badotulc_wishlist_v1',
         );
         $json = wp_json_encode($config, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT);
         if (is_string($json)) {

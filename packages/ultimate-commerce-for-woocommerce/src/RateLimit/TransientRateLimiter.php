@@ -8,17 +8,17 @@ defined('ABSPATH') || exit;
 
 final class TransientRateLimiter implements RateLimiter
 {
-    private const PREFIX = 'uc_rl_';
+    private const PREFIX = 'badotulc_rl_';
     private const MAX_LIMIT = 10000;
     private const MAX_WINDOW = 86400;
 
     public function hit(string $scope, string $subject, int $limit, int $windowSeconds)
     {
         if (!self::validScope($scope) || !self::validSubject($subject)) {
-            return self::error('uc_rate_limit_key_invalid', __('Rate-limit scope or subject is invalid.', 'bad-otter-ultimate-commerce-woocommerce'));
+            return self::error('badotulc_rate_limit_key_invalid', __('Rate-limit scope or subject is invalid.', 'bad-otter-ultimate-commerce-woocommerce'));
         }
         if ($limit < 1 || $limit > self::MAX_LIMIT || $windowSeconds < 1 || $windowSeconds > self::MAX_WINDOW) {
-            return self::error('uc_rate_limit_policy_invalid', __('Rate-limit policy is outside the allowed range.', 'bad-otter-ultimate-commerce-woocommerce'));
+            return self::error('badotulc_rate_limit_policy_invalid', __('Rate-limit policy is outside the allowed range.', 'bad-otter-ultimate-commerce-woocommerce'));
         }
 
         $now = time();
