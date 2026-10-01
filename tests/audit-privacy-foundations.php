@@ -11,24 +11,24 @@ final class WP_Error
     }
 }
 
-$GLOBALS['uc_governance_filters'] = array();
-$GLOBALS['uc_governance_actions'] = array();
+$GLOBALS['badotulc_governance_filters'] = array();
+$GLOBALS['badotulc_governance_actions'] = array();
 $GLOBALS['ultimate_commerce_audit_events'] = array();
-$GLOBALS['uc_test_user_id'] = 42;
+$GLOBALS['badotulc_test_user_id'] = 42;
 
 function __($text, $domain = null): string { return (string) $text; }
-function get_current_user_id(): int { return (int) $GLOBALS['uc_test_user_id']; }
+function get_current_user_id(): int { return (int) $GLOBALS['badotulc_test_user_id']; }
 function wp_generate_uuid4(): string { return '123e4567-e89b-42d3-a456-426614174000'; }
 
 function add_filter($hook, $callback, $priority = 10, $acceptedArgs = 1): bool
 {
-    $GLOBALS['uc_governance_filters'][$hook][$priority][] = $callback;
+    $GLOBALS['badotulc_governance_filters'][$hook][$priority][] = $callback;
     return true;
 }
 
 function apply_filters($hook, $value, ...$args)
 {
-    $callbacks = $GLOBALS['uc_governance_filters'][$hook] ?? array();
+    $callbacks = $GLOBALS['badotulc_governance_filters'][$hook] ?? array();
     ksort($callbacks);
     foreach ($callbacks as $priorityCallbacks) {
         foreach ($priorityCallbacks as $callback) {
@@ -40,13 +40,13 @@ function apply_filters($hook, $value, ...$args)
 
 function add_action($hook, $callback, $priority = 10, $acceptedArgs = 1): bool
 {
-    $GLOBALS['uc_governance_actions'][$hook][$priority][] = $callback;
+    $GLOBALS['badotulc_governance_actions'][$hook][$priority][] = $callback;
     return true;
 }
 
 function do_action($hook, ...$args): void
 {
-    $callbacks = $GLOBALS['uc_governance_actions'][$hook] ?? array();
+    $callbacks = $GLOBALS['badotulc_governance_actions'][$hook] ?? array();
     ksort($callbacks);
     foreach ($callbacks as $priorityCallbacks) {
         foreach ($priorityCallbacks as $callback) {
@@ -101,11 +101,11 @@ uc_governance_assert($payload['retention'] === DataRetention::OPERATIONAL_HISTOR
 uc_governance_assert(($payload['context']['quantity_delta'] ?? null) === -2, 'safe scalar audit context should be retained');
 
 $sensitive = AuditEvent::create('integration.changed', 'user', '42', 'integration', 'carrier', '', array('api_key' => 'do-not-log'));
-uc_governance_assert($sensitive instanceof WP_Error && $sensitive->code === 'uc_audit_context_sensitive', 'secret-like audit context keys must fail closed');
+uc_governance_assert($sensitive instanceof WP_Error && $sensitive->code === 'badotulc_audit_context_sensitive', 'secret-like audit context keys must fail closed');
 $nested = AuditEvent::create('inventory.adjusted', 'user', '42', 'variation', '123', '', array('request' => array('unsafe')));
-uc_governance_assert($nested instanceof WP_Error && $nested->code === 'uc_audit_context_invalid', 'nested audit context must be rejected');
+uc_governance_assert($nested instanceof WP_Error && $nested->code === 'badotulc_audit_context_invalid', 'nested audit context must be rejected');
 $badUser = AuditEvent::create('inventory.adjusted', 'user', 'email@example.com', 'variation', '123');
-uc_governance_assert($badUser instanceof WP_Error && $badUser->code === 'uc_audit_actor_invalid', 'user actor must use numeric WordPress ID rather than PII');
+uc_governance_assert($badUser instanceof WP_Error && $badUser->code === 'badotulc_audit_actor_invalid', 'user actor must use numeric WordPress ID rather than PII');
 uc_governance_assert(Audit::record($event) === true, 'default audit sink should accept event');
 uc_governance_assert(count($GLOBALS['ultimate_commerce_audit_events']) === 1, 'default audit sink should emit ultimate_commerce_audit_event hook');
 
@@ -156,6 +156,6 @@ $duplicate = PersonalDataRegistry::instance()->register(
     static fn(string $email, int $page = 1): array => array('data' => array(), 'done' => true),
     static fn(string $email, int $page = 1): array => array('items_removed' => false, 'items_retained' => false, 'messages' => array(), 'done' => true)
 );
-uc_governance_assert($duplicate instanceof WP_Error && $duplicate->code === 'uc_privacy_handler_duplicate', 'duplicate personal-data handler keys must fail closed');
+uc_governance_assert($duplicate instanceof WP_Error && $duplicate->code === 'badotulc_privacy_handler_duplicate', 'duplicate personal-data handler keys must fail closed');
 
 fwrite(STDOUT, "Audit and privacy foundation tests passed\n");

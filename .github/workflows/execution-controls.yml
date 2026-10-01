@@ -86,7 +86,7 @@ jobs:
               raise SystemExit('Default rate limiter must hash subjects and use bounded transient counter storage')
           if "public const GROUP = 'ultimate-commerce'" not in scheduler or 'as_schedule_single_action' not in scheduler:
               raise SystemExit('UC jobs must use the Action Scheduler wrapper/group')
-          if 'uc_job_args_sensitive' not in scheduler or 'uc_job_args_invalid' not in scheduler:
+          if 'badotulc_job_args_sensitive' not in scheduler or 'badotulc_job_args_invalid' not in scheduler:
               raise SystemExit('Job wrapper must reject sensitive/personal snapshots and nested payloads')
           if 'maxAttempts = 5' not in retry or '2 ** $exponent' not in retry:
               raise SystemExit('Retry policy must remain bounded exponential retry')

@@ -46,7 +46,7 @@ jobs:
               if marker not in transfer:
                   raise SystemExit(f'Settings transfer contract missing: {marker}')
 
-          for forbidden in ('uc_version', 'uc_schema_version', 'SecretStore', 'get_option('):
+          for forbidden in ('badotulc_version', 'badotulc_schema_version', 'SecretStore', 'get_option('):
               if forbidden in transfer:
                   raise SystemExit(f'Settings transfer must not expose runtime/secret/arbitrary option data: {forbidden}')
 

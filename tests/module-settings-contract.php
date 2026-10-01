@@ -5,7 +5,7 @@ declare(strict_types=1);
 define('ABSPATH', __DIR__ . '/');
 
 $ucTestOptions = array(
-    'uc_modules' => array(
+    'badotulc_modules' => array(
         'stale_extension' => false,
     ),
 );
@@ -99,7 +99,7 @@ final class UcModuleSettingsFixture extends \BadOtter\UltimateCommerce\Contracts
 
     public function register(): void
     {
-        do_action('uc_fixture_registered', $this->moduleKey);
+        do_action('badotulc_fixture_registered', $this->moduleKey);
     }
 }
 

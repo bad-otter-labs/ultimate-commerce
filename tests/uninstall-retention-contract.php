@@ -144,15 +144,15 @@ $ucRoles = array(
 );
 
 $ucOptions = array(
-    'uc_delete_data_on_uninstall' => false,
-    'uc_modules' => array('cart' => false, 'pro_example' => true),
-    'uc_secret_store_v1' => array('pro.license' => 'encrypted-value'),
-    'uc_version' => '0.2.0',
-    'uc_schema_version' => '1',
-    'uc_capability_version' => '1',
-    'uc_lock_abc' => array('lease' => 'a'),
-    'uc_idem_def' => array('state' => 'completed'),
-    'uc_replay_ghi' => array('lease' => 'b'),
+    'badotulc_delete_data_on_uninstall' => false,
+    'badotulc_modules' => array('cart' => false, 'pro_example' => true),
+    'badotulc_secret_store_v1' => array('pro.license' => 'encrypted-value'),
+    'badotulc_version' => '0.2.0',
+    'badotulc_schema_version' => '1',
+    'badotulc_capability_version' => '1',
+    'badotulc_lock_abc' => array('lease' => 'a'),
+    'badotulc_idem_def' => array('state' => 'completed'),
+    'badotulc_replay_ghi' => array('lease' => 'b'),
     '_transient_uc_rl_jkl' => array('count' => 1),
     '_transient_timeout_uc_rl_jkl' => 9999999999,
     'woocommerce_currency' => 'GBP',
@@ -161,12 +161,12 @@ $ucOptions = array(
 
 Uninstall::run();
 
-ucAssert(isset($ucOptions['uc_modules']), 'Merchant module preferences must be retained by default.');
-ucAssert(isset($ucOptions['uc_secret_store_v1']), 'Encrypted UC secrets must be retained by default for reinstall recovery.');
+ucAssert(isset($ucOptions['badotulc_modules']), 'Merchant module preferences must be retained by default.');
+ucAssert(isset($ucOptions['badotulc_secret_store_v1']), 'Encrypted UC secrets must be retained by default for reinstall recovery.');
 ucAssert(array_key_exists(Settings::UNINSTALL_DATA_OPTION, $ucOptions), 'Retention preference must remain when merchant data is retained.');
-ucAssert(!isset($ucOptions['uc_version']) && !isset($ucOptions['uc_schema_version']), 'Runtime version metadata must always be removed.');
-ucAssert(!isset($ucOptions['uc_capability_version']), 'Capability version marker must always be removed.');
-ucAssert(!isset($ucOptions['uc_lock_abc']) && !isset($ucOptions['uc_idem_def']) && !isset($ucOptions['uc_replay_ghi']), 'Runtime lease/idempotency/replay records must always be removed.');
+ucAssert(!isset($ucOptions['badotulc_version']) && !isset($ucOptions['badotulc_schema_version']), 'Runtime version metadata must always be removed.');
+ucAssert(!isset($ucOptions['badotulc_capability_version']), 'Capability version marker must always be removed.');
+ucAssert(!isset($ucOptions['badotulc_lock_abc']) && !isset($ucOptions['badotulc_idem_def']) && !isset($ucOptions['badotulc_replay_ghi']), 'Runtime lease/idempotency/replay records must always be removed.');
 ucAssert(!isset($ucOptions['_transient_uc_rl_jkl']) && !isset($ucOptions['_transient_timeout_uc_rl_jkl']), 'UC rate-limit transients must always be removed.');
 ucAssert(($ucOptions['woocommerce_currency'] ?? '') === 'GBP', 'WooCommerce-owned options must never be removed.');
 ucAssert(($ucOptions['third_party_option'] ?? '') === 'keep-me', 'Unrelated third-party options must never be removed.');
@@ -180,18 +180,18 @@ $ucRoles['administrator']->add_cap(Capabilities::VIEW_DIAGNOSTICS);
 $ucRoles['administrator']->add_cap(Capabilities::MANAGE_SETTINGS);
 $ucRoles['shop_manager']->add_cap(Capabilities::VIEW_DIAGNOSTICS);
 Settings::updateDeleteDataOnUninstall(true);
-$ucOptions['uc_version'] = '0.2.0';
-$ucOptions['uc_schema_version'] = '1';
-$ucOptions['uc_capability_version'] = '1';
-$ucOptions['uc_lock_again'] = array();
+$ucOptions['badotulc_version'] = '0.2.0';
+$ucOptions['badotulc_schema_version'] = '1';
+$ucOptions['badotulc_capability_version'] = '1';
+$ucOptions['badotulc_lock_again'] = array();
 $ucOptions['ultimate_commerce_version'] = '0.1.4';
 $ucOptions['ultimate_commerce_schema_version'] = '1';
 $ucOptions['ultimate_commerce_modules'] = array('legacy' => true);
 
 Uninstall::run();
 
-ucAssert(!isset($ucOptions['uc_modules']), 'Explicit purge must remove canonical module preferences.');
-ucAssert(!isset($ucOptions['uc_secret_store_v1']), 'Explicit purge must remove the UC encrypted secret store.');
+ucAssert(!isset($ucOptions['badotulc_modules']), 'Explicit purge must remove canonical module preferences.');
+ucAssert(!isset($ucOptions['badotulc_secret_store_v1']), 'Explicit purge must remove the UC encrypted secret store.');
 ucAssert(!isset($ucOptions[Settings::UNINSTALL_DATA_OPTION]), 'Explicit purge must remove its own uninstall preference.');
 ucAssert(!isset($ucOptions['ultimate_commerce_version']) && !isset($ucOptions['ultimate_commerce_schema_version']) && !isset($ucOptions['ultimate_commerce_modules']), 'Explicit purge must remove retained legacy migration data.');
 ucAssert(($ucOptions['woocommerce_currency'] ?? '') === 'GBP', 'Explicit UC purge must still preserve WooCommerce-owned options.');

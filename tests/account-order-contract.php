@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 define('ABSPATH', __DIR__ . '/');
 
-$GLOBALS['uc_account_current_user'] = 7;
-$GLOBALS['uc_account_last_query'] = array();
+$GLOBALS['badotulc_account_current_user'] = 7;
+$GLOBALS['badotulc_account_last_query'] = array();
 
 function __($text, $domain = null): string
 {
@@ -26,7 +26,7 @@ function apply_filters($tag, $value, ...$args)
 
 function get_current_user_id(): int
 {
-    return (int) $GLOBALS['uc_account_current_user'];
+    return (int) $GLOBALS['badotulc_account_current_user'];
 }
 
 function is_user_logged_in(): bool
@@ -132,7 +132,7 @@ function wc_get_order($orderId)
 
 function wc_get_orders(array $args): array
 {
-    $GLOBALS['uc_account_last_query'] = $args;
+    $GLOBALS['badotulc_account_last_query'] = $args;
     return array(new WC_Order(501, 7));
 }
 
@@ -157,25 +157,25 @@ uc_account_assert(($own['id'] ?? 0) === 501, 'Order ID must come from WooCommerc
 uc_account_assert(($own['items'][0]['product_id'] ?? 0) === 42, 'Line-item product ID must come from WooCommerce.');
 uc_account_assert(($own['cache']['public_cache_safe'] ?? true) === false, 'Order data must never claim public cache safety.');
 
-$GLOBALS['uc_account_current_user'] = 8;
+$GLOBALS['badotulc_account_current_user'] = 8;
 $forbidden = OrderViewModel::fromOrder(501);
-uc_account_assert($forbidden instanceof WP_Error && $forbidden->code === 'uc_object_forbidden', 'Another customer must be denied.');
+uc_account_assert($forbidden instanceof WP_Error && $forbidden->code === 'badotulc_object_forbidden', 'Another customer must be denied.');
 
-$GLOBALS['uc_account_current_user'] = 7;
+$GLOBALS['badotulc_account_current_user'] = 7;
 $guest = OrderViewModel::fromOrder(503);
-uc_account_assert($guest instanceof WP_Error && $guest->code === 'uc_object_forbidden', 'Guest-order association must fail closed.');
+uc_account_assert($guest instanceof WP_Error && $guest->code === 'badotulc_object_forbidden', 'Guest-order association must fail closed.');
 
 $account = AccountViewModel::forCurrentUser(999);
 uc_account_assert(is_array($account), 'Authenticated customer must receive an account view model.');
 uc_account_assert(($account['schema'] ?? '') === 'uc.account.v1', 'Account schema must be explicit.');
 uc_account_assert(($account['customer']['id'] ?? 0) === 7, 'Account model must be scoped to the current customer.');
 uc_account_assert(($account['recent_orders'][0]['id'] ?? 0) === 501, 'Recent orders must use the order contract.');
-uc_account_assert(($GLOBALS['uc_account_last_query']['customer_id'] ?? 0) === 7, 'Woo order query must be customer-scoped.');
-uc_account_assert(($GLOBALS['uc_account_last_query']['limit'] ?? 0) === AccountViewModel::MAX_RECENT_ORDERS, 'Recent-order query must remain bounded.');
+uc_account_assert(($GLOBALS['badotulc_account_last_query']['customer_id'] ?? 0) === 7, 'Woo order query must be customer-scoped.');
+uc_account_assert(($GLOBALS['badotulc_account_last_query']['limit'] ?? 0) === AccountViewModel::MAX_RECENT_ORDERS, 'Recent-order query must remain bounded.');
 
-$GLOBALS['uc_account_current_user'] = 0;
+$GLOBALS['badotulc_account_current_user'] = 0;
 $anonymous = AccountViewModel::forCurrentUser();
-uc_account_assert($anonymous instanceof WP_Error && $anonymous->code === 'uc_authentication_required', 'Anonymous account access must fail closed.');
+uc_account_assert($anonymous instanceof WP_Error && $anonymous->code === 'badotulc_authentication_required', 'Anonymous account access must fail closed.');
 
 $root = dirname(__DIR__);
 $orderSource = file_get_contents($root . '/packages/ultimate-commerce-for-woocommerce/src/Account/OrderViewModel.php');

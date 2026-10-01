@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 define('ABSPATH', __DIR__ . '/');
 
-$GLOBALS['uc_test_options'] = array();
-$GLOBALS['uc_test_actions'] = array();
-$GLOBALS['uc_test_boot_order'] = array();
+$GLOBALS['badotulc_test_options'] = array();
+$GLOBALS['badotulc_test_actions'] = array();
+$GLOBALS['badotulc_test_boot_order'] = array();
 
 function sanitize_key($key): string
 {
@@ -16,7 +16,7 @@ function sanitize_key($key): string
 
 function get_option($name, $default = false)
 {
-    return $GLOBALS['uc_test_options'][$name] ?? $default;
+    return $GLOBALS['badotulc_test_options'][$name] ?? $default;
 }
 
 function apply_filters($tag, $value, ...$args)
@@ -26,7 +26,7 @@ function apply_filters($tag, $value, ...$args)
 
 function do_action($tag, ...$args): void
 {
-    $GLOBALS['uc_test_actions'][] = $tag;
+    $GLOBALS['badotulc_test_actions'][] = $tag;
 }
 
 require_once __DIR__ . '/../packages/ultimate-commerce-for-woocommerce/src/Contracts/Module.php';
@@ -74,7 +74,7 @@ final class FixtureModule extends AbstractModule
 
     public function register(): void
     {
-        $GLOBALS['uc_test_boot_order'][] = $this->moduleKey;
+        $GLOBALS['badotulc_test_boot_order'][] = $this->moduleKey;
     }
 }
 
@@ -95,7 +95,7 @@ uc_assert($registry->register(new FixtureModule('dependent', array('base'))), 'd
 uc_assert($registry->register(new FixtureModule('base')), 'base module should register');
 uc_assert(!$registry->register(new FixtureModule('base')), 'duplicate key should be rejected');
 $registry->boot();
-uc_assert($GLOBALS['uc_test_boot_order'] === array('base', 'dependent'), 'dependencies should boot before dependants');
+uc_assert($GLOBALS['badotulc_test_boot_order'] === array('base', 'dependent'), 'dependencies should boot before dependants');
 uc_assert($registry->isBooted('base'), 'base should boot');
 uc_assert($registry->isBooted('dependent'), 'dependent should boot');
 $status = $registry->statuses()['dependent'];
@@ -103,7 +103,7 @@ uc_assert($status['product'] === 'fixture-extension', 'product metadata should b
 uc_assert($status['tier'] === Module::TIER_EXTENSION, 'tier metadata should be exposed');
 uc_assert($status['compatibility']['module_api'] === '1.0.0', 'module API compatibility should be exposed');
 
-$GLOBALS['uc_test_boot_order'] = array();
+$GLOBALS['badotulc_test_boot_order'] = array();
 $missing = new ModuleRegistry();
 uc_assert($missing->register(new FixtureModule('needs_missing', array('not_registered'))), 'module with missing dependency should register before boot resolution');
 $missing->boot();
@@ -117,7 +117,7 @@ $cycle->boot();
 uc_assert(!$cycle->isBooted('cycle_a') && !$cycle->isBooted('cycle_b'), 'circular dependencies must not boot');
 uc_assert(isset($cycle->issues()['cycle_a']) || isset($cycle->issues()['cycle_b']), 'circular dependency should expose an issue');
 
-$GLOBALS['uc_test_options']['uc_modules'] = array('disabled_base' => false);
+$GLOBALS['badotulc_test_options']['badotulc_modules'] = array('disabled_base' => false);
 $disabled = new ModuleRegistry();
 uc_assert($disabled->register(new FixtureModule('disabled_base')), 'disabled dependency should register');
 uc_assert($disabled->register(new FixtureModule('needs_disabled', array('disabled_base'))), 'dependent on disabled module should register');

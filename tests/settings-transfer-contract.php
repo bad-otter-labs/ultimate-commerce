@@ -88,13 +88,13 @@ require_once __DIR__ . '/../packages/ultimate-commerce-for-woocommerce/src/Suppo
 use BadOtter\UltimateCommerce\Support\SettingsTransfer;
 
 $ucOptions = array(
-    'uc_modules' => array(
+    'badotulc_modules' => array(
         'cart' => true,
         'extension_absent' => false,
         'Bad Key' => true,
     ),
-    'uc_version' => 'should-not-export',
-    'uc_schema_version' => 'should-not-export',
+    'badotulc_version' => 'should-not-export',
+    'badotulc_schema_version' => 'should-not-export',
 );
 
 $export = SettingsTransfer::exportJson();
@@ -109,8 +109,8 @@ ucAssert($decoded->settings->modules instanceof stdClass, 'Export modules must b
 ucAssert($decoded->settings->modules->cart === true, 'Stored cart preference missing from export.');
 ucAssert($decoded->settings->modules->extension_absent === false, 'Temporarily absent extension preference missing from export.');
 ucAssert(!property_exists($decoded->settings->modules, 'Bad Key'), 'Invalid stored module keys must not be exported.');
-ucAssert(strpos($export, 'uc_version') === false, 'Runtime version metadata must not be exported.');
-ucAssert(strpos($export, 'uc_schema_version') === false, 'Runtime schema metadata must not be exported.');
+ucAssert(strpos($export, 'badotulc_version') === false, 'Runtime version metadata must not be exported.');
+ucAssert(strpos($export, 'badotulc_schema_version') === false, 'Runtime schema metadata must not be exported.');
 
 $valid = json_encode(array(
     'format' => 'ultimate-commerce-settings',
@@ -125,9 +125,9 @@ $valid = json_encode(array(
 ));
 $result = SettingsTransfer::importJson((string) $valid);
 ucAssert(is_array($result), 'Valid import must return merged module states.');
-ucAssert($ucOptions['uc_modules']['cart'] === false, 'Import must update declared module preferences.');
-ucAssert($ucOptions['uc_modules']['product_display'] === true, 'Import must add declared canonical module preferences.');
-ucAssert($ucOptions['uc_modules']['extension_absent'] === false, 'Import must preserve omitted extension preferences.');
+ucAssert($ucOptions['badotulc_modules']['cart'] === false, 'Import must update declared module preferences.');
+ucAssert($ucOptions['badotulc_modules']['product_display'] === true, 'Import must add declared canonical module preferences.');
+ucAssert($ucOptions['badotulc_modules']['extension_absent'] === false, 'Import must preserve omitted extension preferences.');
 
 $emptyModules = json_encode(array(
     'format' => 'ultimate-commerce-settings',
@@ -140,9 +140,9 @@ $emptyResult = SettingsTransfer::importJson((string) $emptyModules);
 ucAssert(is_array($emptyResult), 'Empty module object must be a valid no-op import.');
 ucAssert($ucOptions === $beforeEmpty, 'Empty module import must preserve all existing preferences.');
 
-ucImportError('', 'uc_settings_import_size');
-ucImportError(str_repeat('x', SettingsTransfer::MAX_BYTES + 1), 'uc_settings_import_size');
-ucImportError('{not json}', 'uc_settings_import_json');
+ucImportError('', 'badotulc_settings_import_size');
+ucImportError(str_repeat('x', SettingsTransfer::MAX_BYTES + 1), 'badotulc_settings_import_size');
+ucImportError('{not json}', 'badotulc_settings_import_json');
 
 $wrongShape = json_encode(array(
     'format' => 'ultimate-commerce-settings',
@@ -151,7 +151,7 @@ $wrongShape = json_encode(array(
     'settings' => array('modules' => (object) array()),
     'extra' => true,
 ));
-ucImportError((string) $wrongShape, 'uc_settings_import_shape');
+ucImportError((string) $wrongShape, 'badotulc_settings_import_shape');
 
 $wrongProduct = json_encode(array(
     'format' => 'ultimate-commerce-settings',
@@ -159,7 +159,7 @@ $wrongProduct = json_encode(array(
     'product' => 'ultimate-commerce-pro',
     'settings' => array('modules' => (object) array()),
 ));
-ucImportError((string) $wrongProduct, 'uc_settings_import_product');
+ucImportError((string) $wrongProduct, 'badotulc_settings_import_product');
 
 $wrongSchema = json_encode(array(
     'format' => 'ultimate-commerce-settings',
@@ -167,7 +167,7 @@ $wrongSchema = json_encode(array(
     'product' => 'bad-otter-ultimate-commerce-woocommerce',
     'settings' => array('modules' => (object) array()),
 ));
-ucImportError((string) $wrongSchema, 'uc_settings_import_schema');
+ucImportError((string) $wrongSchema, 'badotulc_settings_import_schema');
 
 $unknownSettings = json_encode(array(
     'format' => 'ultimate-commerce-settings',
@@ -178,7 +178,7 @@ $unknownSettings = json_encode(array(
         'secrets' => (object) array('token' => 'nope'),
     ),
 ));
-ucImportError((string) $unknownSettings, 'uc_settings_import_settings');
+ucImportError((string) $unknownSettings, 'badotulc_settings_import_settings');
 
 $listModules = json_encode(array(
     'format' => 'ultimate-commerce-settings',
@@ -186,7 +186,7 @@ $listModules = json_encode(array(
     'product' => 'bad-otter-ultimate-commerce-woocommerce',
     'settings' => array('modules' => array('cart')),
 ));
-ucImportError((string) $listModules, 'uc_settings_import_modules');
+ucImportError((string) $listModules, 'badotulc_settings_import_modules');
 
 $invalidValue = json_encode(array(
     'format' => 'ultimate-commerce-settings',
@@ -194,7 +194,7 @@ $invalidValue = json_encode(array(
     'product' => 'bad-otter-ultimate-commerce-woocommerce',
     'settings' => array('modules' => (object) array('cart' => 1)),
 ));
-ucImportError((string) $invalidValue, 'uc_settings_import_module_value');
+ucImportError((string) $invalidValue, 'badotulc_settings_import_module_value');
 
 $invalidKey = json_encode(array(
     'format' => 'ultimate-commerce-settings',
@@ -202,7 +202,7 @@ $invalidKey = json_encode(array(
     'product' => 'bad-otter-ultimate-commerce-woocommerce',
     'settings' => array('modules' => (object) array('Bad Key' => true)),
 ));
-ucImportError((string) $invalidKey, 'uc_settings_import_module_value');
+ucImportError((string) $invalidKey, 'badotulc_settings_import_module_value');
 
 $tooMany = array();
 for ($index = 0; $index < 129; $index++) {
@@ -214,6 +214,6 @@ $tooManyJson = json_encode(array(
     'product' => 'bad-otter-ultimate-commerce-woocommerce',
     'settings' => array('modules' => (object) $tooMany),
 ));
-ucImportError((string) $tooManyJson, 'uc_settings_import_module_limit');
+ucImportError((string) $tooManyJson, 'badotulc_settings_import_module_limit');
 
 echo "Ultimate Commerce settings transfer contract passed.\n";

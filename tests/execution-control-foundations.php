@@ -11,39 +11,39 @@ final class WP_Error
     }
 }
 
-$GLOBALS['uc_exec_options'] = array();
-$GLOBALS['uc_exec_transients'] = array();
-$GLOBALS['uc_exec_scheduled_events'] = array();
-$GLOBALS['uc_exec_actions'] = array();
-$GLOBALS['uc_exec_as_actions'] = array();
+$GLOBALS['badotulc_exec_options'] = array();
+$GLOBALS['badotulc_exec_transients'] = array();
+$GLOBALS['badotulc_exec_scheduled_events'] = array();
+$GLOBALS['badotulc_exec_actions'] = array();
+$GLOBALS['badotulc_exec_as_actions'] = array();
 
 function __($text, $domain = null): string { return (string) $text; }
 function apply_filters($hook, $value) { return $value; }
 function add_action($hook, $callback, $priority = 10, $acceptedArgs = 1): bool { return true; }
-function get_option($name, $default = false) { return array_key_exists($name, $GLOBALS['uc_exec_options']) ? $GLOBALS['uc_exec_options'][$name] : $default; }
+function get_option($name, $default = false) { return array_key_exists($name, $GLOBALS['badotulc_exec_options']) ? $GLOBALS['badotulc_exec_options'][$name] : $default; }
 function add_option($name, $value = '', $deprecated = '', $autoload = 'yes'): bool {
-    if (array_key_exists($name, $GLOBALS['uc_exec_options'])) return false;
-    $GLOBALS['uc_exec_options'][$name] = $value;
+    if (array_key_exists($name, $GLOBALS['badotulc_exec_options'])) return false;
+    $GLOBALS['badotulc_exec_options'][$name] = $value;
     return true;
 }
-function update_option($name, $value, $autoload = null): bool { $GLOBALS['uc_exec_options'][$name] = $value; return true; }
+function update_option($name, $value, $autoload = null): bool { $GLOBALS['badotulc_exec_options'][$name] = $value; return true; }
 function delete_option($name): bool {
-    if (!array_key_exists($name, $GLOBALS['uc_exec_options'])) return false;
-    unset($GLOBALS['uc_exec_options'][$name]);
+    if (!array_key_exists($name, $GLOBALS['badotulc_exec_options'])) return false;
+    unset($GLOBALS['badotulc_exec_options'][$name]);
     return true;
 }
-function wp_schedule_single_event($timestamp, $hook, $args = array()) { $GLOBALS['uc_exec_scheduled_events'][] = array($timestamp, $hook, $args); return true; }
-function get_transient($name) { return $GLOBALS['uc_exec_transients'][$name]['value'] ?? false; }
-function set_transient($name, $value, $expiration): bool { $GLOBALS['uc_exec_transients'][$name] = array('value' => $value, 'expiration' => $expiration); return true; }
+function wp_schedule_single_event($timestamp, $hook, $args = array()) { $GLOBALS['badotulc_exec_scheduled_events'][] = array($timestamp, $hook, $args); return true; }
+function get_transient($name) { return $GLOBALS['badotulc_exec_transients'][$name]['value'] ?? false; }
+function set_transient($name, $value, $expiration): bool { $GLOBALS['badotulc_exec_transients'][$name] = array('value' => $value, 'expiration' => $expiration); return true; }
 function as_has_scheduled_action($hook, $args = array(), $group = '') {
-    foreach ($GLOBALS['uc_exec_as_actions'] as $action) {
+    foreach ($GLOBALS['badotulc_exec_as_actions'] as $action) {
         if ($action['hook'] === $hook && $action['args'] === $args && $action['group'] === $group) return true;
     }
     return false;
 }
 function as_schedule_single_action($timestamp, $hook, $args = array(), $group = '', $unique = false) {
-    $id = count($GLOBALS['uc_exec_as_actions']) + 1;
-    $GLOBALS['uc_exec_as_actions'][] = compact('id', 'timestamp', 'hook', 'args', 'group', 'unique');
+    $id = count($GLOBALS['badotulc_exec_as_actions']) + 1;
+    $GLOBALS['badotulc_exec_as_actions'][] = compact('id', 'timestamp', 'hook', 'args', 'group', 'unique');
     return $id;
 }
 
@@ -101,7 +101,7 @@ $third = $limiter->hit('gift_card_balance', 'opaque-subject-42', 2, 60);
 uc_exec_assert(is_array($first) && $first['allowed'] && $first['remaining'] === 1, 'first rate-limit hit should be allowed');
 uc_exec_assert(is_array($second) && $second['allowed'] && $second['remaining'] === 0, 'second rate-limit hit should consume allowance');
 uc_exec_assert(is_array($third) && !$third['allowed'] && $third['retry_after'] > 0, 'third rate-limit hit should be blocked');
-$transientNames = implode(' ', array_keys($GLOBALS['uc_exec_transients']));
+$transientNames = implode(' ', array_keys($GLOBALS['badotulc_exec_transients']));
 uc_exec_assert(!str_contains($transientNames, 'opaque-subject-42'), 'raw rate-limit subject must not appear in transient key');
 
 $policy = new RetryPolicy(5, 60, 300);
@@ -112,19 +112,19 @@ uc_exec_assert($policy->delayAfterFailure(2) === 120, 'second retry delay mismat
 uc_exec_assert($policy->delayAfterFailure(4) === 300, 'retry delay should respect cap');
 
 uc_exec_assert(ActionScheduler::schedule('inventory.reconcile', array('variation_id' => 42, 'location_id' => 7)) === true, 'valid Action Scheduler job should schedule');
-uc_exec_assert(count($GLOBALS['uc_exec_as_actions']) === 1, 'one background job should be scheduled');
-$scheduled = $GLOBALS['uc_exec_as_actions'][0];
-uc_exec_assert($scheduled['hook'] === 'uc_job_inventory.reconcile' && $scheduled['group'] === ActionScheduler::GROUP, 'UC job hook/group mismatch');
+uc_exec_assert(count($GLOBALS['badotulc_exec_as_actions']) === 1, 'one background job should be scheduled');
+$scheduled = $GLOBALS['badotulc_exec_as_actions'][0];
+uc_exec_assert($scheduled['hook'] === 'badotulc_job_inventory.reconcile' && $scheduled['group'] === ActionScheduler::GROUP, 'UC job hook/group mismatch');
 uc_exec_assert(ActionScheduler::schedule('inventory.reconcile', array('variation_id' => 42, 'location_id' => 7)) === true, 'unique duplicate should be treated as already scheduled');
-uc_exec_assert(count($GLOBALS['uc_exec_as_actions']) === 1, 'unique duplicate must not schedule second action');
+uc_exec_assert(count($GLOBALS['badotulc_exec_as_actions']) === 1, 'unique duplicate must not schedule second action');
 $badArgs = ActionScheduler::schedule('notify.customer', array('email' => 'customer@example.com'));
-uc_exec_assert($badArgs instanceof WP_Error && $badArgs->code === 'uc_job_args_sensitive', 'job personal-data snapshot key should be rejected');
+uc_exec_assert($badArgs instanceof WP_Error && $badArgs->code === 'badotulc_job_args_sensitive', 'job personal-data snapshot key should be rejected');
 $nestedArgs = ActionScheduler::schedule('inventory.batch', array('ids' => array(1, 2, 3)));
-uc_exec_assert($nestedArgs instanceof WP_Error && $nestedArgs->code === 'uc_job_args_invalid', 'nested job payload should be rejected');
+uc_exec_assert($nestedArgs instanceof WP_Error && $nestedArgs->code === 'badotulc_job_args_invalid', 'nested job payload should be rejected');
 uc_exec_assert(ActionScheduler::scheduleRetry('inventory.reconcile', array('variation_id' => 42), 1, $policy) === true, 'retry should schedule through bounded policy');
-$retry = $GLOBALS['uc_exec_as_actions'][1];
-uc_exec_assert(($retry['args']['uc_attempt'] ?? 0) === 2, 'retry job should carry incremented attempt counter');
+$retry = $GLOBALS['badotulc_exec_as_actions'][1];
+uc_exec_assert(($retry['args']['badotulc_attempt'] ?? 0) === 2, 'retry job should carry incremented attempt counter');
 $exhausted = ActionScheduler::scheduleRetry('inventory.reconcile', array('variation_id' => 42), 5, $policy);
-uc_exec_assert($exhausted instanceof WP_Error && $exhausted->code === 'uc_job_retry_exhausted', 'exhausted retry should fail closed');
+uc_exec_assert($exhausted instanceof WP_Error && $exhausted->code === 'badotulc_job_retry_exhausted', 'exhausted retry should fail closed');
 
 fwrite(STDOUT, "Execution-control foundation tests passed\n");

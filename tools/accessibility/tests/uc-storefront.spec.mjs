@@ -113,12 +113,12 @@ test('wishlist pressed state and recently viewed live UI remain operable', async
   await expect(wishlistToggle).toHaveAttribute('aria-label', /Remove .* from wishlist|Remove from wishlist/);
 
   const wishlistIds = await page.evaluate(() => {
-    return JSON.parse(window.localStorage.getItem('uc_wishlist_v1') || '[]');
+    return JSON.parse(window.localStorage.getItem('badotulc_wishlist_v1') || '[]');
   });
   expect(wishlistIds.length).toBeGreaterThan(0);
 
   await page.evaluate((id) => {
-    window.localStorage.setItem('uc_recently_viewed_v1', JSON.stringify([id]));
+    window.localStorage.setItem('badotulc_recently_viewed_v1', JSON.stringify([id]));
   }, recentProductId);
   await page.reload();
   await page.waitForLoadState('networkidle');
@@ -135,6 +135,6 @@ test('wishlist pressed state and recently viewed live UI remain operable', async
   await expect(page.locator('.uc-recently-viewed-item')).toHaveCount(0);
   await expect(page.locator('[data-uc-recently-viewed-status="1"]')).toContainText('Recently viewed products cleared');
 
-  const recentState = await page.evaluate(() => window.localStorage.getItem('uc_recently_viewed_v1'));
+  const recentState = await page.evaluate(() => window.localStorage.getItem('badotulc_recently_viewed_v1'));
   expect(recentState).toBeNull();
 });

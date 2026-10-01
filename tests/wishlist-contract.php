@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 define('ABSPATH', __DIR__ . '/');
 
-$GLOBALS['uc_wishlist_meta'] = array();
-$GLOBALS['uc_wishlist_products'] = array(10, 11, 12);
+$GLOBALS['badotulc_wishlist_meta'] = array();
+$GLOBALS['badotulc_wishlist_products'] = array(10, 11, 12);
 
 function __($text, $domain = null): string { return (string) $text; }
 function absint($value): int { return abs((int) $value); }
@@ -17,18 +17,18 @@ function is_multisite(): bool { return false; }
 function apply_filters($tag, $value, ...$args) { return $value; }
 function do_action($tag, ...$args): void {}
 function get_user_meta($userId, $key, $single = false) {
-    return $GLOBALS['uc_wishlist_meta'][$userId][$key] ?? ($single ? '' : array());
+    return $GLOBALS['badotulc_wishlist_meta'][$userId][$key] ?? ($single ? '' : array());
 }
 function update_user_meta($userId, $key, $value): bool {
-    $GLOBALS['uc_wishlist_meta'][$userId][$key] = $value;
+    $GLOBALS['badotulc_wishlist_meta'][$userId][$key] = $value;
     return true;
 }
 function delete_user_meta($userId, $key): bool {
-    unset($GLOBALS['uc_wishlist_meta'][$userId][$key]);
+    unset($GLOBALS['badotulc_wishlist_meta'][$userId][$key]);
     return true;
 }
 function wc_get_product($productId) {
-    return in_array((int) $productId, $GLOBALS['uc_wishlist_products'], true)
+    return in_array((int) $productId, $GLOBALS['badotulc_wishlist_products'], true)
         ? new UC_Wishlist_Test_Product()
         : false;
 }
@@ -76,7 +76,7 @@ $duplicate = WishlistStore::add(1, 10);
 uc_wishlist_assert($duplicate === array(10), 'Duplicate product IDs must not be stored.');
 
 $invalid = WishlistStore::add(1, 999);
-uc_wishlist_assert($invalid instanceof WP_Error && $invalid->code === 'uc_wishlist_product_invalid', 'Invalid product must fail closed.');
+uc_wishlist_assert($invalid instanceof WP_Error && $invalid->code === 'badotulc_wishlist_product_invalid', 'Invalid product must fail closed.');
 
 $merged = WishlistStore::merge(1, array(11, 999, 12, 11));
 uc_wishlist_assert($merged === array(10, 11, 12), 'Merge must keep unique valid Woo product IDs only.');
@@ -84,14 +84,14 @@ uc_wishlist_assert($merged === array(10, 11, 12), 'Merge must keep unique valid 
 $removed = WishlistStore::remove(1, 10);
 uc_wishlist_assert($removed === array(11, 12), 'Remove must update the signed-in wishlist.');
 
-$stored = $GLOBALS['uc_wishlist_meta'][1][WishlistStore::metaKey()] ?? array();
+$stored = $GLOBALS['badotulc_wishlist_meta'][1][WishlistStore::metaKey()] ?? array();
 uc_wishlist_assert($stored === array(11, 12), 'Storage must contain product IDs only.');
 
-$GLOBALS['uc_wishlist_meta'][1][WishlistStore::metaKey()] = array(11, 12, 999);
+$GLOBALS['badotulc_wishlist_meta'][1][WishlistStore::metaKey()] = array(11, 12, 999);
 $export = WishlistStore::privacyExporter('customer@example.test', 1);
 $exportValue = $export['data'][0]['data'][0]['value'] ?? '';
 uc_wishlist_assert($exportValue === '11, 12, 999', 'Privacy export must include stored preference IDs even when a Woo product is stale or unavailable.');
-$GLOBALS['uc_wishlist_meta'][1][WishlistStore::metaKey()] = array(11, 12);
+$GLOBALS['badotulc_wishlist_meta'][1][WishlistStore::metaKey()] = array(11, 12);
 
 $root = dirname(__DIR__);
 $package = $root . '/packages/ultimate-commerce-for-woocommerce';
@@ -132,7 +132,7 @@ foreach (array(
     "'bootstrapUrl' => WishlistBootstrap::url()" => $controls,
     "'storageKey' =>" => $controls,
     "String(config.bootstrapUrl || '')" => $controller,
-    "String(config.storageKey || 'uc_wishlist_v1')" => $controller,
+    "String(config.storageKey || 'badotulc_wishlist_v1')" => $controller,
     "new URL(endpoint, window.location.href)" => $controller,
     "url.searchParams.set('include'" => $controller,
     'use BadOtter\\UltimateCommerce\\Wishlist\\WishlistStore;' => $uninstall,

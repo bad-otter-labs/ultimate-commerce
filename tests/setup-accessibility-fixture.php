@@ -55,7 +55,7 @@ $recent->set_stock_quantity(10);
 $recentId = $recent->save();
 uc_a11y_fixture_assert((int) $recentId > 0, 'Could not create recently viewed accessibility product.');
 
-update_option('uc_a11y_recent_product_id', (int) $recentId, false);
+update_option('badotulc_a11y_recent_product_id', (int) $recentId, false);
 
 $content = sprintf(
     '[uc_accessibility_fixture product_id="%1$d"]' . "\n\n" .
