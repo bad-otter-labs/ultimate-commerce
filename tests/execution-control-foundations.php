@@ -65,7 +65,7 @@ use BadOtter\UltimateCommerce\Jobs\ActionScheduler;
 use BadOtter\UltimateCommerce\Jobs\RetryPolicy;
 use BadOtter\UltimateCommerce\RateLimit\TransientRateLimiter;
 
-function uc_exec_assert(bool $condition, string $message): void
+function badotulc_exec_assert(bool $condition, string $message): void
 {
     if ($condition) return;
     fwrite(STDERR, "FAIL: {$message}\n");
@@ -74,57 +74,57 @@ function uc_exec_assert(bool $condition, string $message): void
 
 $locks = new OptionLockStore();
 $lease = $locks->acquire('inventory_adjustment', 'variation:42', 60);
-uc_exec_assert(is_string($lease) && strlen($lease) === 32, 'first lock should acquire random lease');
-uc_exec_assert($locks->acquire('inventory_adjustment', 'variation:42', 60) === false, 'duplicate lock should fail while lease active');
-uc_exec_assert(!$locks->release('inventory_adjustment', 'variation:42', str_repeat('0', 32)), 'wrong lock lease must not release');
-uc_exec_assert($locks->release('inventory_adjustment', 'variation:42', $lease), 'matching lock lease should release');
-uc_exec_assert(is_string($locks->acquire('inventory_adjustment', 'variation:42', 60)), 'released lock should be acquirable again');
+badotulc_exec_assert(is_string($lease) && strlen($lease) === 32, 'first lock should acquire random lease');
+badotulc_exec_assert($locks->acquire('inventory_adjustment', 'variation:42', 60) === false, 'duplicate lock should fail while lease active');
+badotulc_exec_assert(!$locks->release('inventory_adjustment', 'variation:42', str_repeat('0', 32)), 'wrong lock lease must not release');
+badotulc_exec_assert($locks->release('inventory_adjustment', 'variation:42', $lease), 'matching lock lease should release');
+badotulc_exec_assert(is_string($locks->acquire('inventory_adjustment', 'variation:42', 60)), 'released lock should be acquirable again');
 
 $idempotency = new OptionIdempotencyStore();
 $claim = $idempotency->claim('stock_receipt', 'request-abc', 600);
-uc_exec_assert(is_array($claim) && $claim['status'] === OptionIdempotencyStore::STATUS_CLAIMED && strlen($claim['lease']) === 32, 'new idempotency key should be claimed');
+badotulc_exec_assert(is_array($claim) && $claim['status'] === OptionIdempotencyStore::STATUS_CLAIMED && strlen($claim['lease']) === 32, 'new idempotency key should be claimed');
 $duplicate = $idempotency->claim('stock_receipt', 'request-abc', 600);
-uc_exec_assert(is_array($duplicate) && $duplicate['status'] === OptionIdempotencyStore::STATUS_IN_PROGRESS && $duplicate['lease'] === '', 'duplicate active operation should report in progress without exposing lease');
-uc_exec_assert(!$idempotency->complete('stock_receipt', 'request-abc', str_repeat('0', 32), 'movement:7'), 'wrong idempotency lease must not complete');
-uc_exec_assert($idempotency->complete('stock_receipt', 'request-abc', $claim['lease'], 'movement:7'), 'matching idempotency lease should complete');
+badotulc_exec_assert(is_array($duplicate) && $duplicate['status'] === OptionIdempotencyStore::STATUS_IN_PROGRESS && $duplicate['lease'] === '', 'duplicate active operation should report in progress without exposing lease');
+badotulc_exec_assert(!$idempotency->complete('stock_receipt', 'request-abc', str_repeat('0', 32), 'movement:7'), 'wrong idempotency lease must not complete');
+badotulc_exec_assert($idempotency->complete('stock_receipt', 'request-abc', $claim['lease'], 'movement:7'), 'matching idempotency lease should complete');
 $completed = $idempotency->claim('stock_receipt', 'request-abc', 600);
-uc_exec_assert(is_array($completed) && $completed['status'] === OptionIdempotencyStore::STATUS_COMPLETED && $completed['result_ref'] === 'movement:7', 'completed operation should remain deduplicated with opaque result reference');
-uc_exec_assert(!$idempotency->release('stock_receipt', 'request-abc', $claim['lease']), 'completed idempotency record must not be releasable');
+badotulc_exec_assert(is_array($completed) && $completed['status'] === OptionIdempotencyStore::STATUS_COMPLETED && $completed['result_ref'] === 'movement:7', 'completed operation should remain deduplicated with opaque result reference');
+badotulc_exec_assert(!$idempotency->release('stock_receipt', 'request-abc', $claim['lease']), 'completed idempotency record must not be releasable');
 $failed = $idempotency->claim('stock_receipt', 'request-retry', 600);
-uc_exec_assert(is_array($failed) && $idempotency->release('stock_receipt', 'request-retry', $failed['lease']), 'failed pre-side-effect operation should release matching in-progress claim');
-uc_exec_assert(($idempotency->claim('stock_receipt', 'request-retry', 600)['status'] ?? '') === OptionIdempotencyStore::STATUS_CLAIMED, 'released failed operation should be claimable again');
+badotulc_exec_assert(is_array($failed) && $idempotency->release('stock_receipt', 'request-retry', $failed['lease']), 'failed pre-side-effect operation should release matching in-progress claim');
+badotulc_exec_assert(($idempotency->claim('stock_receipt', 'request-retry', 600)['status'] ?? '') === OptionIdempotencyStore::STATUS_CLAIMED, 'released failed operation should be claimable again');
 
 $limiter = new TransientRateLimiter();
 $first = $limiter->hit('gift_card_balance', 'opaque-subject-42', 2, 60);
 $second = $limiter->hit('gift_card_balance', 'opaque-subject-42', 2, 60);
 $third = $limiter->hit('gift_card_balance', 'opaque-subject-42', 2, 60);
-uc_exec_assert(is_array($first) && $first['allowed'] && $first['remaining'] === 1, 'first rate-limit hit should be allowed');
-uc_exec_assert(is_array($second) && $second['allowed'] && $second['remaining'] === 0, 'second rate-limit hit should consume allowance');
-uc_exec_assert(is_array($third) && !$third['allowed'] && $third['retry_after'] > 0, 'third rate-limit hit should be blocked');
+badotulc_exec_assert(is_array($first) && $first['allowed'] && $first['remaining'] === 1, 'first rate-limit hit should be allowed');
+badotulc_exec_assert(is_array($second) && $second['allowed'] && $second['remaining'] === 0, 'second rate-limit hit should consume allowance');
+badotulc_exec_assert(is_array($third) && !$third['allowed'] && $third['retry_after'] > 0, 'third rate-limit hit should be blocked');
 $transientNames = implode(' ', array_keys($GLOBALS['badotulc_exec_transients']));
-uc_exec_assert(!str_contains($transientNames, 'opaque-subject-42'), 'raw rate-limit subject must not appear in transient key');
+badotulc_exec_assert(!str_contains($transientNames, 'opaque-subject-42'), 'raw rate-limit subject must not appear in transient key');
 
 $policy = new RetryPolicy(5, 60, 300);
-uc_exec_assert($policy->canRetry(1), 'first failed attempt should be retryable');
-uc_exec_assert(!$policy->canRetry(5), 'maximum failed attempt should not retry');
-uc_exec_assert($policy->delayAfterFailure(1) === 60, 'first retry delay mismatch');
-uc_exec_assert($policy->delayAfterFailure(2) === 120, 'second retry delay mismatch');
-uc_exec_assert($policy->delayAfterFailure(4) === 300, 'retry delay should respect cap');
+badotulc_exec_assert($policy->canRetry(1), 'first failed attempt should be retryable');
+badotulc_exec_assert(!$policy->canRetry(5), 'maximum failed attempt should not retry');
+badotulc_exec_assert($policy->delayAfterFailure(1) === 60, 'first retry delay mismatch');
+badotulc_exec_assert($policy->delayAfterFailure(2) === 120, 'second retry delay mismatch');
+badotulc_exec_assert($policy->delayAfterFailure(4) === 300, 'retry delay should respect cap');
 
-uc_exec_assert(ActionScheduler::schedule('inventory.reconcile', array('variation_id' => 42, 'location_id' => 7)) === true, 'valid Action Scheduler job should schedule');
-uc_exec_assert(count($GLOBALS['badotulc_exec_as_actions']) === 1, 'one background job should be scheduled');
+badotulc_exec_assert(ActionScheduler::schedule('inventory.reconcile', array('variation_id' => 42, 'location_id' => 7)) === true, 'valid Action Scheduler job should schedule');
+badotulc_exec_assert(count($GLOBALS['badotulc_exec_as_actions']) === 1, 'one background job should be scheduled');
 $scheduled = $GLOBALS['badotulc_exec_as_actions'][0];
-uc_exec_assert($scheduled['hook'] === 'badotulc_job_inventory.reconcile' && $scheduled['group'] === ActionScheduler::GROUP, 'UC job hook/group mismatch');
-uc_exec_assert(ActionScheduler::schedule('inventory.reconcile', array('variation_id' => 42, 'location_id' => 7)) === true, 'unique duplicate should be treated as already scheduled');
-uc_exec_assert(count($GLOBALS['badotulc_exec_as_actions']) === 1, 'unique duplicate must not schedule second action');
+badotulc_exec_assert($scheduled['hook'] === 'badotulc_job_inventory.reconcile' && $scheduled['group'] === ActionScheduler::GROUP, 'UC job hook/group mismatch');
+badotulc_exec_assert(ActionScheduler::schedule('inventory.reconcile', array('variation_id' => 42, 'location_id' => 7)) === true, 'unique duplicate should be treated as already scheduled');
+badotulc_exec_assert(count($GLOBALS['badotulc_exec_as_actions']) === 1, 'unique duplicate must not schedule second action');
 $badArgs = ActionScheduler::schedule('notify.customer', array('email' => 'customer@example.com'));
-uc_exec_assert($badArgs instanceof WP_Error && $badArgs->code === 'badotulc_job_args_sensitive', 'job personal-data snapshot key should be rejected');
+badotulc_exec_assert($badArgs instanceof WP_Error && $badArgs->code === 'badotulc_job_args_sensitive', 'job personal-data snapshot key should be rejected');
 $nestedArgs = ActionScheduler::schedule('inventory.batch', array('ids' => array(1, 2, 3)));
-uc_exec_assert($nestedArgs instanceof WP_Error && $nestedArgs->code === 'badotulc_job_args_invalid', 'nested job payload should be rejected');
-uc_exec_assert(ActionScheduler::scheduleRetry('inventory.reconcile', array('variation_id' => 42), 1, $policy) === true, 'retry should schedule through bounded policy');
+badotulc_exec_assert($nestedArgs instanceof WP_Error && $nestedArgs->code === 'badotulc_job_args_invalid', 'nested job payload should be rejected');
+badotulc_exec_assert(ActionScheduler::scheduleRetry('inventory.reconcile', array('variation_id' => 42), 1, $policy) === true, 'retry should schedule through bounded policy');
 $retry = $GLOBALS['badotulc_exec_as_actions'][1];
-uc_exec_assert(($retry['args']['badotulc_attempt'] ?? 0) === 2, 'retry job should carry incremented attempt counter');
+badotulc_exec_assert(($retry['args']['badotulc_attempt'] ?? 0) === 2, 'retry job should carry incremented attempt counter');
 $exhausted = ActionScheduler::scheduleRetry('inventory.reconcile', array('variation_id' => 42), 5, $policy);
-uc_exec_assert($exhausted instanceof WP_Error && $exhausted->code === 'badotulc_job_retry_exhausted', 'exhausted retry should fail closed');
+badotulc_exec_assert($exhausted instanceof WP_Error && $exhausted->code === 'badotulc_job_retry_exhausted', 'exhausted retry should fail closed');
 
 fwrite(STDOUT, "Execution-control foundation tests passed\n");

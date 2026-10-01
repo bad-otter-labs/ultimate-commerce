@@ -46,7 +46,7 @@ require dirname(__DIR__) . '/packages/ultimate-commerce-for-woocommerce/src/Supp
 
 use BadOtter\UltimateCommerce\Support\OptionMigrator;
 
-function uc_upgrade_assert(bool $condition, string $message): void
+function badotulc_upgrade_assert(bool $condition, string $message): void
 {
     if (!$condition) {
         throw new RuntimeException($message);
@@ -65,21 +65,21 @@ $wooBefore = array(
 
 OptionMigrator::migrate();
 
-uc_upgrade_assert(
+badotulc_upgrade_assert(
     $GLOBALS['badotulc_upgrade_options']['badotulc_version'] === '0.1.4',
     'Legacy version must be copied into the canonical version option.'
 );
-uc_upgrade_assert(
+badotulc_upgrade_assert(
     $GLOBALS['badotulc_upgrade_options']['badotulc_schema_version'] === '1',
     'Legacy schema version must be copied into the canonical schema option.'
 );
-uc_upgrade_assert(
+badotulc_upgrade_assert(
     $GLOBALS['badotulc_upgrade_options']['badotulc_modules'] === $legacyBefore['ultimate_commerce_modules'],
     'Legacy module preferences must survive the identity migration without transformation.'
 );
 
 foreach ($legacyBefore as $name => $value) {
-    uc_upgrade_assert(
+    badotulc_upgrade_assert(
         array_key_exists($name, $GLOBALS['badotulc_upgrade_options'])
             && $GLOBALS['badotulc_upgrade_options'][$name] === $value,
         'Legacy rollback option must be preserved: ' . $name
@@ -87,23 +87,23 @@ foreach ($legacyBefore as $name => $value) {
 }
 
 foreach ($wooBefore as $name => $value) {
-    uc_upgrade_assert(
+    badotulc_upgrade_assert(
         $GLOBALS['badotulc_upgrade_options'][$name] === $value,
         'WooCommerce-owned option changed during migration: ' . $name
     );
 }
 
 $expectedWrites = array('badotulc_version', 'badotulc_schema_version', 'badotulc_modules');
-uc_upgrade_assert(count($GLOBALS['badotulc_upgrade_writes']) === count($expectedWrites), 'Migration must write only missing canonical options.');
+badotulc_upgrade_assert(count($GLOBALS['badotulc_upgrade_writes']) === count($expectedWrites), 'Migration must write only missing canonical options.');
 foreach ($GLOBALS['badotulc_upgrade_writes'] as $index => $write) {
-    uc_upgrade_assert(($write['name'] ?? '') === $expectedWrites[$index], 'Unexpected migration write ordering or option name.');
-    uc_upgrade_assert(($write['autoload'] ?? null) === false, 'Migrated options must not be newly autoloaded.');
-    uc_upgrade_assert(!str_starts_with((string) ($write['name'] ?? ''), 'woocommerce_'), 'Migration must not write WooCommerce-owned options.');
+    badotulc_upgrade_assert(($write['name'] ?? '') === $expectedWrites[$index], 'Unexpected migration write ordering or option name.');
+    badotulc_upgrade_assert(($write['autoload'] ?? null) === false, 'Migrated options must not be newly autoloaded.');
+    badotulc_upgrade_assert(!str_starts_with((string) ($write['name'] ?? ''), 'woocommerce_'), 'Migration must not write WooCommerce-owned options.');
 }
 
 $firstWriteCount = count($GLOBALS['badotulc_upgrade_writes']);
 OptionMigrator::migrate();
-uc_upgrade_assert(
+badotulc_upgrade_assert(
     count($GLOBALS['badotulc_upgrade_writes']) === $firstWriteCount,
     'Repeated migration must be idempotent and perform no additional writes.'
 );
@@ -123,11 +123,11 @@ $GLOBALS['badotulc_upgrade_options']['ultimate_commerce_modules'] = array(
 );
 
 OptionMigrator::migrate();
-uc_upgrade_assert(
+badotulc_upgrade_assert(
     $GLOBALS['badotulc_upgrade_options']['badotulc_modules'] === $canonicalModules,
     'An existing canonical option must win over a conflicting legacy value.'
 );
-uc_upgrade_assert(
+badotulc_upgrade_assert(
     count($GLOBALS['badotulc_upgrade_writes']) === $firstWriteCount,
     'Conflict handling must not overwrite canonical state.'
 );
@@ -137,32 +137,32 @@ $migrator = file_get_contents($root . '/packages/ultimate-commerce-for-woocommer
 $canonicalEntry = file_get_contents($root . '/packages/ultimate-commerce-for-woocommerce/ultimate-commerce-for-woocommerce.php');
 $legacyEntry = file_get_contents($root . '/packages/ultimate-commerce/ultimate-commerce.php');
 
-uc_upgrade_assert(is_string($migrator), 'Option migrator source must be readable.');
-uc_upgrade_assert(!str_contains((string) $migrator, 'delete_option('), 'Identity migration must not delete rollback data.');
-uc_upgrade_assert(!str_contains((string) $migrator, 'update_option('), 'Identity migration must not overwrite existing canonical data.');
-uc_upgrade_assert(!str_contains((string) $migrator, 'woocommerce_'), 'Identity migration must not target WooCommerce-owned options.');
+badotulc_upgrade_assert(is_string($migrator), 'Option migrator source must be readable.');
+badotulc_upgrade_assert(!str_contains((string) $migrator, 'delete_option('), 'Identity migration must not delete rollback data.');
+badotulc_upgrade_assert(!str_contains((string) $migrator, 'update_option('), 'Identity migration must not overwrite existing canonical data.');
+badotulc_upgrade_assert(!str_contains((string) $migrator, 'woocommerce_'), 'Identity migration must not target WooCommerce-owned options.');
 
 foreach (array(
     "'ultimate_commerce_version' => 'badotulc_version'",
     "'ultimate_commerce_schema_version' => 'badotulc_schema_version'",
     "'ultimate_commerce_modules' => 'badotulc_modules'",
 ) as $mapping) {
-    uc_upgrade_assert(str_contains((string) $migrator, $mapping), 'Expected legacy-to-canonical mapping is missing: ' . $mapping);
+    badotulc_upgrade_assert(str_contains((string) $migrator, $mapping), 'Expected legacy-to-canonical mapping is missing: ' . $mapping);
 }
 
-uc_upgrade_assert(
+badotulc_upgrade_assert(
     is_string($legacyEntry) && str_contains($legacyEntry, 'Version: 0.1.4'),
     'Upgrade fixture must remain anchored to the released private 0.1.4 package.'
 );
-uc_upgrade_assert(
+badotulc_upgrade_assert(
     is_string($legacyEntry) && str_contains($legacyEntry, 'Update URI: https://badotter.io/ultimate-commerce'),
     'Legacy 0.1.4 fixture must retain its historical managed-update identity.'
 );
-uc_upgrade_assert(
+badotulc_upgrade_assert(
     is_string($canonicalEntry) && !str_contains($canonicalEntry, 'Update URI:'),
     'Canonical WordPress.org Free package must not inherit the legacy update override.'
 );
-uc_upgrade_assert(
+badotulc_upgrade_assert(
     !is_dir($root . '/packages/ultimate-commerce-for-woocommerce/src/Updates'),
     'Canonical Free package must not contain the legacy managed updater.'
 );

@@ -143,7 +143,7 @@ require dirname(__DIR__) . '/packages/ultimate-commerce-for-woocommerce/src/Acco
 use BadOtter\UltimateCommerce\Account\AccountViewModel;
 use BadOtter\UltimateCommerce\Account\OrderViewModel;
 
-function uc_account_assert(bool $condition, string $message): void
+function badotulc_account_assert(bool $condition, string $message): void
 {
     if (!$condition) {
         throw new RuntimeException($message);
@@ -151,31 +151,31 @@ function uc_account_assert(bool $condition, string $message): void
 }
 
 $own = OrderViewModel::fromOrder(501);
-uc_account_assert(is_array($own), 'Owning customer must receive an order view model.');
-uc_account_assert(($own['schema'] ?? '') === 'uc.order.v1', 'Order schema must be explicit.');
-uc_account_assert(($own['id'] ?? 0) === 501, 'Order ID must come from WooCommerce.');
-uc_account_assert(($own['items'][0]['product_id'] ?? 0) === 42, 'Line-item product ID must come from WooCommerce.');
-uc_account_assert(($own['cache']['public_cache_safe'] ?? true) === false, 'Order data must never claim public cache safety.');
+badotulc_account_assert(is_array($own), 'Owning customer must receive an order view model.');
+badotulc_account_assert(($own['schema'] ?? '') === 'uc.order.v1', 'Order schema must be explicit.');
+badotulc_account_assert(($own['id'] ?? 0) === 501, 'Order ID must come from WooCommerce.');
+badotulc_account_assert(($own['items'][0]['product_id'] ?? 0) === 42, 'Line-item product ID must come from WooCommerce.');
+badotulc_account_assert(($own['cache']['public_cache_safe'] ?? true) === false, 'Order data must never claim public cache safety.');
 
 $GLOBALS['badotulc_account_current_user'] = 8;
 $forbidden = OrderViewModel::fromOrder(501);
-uc_account_assert($forbidden instanceof WP_Error && $forbidden->code === 'badotulc_object_forbidden', 'Another customer must be denied.');
+badotulc_account_assert($forbidden instanceof WP_Error && $forbidden->code === 'badotulc_object_forbidden', 'Another customer must be denied.');
 
 $GLOBALS['badotulc_account_current_user'] = 7;
 $guest = OrderViewModel::fromOrder(503);
-uc_account_assert($guest instanceof WP_Error && $guest->code === 'badotulc_object_forbidden', 'Guest-order association must fail closed.');
+badotulc_account_assert($guest instanceof WP_Error && $guest->code === 'badotulc_object_forbidden', 'Guest-order association must fail closed.');
 
 $account = AccountViewModel::forCurrentUser(999);
-uc_account_assert(is_array($account), 'Authenticated customer must receive an account view model.');
-uc_account_assert(($account['schema'] ?? '') === 'uc.account.v1', 'Account schema must be explicit.');
-uc_account_assert(($account['customer']['id'] ?? 0) === 7, 'Account model must be scoped to the current customer.');
-uc_account_assert(($account['recent_orders'][0]['id'] ?? 0) === 501, 'Recent orders must use the order contract.');
-uc_account_assert(($GLOBALS['badotulc_account_last_query']['customer_id'] ?? 0) === 7, 'Woo order query must be customer-scoped.');
-uc_account_assert(($GLOBALS['badotulc_account_last_query']['limit'] ?? 0) === AccountViewModel::MAX_RECENT_ORDERS, 'Recent-order query must remain bounded.');
+badotulc_account_assert(is_array($account), 'Authenticated customer must receive an account view model.');
+badotulc_account_assert(($account['schema'] ?? '') === 'uc.account.v1', 'Account schema must be explicit.');
+badotulc_account_assert(($account['customer']['id'] ?? 0) === 7, 'Account model must be scoped to the current customer.');
+badotulc_account_assert(($account['recent_orders'][0]['id'] ?? 0) === 501, 'Recent orders must use the order contract.');
+badotulc_account_assert(($GLOBALS['badotulc_account_last_query']['customer_id'] ?? 0) === 7, 'Woo order query must be customer-scoped.');
+badotulc_account_assert(($GLOBALS['badotulc_account_last_query']['limit'] ?? 0) === AccountViewModel::MAX_RECENT_ORDERS, 'Recent-order query must remain bounded.');
 
 $GLOBALS['badotulc_account_current_user'] = 0;
 $anonymous = AccountViewModel::forCurrentUser();
-uc_account_assert($anonymous instanceof WP_Error && $anonymous->code === 'badotulc_authentication_required', 'Anonymous account access must fail closed.');
+badotulc_account_assert($anonymous instanceof WP_Error && $anonymous->code === 'badotulc_authentication_required', 'Anonymous account access must fail closed.');
 
 $root = dirname(__DIR__);
 $orderSource = file_get_contents($root . '/packages/ultimate-commerce-for-woocommerce/src/Account/OrderViewModel.php');
@@ -198,17 +198,17 @@ foreach (array(
     'WooCommerce remains authoritative' => $docs,
     'Guest orders deliberately fail closed' => $docs,
 ) as $needle => $haystack) {
-    uc_account_assert(is_string($haystack) && str_contains($haystack, $needle), 'Account/order contract marker missing: ' . $needle);
+    badotulc_account_assert(is_string($haystack) && str_contains($haystack, $needle), 'Account/order contract marker missing: ' . $needle);
 }
 
 foreach (array('wp_posts', 'wp_postmeta', 'get_post_meta(', 'WP_Query', 'get_posts(') as $forbiddenMarker) {
-    uc_account_assert(
+    badotulc_account_assert(
         !str_contains((string) $orderSource . (string) $accountSource, $forbiddenMarker),
         'HPOS-unsafe order access leaked into account contract: ' . $forbiddenMarker
     );
 }
-uc_account_assert(!str_contains((string) $orderSource, 'get_order_key'), 'Order key must not enter the public view model.');
-uc_account_assert(
+badotulc_account_assert(!str_contains((string) $orderSource, 'get_order_key'), 'Order key must not enter the public view model.');
+badotulc_account_assert(
     !preg_match('/FishingClothing|fishingclothing\.co\.uk/i', (string) $orderSource . (string) $accountSource . (string) $hooksSource . (string) $docs),
     'Store-specific code leaked into account/order contract.'
 );

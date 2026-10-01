@@ -72,7 +72,7 @@ use BadOtter\UltimateCommerce\Privacy\DataClassification;
 use BadOtter\UltimateCommerce\Privacy\DataRetention;
 use BadOtter\UltimateCommerce\Privacy\PersonalDataRegistry;
 
-function uc_governance_assert(bool $condition, string $message): void
+function badotulc_governance_assert(bool $condition, string $message): void
 {
     if ($condition) {
         return;
@@ -81,10 +81,10 @@ function uc_governance_assert(bool $condition, string $message): void
     exit(1);
 }
 
-uc_governance_assert(DataClassification::all() === array('public', 'merchant_operational', 'personal', 'credential_secret'), 'data classification vocabulary must remain canonical');
-uc_governance_assert(DataClassification::valid(DataClassification::PERSONAL), 'personal classification must be valid');
-uc_governance_assert(!DataClassification::valid('private-ish'), 'unknown data classification must be rejected');
-uc_governance_assert(DataRetention::valid(DataRetention::OPERATIONAL_HISTORY), 'operational-history retention must be valid');
+badotulc_governance_assert(DataClassification::all() === array('public', 'merchant_operational', 'personal', 'credential_secret'), 'data classification vocabulary must remain canonical');
+badotulc_governance_assert(DataClassification::valid(DataClassification::PERSONAL), 'personal classification must be valid');
+badotulc_governance_assert(!DataClassification::valid('private-ish'), 'unknown data classification must be rejected');
+badotulc_governance_assert(DataRetention::valid(DataRetention::OPERATIONAL_HISTORY), 'operational-history retention must be valid');
 
 $event = AuditEvent::forCurrentUser(
     'inventory.adjusted',
@@ -93,21 +93,21 @@ $event = AuditEvent::forCurrentUser(
     'damaged_stock',
     array('quantity_delta' => -2, 'location_id' => 7)
 );
-uc_governance_assert($event instanceof AuditEvent, 'valid current-user audit event should be created');
+badotulc_governance_assert($event instanceof AuditEvent, 'valid current-user audit event should be created');
 $payload = $event->toArray();
-uc_governance_assert($payload['actor_type'] === 'user' && $payload['actor_id'] === '42', 'audit actor must use current WordPress user ID');
-uc_governance_assert($payload['classification'] === DataClassification::MERCHANT_OPERATIONAL, 'audit event classification must be merchant operational');
-uc_governance_assert($payload['retention'] === DataRetention::OPERATIONAL_HISTORY, 'audit event retention must be operational history');
-uc_governance_assert(($payload['context']['quantity_delta'] ?? null) === -2, 'safe scalar audit context should be retained');
+badotulc_governance_assert($payload['actor_type'] === 'user' && $payload['actor_id'] === '42', 'audit actor must use current WordPress user ID');
+badotulc_governance_assert($payload['classification'] === DataClassification::MERCHANT_OPERATIONAL, 'audit event classification must be merchant operational');
+badotulc_governance_assert($payload['retention'] === DataRetention::OPERATIONAL_HISTORY, 'audit event retention must be operational history');
+badotulc_governance_assert(($payload['context']['quantity_delta'] ?? null) === -2, 'safe scalar audit context should be retained');
 
 $sensitive = AuditEvent::create('integration.changed', 'user', '42', 'integration', 'carrier', '', array('api_key' => 'do-not-log'));
-uc_governance_assert($sensitive instanceof WP_Error && $sensitive->code === 'badotulc_audit_context_sensitive', 'secret-like audit context keys must fail closed');
+badotulc_governance_assert($sensitive instanceof WP_Error && $sensitive->code === 'badotulc_audit_context_sensitive', 'secret-like audit context keys must fail closed');
 $nested = AuditEvent::create('inventory.adjusted', 'user', '42', 'variation', '123', '', array('request' => array('unsafe')));
-uc_governance_assert($nested instanceof WP_Error && $nested->code === 'badotulc_audit_context_invalid', 'nested audit context must be rejected');
+badotulc_governance_assert($nested instanceof WP_Error && $nested->code === 'badotulc_audit_context_invalid', 'nested audit context must be rejected');
 $badUser = AuditEvent::create('inventory.adjusted', 'user', 'email@example.com', 'variation', '123');
-uc_governance_assert($badUser instanceof WP_Error && $badUser->code === 'badotulc_audit_actor_invalid', 'user actor must use numeric WordPress ID rather than PII');
-uc_governance_assert(Audit::record($event) === true, 'default audit sink should accept event');
-uc_governance_assert(count($GLOBALS['ultimate_commerce_audit_events']) === 1, 'default audit sink should emit ultimate_commerce_audit_event hook');
+badotulc_governance_assert($badUser instanceof WP_Error && $badUser->code === 'badotulc_audit_actor_invalid', 'user actor must use numeric WordPress ID rather than PII');
+badotulc_governance_assert(Audit::record($event) === true, 'default audit sink should accept event');
+badotulc_governance_assert(count($GLOBALS['ultimate_commerce_audit_events']) === 1, 'default audit sink should emit ultimate_commerce_audit_event hook');
 
 add_action('ultimate_commerce_register_personal_data_handlers', static function (PersonalDataRegistry $registry): void {
     $result = $registry->register(
@@ -134,21 +134,21 @@ add_action('ultimate_commerce_register_personal_data_handlers', static function 
         },
         DataRetention::ACCOUNT_LIFETIME
     );
-    uc_governance_assert($result === true, 'personal-data handler should register');
+    badotulc_governance_assert($result === true, 'personal-data handler should register');
 });
 
 PersonalDataRegistry::hooks();
 $exporters = apply_filters('wp_privacy_personal_data_exporters', array());
 $erasers = apply_filters('wp_privacy_personal_data_erasers', array());
-uc_governance_assert(isset($exporters['ultimate-commerce-stock_alerts']), 'UC personal-data exporter must register through WordPress privacy filter');
-uc_governance_assert(isset($erasers['ultimate-commerce-stock_alerts']), 'UC personal-data eraser must register through WordPress privacy filter');
+badotulc_governance_assert(isset($exporters['ultimate-commerce-stock_alerts']), 'UC personal-data exporter must register through WordPress privacy filter');
+badotulc_governance_assert(isset($erasers['ultimate-commerce-stock_alerts']), 'UC personal-data eraser must register through WordPress privacy filter');
 $exportResult = ($exporters['ultimate-commerce-stock_alerts']['callback'])('customer@example.com', 1);
-uc_governance_assert(($exportResult['done'] ?? false) === true, 'registered exporter callback should remain callable');
+badotulc_governance_assert(($exportResult['done'] ?? false) === true, 'registered exporter callback should remain callable');
 $eraseResult = ($erasers['ultimate-commerce-stock_alerts']['callback'])('customer@example.com', 1);
-uc_governance_assert(($eraseResult['items_removed'] ?? false) === true, 'registered eraser callback should remain callable');
+badotulc_governance_assert(($eraseResult['items_removed'] ?? false) === true, 'registered eraser callback should remain callable');
 $metadata = PersonalDataRegistry::instance()->metadata();
-uc_governance_assert(($metadata['stock_alerts']['classification'] ?? '') === DataClassification::PERSONAL, 'personal-data handler metadata must classify data as personal');
-uc_governance_assert(($metadata['stock_alerts']['retention'] ?? '') === DataRetention::ACCOUNT_LIFETIME, 'personal-data handler retention metadata must be preserved');
+badotulc_governance_assert(($metadata['stock_alerts']['classification'] ?? '') === DataClassification::PERSONAL, 'personal-data handler metadata must classify data as personal');
+badotulc_governance_assert(($metadata['stock_alerts']['retention'] ?? '') === DataRetention::ACCOUNT_LIFETIME, 'personal-data handler retention metadata must be preserved');
 
 $duplicate = PersonalDataRegistry::instance()->register(
     'stock_alerts',
@@ -156,6 +156,6 @@ $duplicate = PersonalDataRegistry::instance()->register(
     static fn(string $email, int $page = 1): array => array('data' => array(), 'done' => true),
     static fn(string $email, int $page = 1): array => array('items_removed' => false, 'items_retained' => false, 'messages' => array(), 'done' => true)
 );
-uc_governance_assert($duplicate instanceof WP_Error && $duplicate->code === 'badotulc_privacy_handler_duplicate', 'duplicate personal-data handler keys must fail closed');
+badotulc_governance_assert($duplicate instanceof WP_Error && $duplicate->code === 'badotulc_privacy_handler_duplicate', 'duplicate personal-data handler keys must fail closed');
 
 fwrite(STDOUT, "Audit and privacy foundation tests passed\n");

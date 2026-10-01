@@ -53,8 +53,8 @@ jobs:
           required_page = (
               'Capabilities::MANAGE_SETTINGS',
               'Csrf::require',
-              "admin_post_uc_settings_export",
-              "admin_post_uc_settings_import",
+              "admin_post_badotulc_settings_export",
+              "admin_post_badotulc_settings_import",
               'SettingsTransfer::MAX_BYTES',
               'is_uploaded_file',
           )

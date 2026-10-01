@@ -43,16 +43,16 @@ jobs:
               raise SystemExit('Canonical uninstall entrypoint must fail closed outside WordPress uninstall context')
           if "Uninstall::run();" not in uninstall_entry:
               raise SystemExit('Canonical uninstall entrypoint must delegate to the bounded uninstall service')
-          for prefix in ('badotulc_lock_', 'badotulc_idem_', 'badotulc_replay_', '_transient_uc_rl_', '_transient_timeout_uc_rl_'):
+          for prefix in ('badotulc_lock_', 'badotulc_idem_', 'badotulc_replay_', '_transient_badotulc_rl_', '_transient_timeout_badotulc_rl_'):
               if prefix not in uninstall:
                   raise SystemExit(f'Runtime cleanup prefix missing: {prefix}')
           if 'woocommerce_' in uninstall.lower() or 'DROP TABLE' in uninstall.upper():
               raise SystemExit('Free uninstall must not delete WooCommerce-owned data or drop arbitrary tables')
           if "LIKE 'badotulc_%'" in uninstall or 'badotulc_%' in uninstall:
-              raise SystemExit('Uninstall must not use a broad uc_* database sweep')
+              raise SystemExit('Uninstall must not use a broad badotulc_* database sweep')
           if 'UNINSTALL_DATA_OPTION' not in settings or 'updateDeleteDataOnUninstall' not in settings:
               raise SystemExit('Merchant uninstall preference contract is missing')
-          if 'admin_post_uc_settings_retention' not in page or "PURPOSE_RETENTION = 'settings_retention'" not in page:
+          if 'admin_post_badotulc_settings_retention' not in page or "PURPOSE_RETENTION = 'settings_retention'" not in page:
               raise SystemExit('Retention preference must use the settings admin-post/CSRF boundary')
           if 'Capabilities::MANAGE_SETTINGS' not in page:
               raise SystemExit('Retention preference must require the exact UC settings capability')

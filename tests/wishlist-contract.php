@@ -51,14 +51,14 @@ require dirname(__DIR__) . '/packages/ultimate-commerce-for-woocommerce/src/Wish
 
 use BadOtter\UltimateCommerce\Wishlist\WishlistStore;
 
-function uc_wishlist_assert(bool $condition, string $message): void
+function badotulc_wishlist_assert(bool $condition, string $message): void
 {
     if (!$condition) {
         throw new RuntimeException($message);
     }
 }
 
-function uc_wishlist_read(string $path): string
+function badotulc_wishlist_read(string $path): string
 {
     $contents = file_get_contents($path);
     if (!is_string($contents)) {
@@ -67,46 +67,46 @@ function uc_wishlist_read(string $path): string
     return $contents;
 }
 
-uc_wishlist_assert(WishlistStore::ids(1) === array(), 'New wishlist must be empty.');
+badotulc_wishlist_assert(WishlistStore::ids(1) === array(), 'New wishlist must be empty.');
 
 $added = WishlistStore::add(1, 10);
-uc_wishlist_assert($added === array(10), 'Valid Woo product should be added.');
+badotulc_wishlist_assert($added === array(10), 'Valid Woo product should be added.');
 
 $duplicate = WishlistStore::add(1, 10);
-uc_wishlist_assert($duplicate === array(10), 'Duplicate product IDs must not be stored.');
+badotulc_wishlist_assert($duplicate === array(10), 'Duplicate product IDs must not be stored.');
 
 $invalid = WishlistStore::add(1, 999);
-uc_wishlist_assert($invalid instanceof WP_Error && $invalid->code === 'badotulc_wishlist_product_invalid', 'Invalid product must fail closed.');
+badotulc_wishlist_assert($invalid instanceof WP_Error && $invalid->code === 'badotulc_wishlist_product_invalid', 'Invalid product must fail closed.');
 
 $merged = WishlistStore::merge(1, array(11, 999, 12, 11));
-uc_wishlist_assert($merged === array(10, 11, 12), 'Merge must keep unique valid Woo product IDs only.');
+badotulc_wishlist_assert($merged === array(10, 11, 12), 'Merge must keep unique valid Woo product IDs only.');
 
 $removed = WishlistStore::remove(1, 10);
-uc_wishlist_assert($removed === array(11, 12), 'Remove must update the signed-in wishlist.');
+badotulc_wishlist_assert($removed === array(11, 12), 'Remove must update the signed-in wishlist.');
 
 $stored = $GLOBALS['badotulc_wishlist_meta'][1][WishlistStore::metaKey()] ?? array();
-uc_wishlist_assert($stored === array(11, 12), 'Storage must contain product IDs only.');
+badotulc_wishlist_assert($stored === array(11, 12), 'Storage must contain product IDs only.');
 
 $GLOBALS['badotulc_wishlist_meta'][1][WishlistStore::metaKey()] = array(11, 12, 999);
 $export = WishlistStore::privacyExporter('customer@example.test', 1);
 $exportValue = $export['data'][0]['data'][0]['value'] ?? '';
-uc_wishlist_assert($exportValue === '11, 12, 999', 'Privacy export must include stored preference IDs even when a Woo product is stale or unavailable.');
+badotulc_wishlist_assert($exportValue === '11, 12, 999', 'Privacy export must include stored preference IDs even when a Woo product is stale or unavailable.');
 $GLOBALS['badotulc_wishlist_meta'][1][WishlistStore::metaKey()] = array(11, 12);
 
 $root = dirname(__DIR__);
 $package = $root . '/packages/ultimate-commerce-for-woocommerce';
-$entry = uc_wishlist_read($package . '/ultimate-commerce-for-woocommerce.php');
-$config = uc_wishlist_read($package . '/config/modules.php');
-$plugin = uc_wishlist_read($package . '/src/Plugin.php');
-$module = uc_wishlist_read($package . '/src/Modules/Wishlist/WishlistModule.php');
-$rest = uc_wishlist_read($package . '/src/Wishlist/WishlistRestController.php');
-$bootstrap = uc_wishlist_read($package . '/src/Wishlist/WishlistBootstrap.php');
-$store = uc_wishlist_read($package . '/src/Wishlist/WishlistStore.php');
-$controls = uc_wishlist_read($package . '/src/Storefront/WishlistControls.php');
-$controller = uc_wishlist_read($package . '/assets/js/wishlist.js');
-$uninstall = uc_wishlist_read($package . '/src/Privacy/Uninstall.php');
-$diagnostics = uc_wishlist_read($package . '/src/Support/SystemStatus.php');
-$docs = uc_wishlist_read($root . '/docs/wishlist-contract-v1.md');
+$entry = badotulc_wishlist_read($package . '/ultimate-commerce-for-woocommerce.php');
+$config = badotulc_wishlist_read($package . '/config/modules.php');
+$plugin = badotulc_wishlist_read($package . '/src/Plugin.php');
+$module = badotulc_wishlist_read($package . '/src/Modules/Wishlist/WishlistModule.php');
+$rest = badotulc_wishlist_read($package . '/src/Wishlist/WishlistRestController.php');
+$bootstrap = badotulc_wishlist_read($package . '/src/Wishlist/WishlistBootstrap.php');
+$store = badotulc_wishlist_read($package . '/src/Wishlist/WishlistStore.php');
+$controls = badotulc_wishlist_read($package . '/src/Storefront/WishlistControls.php');
+$controller = badotulc_wishlist_read($package . '/assets/js/wishlist.js');
+$uninstall = badotulc_wishlist_read($package . '/src/Privacy/Uninstall.php');
+$diagnostics = badotulc_wishlist_read($package . '/src/Support/SystemStatus.php');
+$docs = badotulc_wishlist_read($root . '/docs/wishlist-contract-v1.md');
 
 foreach (array(
     "define('ULTIMATE_COMMERCE_WISHLIST_API_VERSION', '1.0.0')" => $entry,
@@ -140,14 +140,14 @@ foreach (array(
     "'wishlist' => self::constant('ULTIMATE_COMMERCE_WISHLIST_API_VERSION')" => $diagnostics,
     'WooCommerce remains authoritative' => $docs,
 ) as $needle => $haystack) {
-    uc_wishlist_assert(str_contains($haystack, $needle), 'Wishlist contract marker missing: ' . $needle);
+    badotulc_wishlist_assert(str_contains($haystack, $needle), 'Wishlist contract marker missing: ' . $needle);
 }
 
-uc_wishlist_assert(!str_contains($rest, "'user_id'"), 'Wishlist REST routes must never accept a target user ID.');
-uc_wishlist_assert(!str_contains($controls, 'wp_create_nonce'), 'Cacheable wishlist frontend config must not embed a user REST nonce.');
-uc_wishlist_assert(!str_contains($controls, "'loggedIn' =>"), 'Cacheable wishlist frontend config must not embed login state.');
-uc_wishlist_assert(!str_contains($controls, "'nonce' =>"), 'Cacheable wishlist frontend config must not embed nonce state.');
-uc_wishlist_assert(!str_contains($controller, 'JSON.stringify(products)'), 'Guest storage must not persist product snapshots.');
-uc_wishlist_assert(!preg_match('/FishingClothing|fishingclothing\.co\.uk/i', $module . $store . $rest . $bootstrap . $controls . $controller . $docs), 'Store-specific code leaked into wishlist.');
+badotulc_wishlist_assert(!str_contains($rest, "'user_id'"), 'Wishlist REST routes must never accept a target user ID.');
+badotulc_wishlist_assert(!str_contains($controls, 'wp_create_nonce'), 'Cacheable wishlist frontend config must not embed a user REST nonce.');
+badotulc_wishlist_assert(!str_contains($controls, "'loggedIn' =>"), 'Cacheable wishlist frontend config must not embed login state.');
+badotulc_wishlist_assert(!str_contains($controls, "'nonce' =>"), 'Cacheable wishlist frontend config must not embed nonce state.');
+badotulc_wishlist_assert(!str_contains($controller, 'JSON.stringify(products)'), 'Guest storage must not persist product snapshots.');
+badotulc_wishlist_assert(!preg_match('/FishingClothing|fishingclothing\.co\.uk/i', $module . $store . $rest . $bootstrap . $controls . $controller . $docs), 'Store-specific code leaked into wishlist.');
 
 print "Wishlist contract v1 validated\n";

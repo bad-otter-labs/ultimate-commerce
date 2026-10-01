@@ -78,7 +78,7 @@ final class FixtureModule extends AbstractModule
     }
 }
 
-function uc_assert(bool $condition, string $message): void
+function badotulc_assert(bool $condition, string $message): void
 {
     if ($condition) {
         return;
@@ -88,42 +88,42 @@ function uc_assert(bool $condition, string $message): void
     exit(1);
 }
 
-uc_assert(Module::CONTRACT_VERSION === '1.0.0', 'module contract version changed unexpectedly');
+badotulc_assert(Module::CONTRACT_VERSION === '1.0.0', 'module contract version changed unexpectedly');
 
 $registry = new ModuleRegistry();
-uc_assert($registry->register(new FixtureModule('dependent', array('base'))), 'dependent module should register');
-uc_assert($registry->register(new FixtureModule('base')), 'base module should register');
-uc_assert(!$registry->register(new FixtureModule('base')), 'duplicate key should be rejected');
+badotulc_assert($registry->register(new FixtureModule('dependent', array('base'))), 'dependent module should register');
+badotulc_assert($registry->register(new FixtureModule('base')), 'base module should register');
+badotulc_assert(!$registry->register(new FixtureModule('base')), 'duplicate key should be rejected');
 $registry->boot();
-uc_assert($GLOBALS['badotulc_test_boot_order'] === array('base', 'dependent'), 'dependencies should boot before dependants');
-uc_assert($registry->isBooted('base'), 'base should boot');
-uc_assert($registry->isBooted('dependent'), 'dependent should boot');
+badotulc_assert($GLOBALS['badotulc_test_boot_order'] === array('base', 'dependent'), 'dependencies should boot before dependants');
+badotulc_assert($registry->isBooted('base'), 'base should boot');
+badotulc_assert($registry->isBooted('dependent'), 'dependent should boot');
 $status = $registry->statuses()['dependent'];
-uc_assert($status['product'] === 'fixture-extension', 'product metadata should be exposed');
-uc_assert($status['tier'] === Module::TIER_EXTENSION, 'tier metadata should be exposed');
-uc_assert($status['compatibility']['module_api'] === '1.0.0', 'module API compatibility should be exposed');
+badotulc_assert($status['product'] === 'fixture-extension', 'product metadata should be exposed');
+badotulc_assert($status['tier'] === Module::TIER_EXTENSION, 'tier metadata should be exposed');
+badotulc_assert($status['compatibility']['module_api'] === '1.0.0', 'module API compatibility should be exposed');
 
 $GLOBALS['badotulc_test_boot_order'] = array();
 $missing = new ModuleRegistry();
-uc_assert($missing->register(new FixtureModule('needs_missing', array('not_registered'))), 'module with missing dependency should register before boot resolution');
+badotulc_assert($missing->register(new FixtureModule('needs_missing', array('not_registered'))), 'module with missing dependency should register before boot resolution');
 $missing->boot();
-uc_assert(!$missing->isBooted('needs_missing'), 'missing dependency should block boot');
-uc_assert($missing->issues()['needs_missing'] === 'missing_dependency:not_registered', 'missing dependency reason should be inspectable');
+badotulc_assert(!$missing->isBooted('needs_missing'), 'missing dependency should block boot');
+badotulc_assert($missing->issues()['needs_missing'] === 'missing_dependency:not_registered', 'missing dependency reason should be inspectable');
 
 $cycle = new ModuleRegistry();
-uc_assert($cycle->register(new FixtureModule('cycle_a', array('cycle_b'))), 'cycle_a should register');
-uc_assert($cycle->register(new FixtureModule('cycle_b', array('cycle_a'))), 'cycle_b should register');
+badotulc_assert($cycle->register(new FixtureModule('cycle_a', array('cycle_b'))), 'cycle_a should register');
+badotulc_assert($cycle->register(new FixtureModule('cycle_b', array('cycle_a'))), 'cycle_b should register');
 $cycle->boot();
-uc_assert(!$cycle->isBooted('cycle_a') && !$cycle->isBooted('cycle_b'), 'circular dependencies must not boot');
-uc_assert(isset($cycle->issues()['cycle_a']) || isset($cycle->issues()['cycle_b']), 'circular dependency should expose an issue');
+badotulc_assert(!$cycle->isBooted('cycle_a') && !$cycle->isBooted('cycle_b'), 'circular dependencies must not boot');
+badotulc_assert(isset($cycle->issues()['cycle_a']) || isset($cycle->issues()['cycle_b']), 'circular dependency should expose an issue');
 
 $GLOBALS['badotulc_test_options']['badotulc_modules'] = array('disabled_base' => false);
 $disabled = new ModuleRegistry();
-uc_assert($disabled->register(new FixtureModule('disabled_base')), 'disabled dependency should register');
-uc_assert($disabled->register(new FixtureModule('needs_disabled', array('disabled_base'))), 'dependent on disabled module should register');
+badotulc_assert($disabled->register(new FixtureModule('disabled_base')), 'disabled dependency should register');
+badotulc_assert($disabled->register(new FixtureModule('needs_disabled', array('disabled_base'))), 'dependent on disabled module should register');
 $disabled->boot();
-uc_assert(!$disabled->isBooted('disabled_base'), 'disabled module must not boot');
-uc_assert(!$disabled->isBooted('needs_disabled'), 'dependant of disabled module must not boot');
-uc_assert($disabled->statuses()['disabled_base']['status'] === 'disabled', 'disabled status should be explicit');
+badotulc_assert(!$disabled->isBooted('disabled_base'), 'disabled module must not boot');
+badotulc_assert(!$disabled->isBooted('needs_disabled'), 'dependant of disabled module must not boot');
+badotulc_assert($disabled->statuses()['disabled_base']['status'] === 'disabled', 'disabled status should be explicit');
 
 fwrite(STDOUT, "Module contract v1 tests passed\n");

@@ -47,7 +47,7 @@ jobs:
                   raise SystemExit(f'Module settings write contract missing: {marker}')
 
           required_page = (
-              "add_action('admin_post_uc_modules_save'",
+              "add_action('admin_post_badotulc_modules_save'",
               'Capabilities::MANAGE_SETTINGS',
               'Csrf::require(',
               'Plugin::registry()->statuses()',

@@ -153,8 +153,8 @@ $ucOptions = array(
     'badotulc_lock_abc' => array('lease' => 'a'),
     'badotulc_idem_def' => array('state' => 'completed'),
     'badotulc_replay_ghi' => array('lease' => 'b'),
-    '_transient_uc_rl_jkl' => array('count' => 1),
-    '_transient_timeout_uc_rl_jkl' => 9999999999,
+    '_transient_badotulc_rl_jkl' => array('count' => 1),
+    '_transient_timeout_badotulc_rl_jkl' => 9999999999,
     'woocommerce_currency' => 'GBP',
     'third_party_option' => 'keep-me',
 );
@@ -167,7 +167,7 @@ ucAssert(array_key_exists(Settings::UNINSTALL_DATA_OPTION, $ucOptions), 'Retenti
 ucAssert(!isset($ucOptions['badotulc_version']) && !isset($ucOptions['badotulc_schema_version']), 'Runtime version metadata must always be removed.');
 ucAssert(!isset($ucOptions['badotulc_capability_version']), 'Capability version marker must always be removed.');
 ucAssert(!isset($ucOptions['badotulc_lock_abc']) && !isset($ucOptions['badotulc_idem_def']) && !isset($ucOptions['badotulc_replay_ghi']), 'Runtime lease/idempotency/replay records must always be removed.');
-ucAssert(!isset($ucOptions['_transient_uc_rl_jkl']) && !isset($ucOptions['_transient_timeout_uc_rl_jkl']), 'UC rate-limit transients must always be removed.');
+ucAssert(!isset($ucOptions['_transient_badotulc_rl_jkl']) && !isset($ucOptions['_transient_timeout_badotulc_rl_jkl']), 'UC rate-limit transients must always be removed.');
 ucAssert(($ucOptions['woocommerce_currency'] ?? '') === 'GBP', 'WooCommerce-owned options must never be removed.');
 ucAssert(($ucOptions['third_party_option'] ?? '') === 'keep-me', 'Unrelated third-party options must never be removed.');
 ucAssert(($ucUserMeta[1][WishlistStore::metaKey()] ?? array()) === array(10, 11), 'Wishlist personal data must be retained by default.');
