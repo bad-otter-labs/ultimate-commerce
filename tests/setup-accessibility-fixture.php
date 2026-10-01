@@ -58,7 +58,7 @@ uc_a11y_fixture_assert((int) $recentId > 0, 'Could not create recently viewed ac
 update_option('badotulc_a11y_recent_product_id', (int) $recentId, false);
 
 $content = sprintf(
-    '[uc_accessibility_fixture product_id="%1$d"]' . "\n\n" .
+    '[badotulc_accessibility_fixture product_id="%1$d"]' . "\n\n" .
     '[ultimate_commerce_wishlist title="Wishlist"]' . "\n\n" .
     '[ultimate_commerce_recently_viewed title="Recently viewed"]',
     (int) $variableId
