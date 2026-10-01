@@ -27,7 +27,8 @@ TEXT_SUFFIXES = {
     '.php', '.json', '.txt', '.md', '.js', '.css', '.xml', '.yml', '.yaml', '.html', '.htm', '.pot', '.po',
 }
 BOUNDARY_PATTERNS = {
-    'private Bad Otter API': re.compile(r'api\.badotter\.io', re.I),
+    'short generic plugin prefix': re.compile(r'\\buc_[A-Za-z0-9_]+'),
+    'private Bad Otter API': re.compile(r'api\\.badotter\\.io', re.I),
     'third-party update header': re.compile(r'^\s*\*\s*Update URI:', re.I | re.M),
     'private managed updater': re.compile(r'\b(?:ManagedUpdates|BadOtterClient)\b'),
     'private package scheme': re.compile(r'uc-bad-otter://|badotter-managed://', re.I),
