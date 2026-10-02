@@ -1,5 +1,9 @@
 name: Validate Ultimate Commerce Uninstall Retention
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 on:
   pull_request:
   push:

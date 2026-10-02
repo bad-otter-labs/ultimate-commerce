@@ -1,5 +1,9 @@
 name: Validate Ultimate Commerce Account and Order Contract
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 on:
   pull_request:
   push:
