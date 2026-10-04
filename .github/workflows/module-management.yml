@@ -11,7 +11,7 @@ on:
       - 'composer.json'
       - 'composer.lock'
       - 'docs/module-management.md'
-      - 'packages/ultimate-commerce-for-woocommerce'
+      - 'packages/ultimate-commerce-for-woocommerce/**'
       - 'packages/ultimate-commerce-for-woocommerce/src/Admin/AdminMenu.php'
       - 'packages/ultimate-commerce-for-woocommerce/src/Admin/ModulesPage.php'
       - 'packages/ultimate-commerce-for-woocommerce/src/Plugin.php'
@@ -26,7 +26,7 @@ on:
       - 'composer.json'
       - 'composer.lock'
       - 'docs/module-management.md'
-      - 'packages/ultimate-commerce-for-woocommerce'
+      - 'packages/ultimate-commerce-for-woocommerce/**'
       - 'packages/ultimate-commerce-for-woocommerce/src/Admin/AdminMenu.php'
       - 'packages/ultimate-commerce-for-woocommerce/src/Admin/ModulesPage.php'
       - 'packages/ultimate-commerce-for-woocommerce/src/Plugin.php'
@@ -59,7 +59,7 @@ jobs:
           python3 - <<'PY'
           from pathlib import Path
 
-          root = Path('packages/ultimate-commerce-for-woocommerce')
+          root = Path('packages/ultimate-commerce-for-woocommerce/**')
           settings = (root / 'src/Support/Settings.php').read_text()
           page = (root / 'src/Admin/ModulesPage.php').read_text()
           menu = (root / 'src/Admin/AdminMenu.php').read_text()

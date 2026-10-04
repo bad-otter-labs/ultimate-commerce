@@ -10,7 +10,7 @@ on:
       - '.github/workflows/uninstall-retention.yml'
       - 'composer.json'
       - 'composer.lock'
-      - 'packages/ultimate-commerce-for-woocommerce'
+      - 'packages/ultimate-commerce-for-woocommerce/**'
       - 'packages/ultimate-commerce-for-woocommerce/src/Admin/SettingsPage.php'
       - 'packages/ultimate-commerce-for-woocommerce/src/Plugin.php'
       - 'packages/ultimate-commerce-for-woocommerce/src/Privacy/Uninstall.php'
@@ -26,7 +26,7 @@ on:
       - '.github/workflows/uninstall-retention.yml'
       - 'composer.json'
       - 'composer.lock'
-      - 'packages/ultimate-commerce-for-woocommerce'
+      - 'packages/ultimate-commerce-for-woocommerce/**'
       - 'packages/ultimate-commerce-for-woocommerce/src/Admin/SettingsPage.php'
       - 'packages/ultimate-commerce-for-woocommerce/src/Plugin.php'
       - 'packages/ultimate-commerce-for-woocommerce/src/Privacy/Uninstall.php'
@@ -62,7 +62,7 @@ jobs:
           python3 - <<'PY'
           from pathlib import Path
 
-          root = Path('packages/ultimate-commerce-for-woocommerce')
+          root = Path('packages/ultimate-commerce-for-woocommerce/**')
           uninstall_entry = (root / 'uninstall.php').read_text()
           uninstall = (root / 'src/Privacy/Uninstall.php').read_text()
           settings = (root / 'src/Support/Settings.php').read_text()

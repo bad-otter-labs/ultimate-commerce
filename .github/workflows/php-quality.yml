@@ -12,6 +12,11 @@ on:
       - 'composer.json'
       - 'composer.lock'
       - 'scripts/check-quality-dependency-licenses.py'
+      - 'packages/ultimate-commerce/**'
+      - 'phpcompatibility.xml.dist'
+      - 'phpcs.xml.dist'
+      - 'phpstan-bootstrap.php'
+      - 'phpstan.neon'
   push:
     branches:
       - main
@@ -21,6 +26,11 @@ on:
       - 'composer.json'
       - 'composer.lock'
       - 'scripts/check-quality-dependency-licenses.py'
+      - 'packages/ultimate-commerce/**'
+      - 'phpcompatibility.xml.dist'
+      - 'phpcs.xml.dist'
+      - 'phpstan-bootstrap.php'
+      - 'phpstan.neon'
 
 permissions:
   contents: read

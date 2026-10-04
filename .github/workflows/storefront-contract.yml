@@ -11,10 +11,10 @@ on:
       - 'composer.json'
       - 'composer.lock'
       - 'docs/storefront-catalogue-contract-v1.md'
-      - 'packages/ultimate-commerce-for-woocommerce'
+      - 'packages/ultimate-commerce-for-woocommerce/**'
       - 'packages/ultimate-commerce-for-woocommerce/assets/js/variation-controls.js'
       - 'packages/ultimate-commerce-for-woocommerce/src/Plugin.php'
-      - 'packages/ultimate-commerce-for-woocommerce/src/Storefront'
+      - 'packages/ultimate-commerce-for-woocommerce/src/Storefront/**'
       - 'packages/ultimate-commerce-for-woocommerce/src/Storefront/Catalog.php'
       - 'packages/ultimate-commerce-for-woocommerce/src/Storefront/CatalogFilterRegistry.php'
       - 'packages/ultimate-commerce-for-woocommerce/src/Storefront/CatalogQuery.php'
@@ -32,10 +32,10 @@ on:
       - 'composer.json'
       - 'composer.lock'
       - 'docs/storefront-catalogue-contract-v1.md'
-      - 'packages/ultimate-commerce-for-woocommerce'
+      - 'packages/ultimate-commerce-for-woocommerce/**'
       - 'packages/ultimate-commerce-for-woocommerce/assets/js/variation-controls.js'
       - 'packages/ultimate-commerce-for-woocommerce/src/Plugin.php'
-      - 'packages/ultimate-commerce-for-woocommerce/src/Storefront'
+      - 'packages/ultimate-commerce-for-woocommerce/src/Storefront/**'
       - 'packages/ultimate-commerce-for-woocommerce/src/Storefront/Catalog.php'
       - 'packages/ultimate-commerce-for-woocommerce/src/Storefront/CatalogFilterRegistry.php'
       - 'packages/ultimate-commerce-for-woocommerce/src/Storefront/CatalogQuery.php'
@@ -83,7 +83,7 @@ jobs:
           set -euo pipefail
           python3 - <<'PY'
           from pathlib import Path
-          root = Path('packages/ultimate-commerce-for-woocommerce')
+          root = Path('packages/ultimate-commerce-for-woocommerce/**')
           entry = (root / 'ultimate-commerce-for-woocommerce.php').read_text()
           query = (root / 'src/Storefront/CatalogQuery.php').read_text()
           filters = (root / 'src/Storefront/CatalogFilterRegistry.php').read_text()

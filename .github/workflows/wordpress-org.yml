@@ -11,10 +11,11 @@ on:
       - 'packages/ultimate-commerce-for-woocommerce/**'
       - 'package-lock.json'
       - 'package.json'
-      - 'packages/ultimate-commerce-for-woocommerce'
+      - 'packages/ultimate-commerce-for-woocommerce/**'
       - 'scripts/build-wordpress-org-package.py'
       - 'scripts/check-wordpress-org-assets.py'
       - 'scripts/check-wordpress-org-package.py'
+      - 'wordpress-org-assets/**'
   push:
     branches:
       - main
@@ -23,10 +24,11 @@ on:
       - 'packages/ultimate-commerce-for-woocommerce/**'
       - 'package-lock.json'
       - 'package.json'
-      - 'packages/ultimate-commerce-for-woocommerce'
+      - 'packages/ultimate-commerce-for-woocommerce/**'
       - 'scripts/build-wordpress-org-package.py'
       - 'scripts/check-wordpress-org-assets.py'
       - 'scripts/check-wordpress-org-package.py'
+      - 'wordpress-org-assets/**'
 
 permissions:
   contents: read

@@ -11,7 +11,7 @@ on:
       - 'composer.json'
       - 'composer.lock'
       - 'docs/execution-control-foundations.md'
-      - 'packages/ultimate-commerce-for-woocommerce'
+      - 'packages/ultimate-commerce-for-woocommerce/**'
       - 'packages/ultimate-commerce-for-woocommerce/src/Concurrency/Lock.php'
       - 'packages/ultimate-commerce-for-woocommerce/src/Concurrency/OptionLockStore.php'
       - 'packages/ultimate-commerce-for-woocommerce/src/Contracts/IdempotencyStore.php'
@@ -34,7 +34,7 @@ on:
       - 'composer.json'
       - 'composer.lock'
       - 'docs/execution-control-foundations.md'
-      - 'packages/ultimate-commerce-for-woocommerce'
+      - 'packages/ultimate-commerce-for-woocommerce/**'
       - 'packages/ultimate-commerce-for-woocommerce/src/Concurrency/Lock.php'
       - 'packages/ultimate-commerce-for-woocommerce/src/Concurrency/OptionLockStore.php'
       - 'packages/ultimate-commerce-for-woocommerce/src/Contracts/IdempotencyStore.php'
@@ -105,7 +105,7 @@ jobs:
           import re
           from pathlib import Path
 
-          root = Path('packages/ultimate-commerce-for-woocommerce')
+          root = Path('packages/ultimate-commerce-for-woocommerce/**')
           entry = (root / 'ultimate-commerce-for-woocommerce.php').read_text()
           plugin = (root / 'src/Plugin.php').read_text()
           lock = (root / 'src/Concurrency/OptionLockStore.php').read_text()

@@ -10,7 +10,7 @@ on:
       - '.github/workflows/settings-transfer.yml'
       - 'composer.json'
       - 'composer.lock'
-      - 'packages/ultimate-commerce-for-woocommerce'
+      - 'packages/ultimate-commerce-for-woocommerce/**'
       - 'packages/ultimate-commerce-for-woocommerce/src/Admin/SettingsPage.php'
       - 'packages/ultimate-commerce-for-woocommerce/src/Plugin.php'
       - 'packages/ultimate-commerce-for-woocommerce/src/Support/Settings.php'
@@ -24,7 +24,7 @@ on:
       - '.github/workflows/settings-transfer.yml'
       - 'composer.json'
       - 'composer.lock'
-      - 'packages/ultimate-commerce-for-woocommerce'
+      - 'packages/ultimate-commerce-for-woocommerce/**'
       - 'packages/ultimate-commerce-for-woocommerce/src/Admin/SettingsPage.php'
       - 'packages/ultimate-commerce-for-woocommerce/src/Plugin.php'
       - 'packages/ultimate-commerce-for-woocommerce/src/Support/Settings.php'
@@ -56,7 +56,7 @@ jobs:
           python3 - <<'PY'
           from pathlib import Path
 
-          root = Path('packages/ultimate-commerce-for-woocommerce')
+          root = Path('packages/ultimate-commerce-for-woocommerce/**')
           transfer = (root / 'src/Support/SettingsTransfer.php').read_text()
           page = (root / 'src/Admin/SettingsPage.php').read_text()
           plugin = (root / 'src/Plugin.php').read_text()

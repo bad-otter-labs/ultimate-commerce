@@ -10,7 +10,7 @@ on:
       - '.github/workflows/diagnostics.yml'
       - 'composer.json'
       - 'composer.lock'
-      - 'packages/ultimate-commerce-for-woocommerce'
+      - 'packages/ultimate-commerce-for-woocommerce/**'
       - 'packages/ultimate-commerce-for-woocommerce/src/Admin/DiagnosticsPage.php'
       - 'packages/ultimate-commerce-for-woocommerce/src/Plugin.php'
       - 'packages/ultimate-commerce-for-woocommerce/src/Support/SystemStatus.php'
@@ -23,7 +23,7 @@ on:
       - '.github/workflows/diagnostics.yml'
       - 'composer.json'
       - 'composer.lock'
-      - 'packages/ultimate-commerce-for-woocommerce'
+      - 'packages/ultimate-commerce-for-woocommerce/**'
       - 'packages/ultimate-commerce-for-woocommerce/src/Admin/DiagnosticsPage.php'
       - 'packages/ultimate-commerce-for-woocommerce/src/Plugin.php'
       - 'packages/ultimate-commerce-for-woocommerce/src/Support/SystemStatus.php'
@@ -53,7 +53,7 @@ jobs:
           python3 - <<'PY'
           from pathlib import Path
 
-          root = Path('packages/ultimate-commerce-for-woocommerce')
+          root = Path('packages/ultimate-commerce-for-woocommerce/**')
           status = (root / 'src/Support/SystemStatus.php').read_text()
           page = (root / 'src/Admin/DiagnosticsPage.php').read_text()
 

@@ -10,6 +10,7 @@ on:
       - '.github/workflows/compatibility-matrix.yml'
       - 'packages/ultimate-commerce-for-woocommerce/**'
       - 'scripts/run-compatibility-case.sh'
+      - 'tests/live-compatibility-smoke.php'
   push:
     branches:
       - main
@@ -17,6 +18,7 @@ on:
       - '.github/workflows/compatibility-matrix.yml'
       - 'packages/ultimate-commerce-for-woocommerce/**'
       - 'scripts/run-compatibility-case.sh'
+      - 'tests/live-compatibility-smoke.php'
 
 permissions:
   contents: read
