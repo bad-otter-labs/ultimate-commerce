@@ -6,9 +6,25 @@ concurrency:
 
 on:
   pull_request:
+    paths:
+      - '.github/workflows/free-upgrade-fixture.yml'
+      - 'composer.json'
+      - 'composer.lock'
+      - 'packages/ultimate-commerce-for-woocommerce/src/Plugin.php'
+      - 'packages/ultimate-commerce-for-woocommerce/src/Support/OptionMigrator.php'
+      - 'packages/ultimate-commerce-for-woocommerce/ultimate-commerce-for-woocommerce.php'
+      - 'tests/free-identity-upgrade-fixture.php'
   push:
     branches:
       - main
+    paths:
+      - '.github/workflows/free-upgrade-fixture.yml'
+      - 'composer.json'
+      - 'composer.lock'
+      - 'packages/ultimate-commerce-for-woocommerce/src/Plugin.php'
+      - 'packages/ultimate-commerce-for-woocommerce/src/Support/OptionMigrator.php'
+      - 'packages/ultimate-commerce-for-woocommerce/ultimate-commerce-for-woocommerce.php'
+      - 'tests/free-identity-upgrade-fixture.php'
 
 permissions:
   contents: read
