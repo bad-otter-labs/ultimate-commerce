@@ -6,9 +6,25 @@ concurrency:
 
 on:
   pull_request:
+    paths:
+      - '.github/workflows/wordpress-org.yml'
+      - 'package-lock.json'
+      - 'package.json'
+      - 'packages/ultimate-commerce-for-woocommerce'
+      - 'scripts/build-wordpress-org-package.py'
+      - 'scripts/check-wordpress-org-assets.py'
+      - 'scripts/check-wordpress-org-package.py'
   push:
     branches:
       - main
+    paths:
+      - '.github/workflows/wordpress-org.yml'
+      - 'package-lock.json'
+      - 'package.json'
+      - 'packages/ultimate-commerce-for-woocommerce'
+      - 'scripts/build-wordpress-org-package.py'
+      - 'scripts/check-wordpress-org-assets.py'
+      - 'scripts/check-wordpress-org-package.py'
 
 permissions:
   contents: read
