@@ -6,9 +6,31 @@ concurrency:
 
 on:
   pull_request:
+    paths:
+      - '.github/workflows/account-order-contract.yml'
+      - 'composer.json'
+      - 'composer.lock'
+      - 'packages/ultimate-commerce-for-woocommerce/src/Account/AccountHooks.php'
+      - 'packages/ultimate-commerce-for-woocommerce/src/Account/AccountViewModel.php'
+      - 'packages/ultimate-commerce-for-woocommerce/src/Account/OrderViewModel.php'
+      - 'packages/ultimate-commerce-for-woocommerce/src/Modules/Account/AccountModule.php'
+      - 'packages/ultimate-commerce-for-woocommerce/src/Plugin.php'
+      - 'packages/ultimate-commerce-for-woocommerce/ultimate-commerce-for-woocommerce.php'
+      - 'tests/account-order-contract.php'
   push:
     branches:
       - main
+    paths:
+      - '.github/workflows/account-order-contract.yml'
+      - 'composer.json'
+      - 'composer.lock'
+      - 'packages/ultimate-commerce-for-woocommerce/src/Account/AccountHooks.php'
+      - 'packages/ultimate-commerce-for-woocommerce/src/Account/AccountViewModel.php'
+      - 'packages/ultimate-commerce-for-woocommerce/src/Account/OrderViewModel.php'
+      - 'packages/ultimate-commerce-for-woocommerce/src/Modules/Account/AccountModule.php'
+      - 'packages/ultimate-commerce-for-woocommerce/src/Plugin.php'
+      - 'packages/ultimate-commerce-for-woocommerce/ultimate-commerce-for-woocommerce.php'
+      - 'tests/account-order-contract.php'
 
 permissions:
   contents: read
