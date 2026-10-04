@@ -6,9 +6,41 @@ concurrency:
 
 on:
   pull_request:
+    paths:
+      - '.github/workflows/governance.yml'
+      - 'composer.json'
+      - 'composer.lock'
+      - 'docs/audit-privacy-foundations.md'
+      - 'packages/ultimate-commerce-for-woocommerce'
+      - 'packages/ultimate-commerce-for-woocommerce/src/Audit/Audit.php'
+      - 'packages/ultimate-commerce-for-woocommerce/src/Audit/AuditEvent.php'
+      - 'packages/ultimate-commerce-for-woocommerce/src/Audit/HookAuditSink.php'
+      - 'packages/ultimate-commerce-for-woocommerce/src/Contracts/AuditSink.php'
+      - 'packages/ultimate-commerce-for-woocommerce/src/Plugin.php'
+      - 'packages/ultimate-commerce-for-woocommerce/src/Privacy/DataClassification.php'
+      - 'packages/ultimate-commerce-for-woocommerce/src/Privacy/DataRetention.php'
+      - 'packages/ultimate-commerce-for-woocommerce/src/Privacy/PersonalDataRegistry.php'
+      - 'packages/ultimate-commerce-for-woocommerce/ultimate-commerce-for-woocommerce.php'
+      - 'tests/audit-privacy-foundations.php'
   push:
     branches:
       - main
+    paths:
+      - '.github/workflows/governance.yml'
+      - 'composer.json'
+      - 'composer.lock'
+      - 'docs/audit-privacy-foundations.md'
+      - 'packages/ultimate-commerce-for-woocommerce'
+      - 'packages/ultimate-commerce-for-woocommerce/src/Audit/Audit.php'
+      - 'packages/ultimate-commerce-for-woocommerce/src/Audit/AuditEvent.php'
+      - 'packages/ultimate-commerce-for-woocommerce/src/Audit/HookAuditSink.php'
+      - 'packages/ultimate-commerce-for-woocommerce/src/Contracts/AuditSink.php'
+      - 'packages/ultimate-commerce-for-woocommerce/src/Plugin.php'
+      - 'packages/ultimate-commerce-for-woocommerce/src/Privacy/DataClassification.php'
+      - 'packages/ultimate-commerce-for-woocommerce/src/Privacy/DataRetention.php'
+      - 'packages/ultimate-commerce-for-woocommerce/src/Privacy/PersonalDataRegistry.php'
+      - 'packages/ultimate-commerce-for-woocommerce/ultimate-commerce-for-woocommerce.php'
+      - 'tests/audit-privacy-foundations.php'
 
 permissions:
   contents: read
