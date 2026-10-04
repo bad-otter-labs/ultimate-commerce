@@ -89,7 +89,7 @@ jobs:
           import re
           from pathlib import Path
 
-          root = Path('packages/ultimate-commerce-for-woocommerce/**')
+          root = Path('packages/ultimate-commerce-for-woocommerce')
           entry = (root / 'ultimate-commerce-for-woocommerce.php').read_text()
           plugin = (root / 'src/Plugin.php').read_text()
           classification = (root / 'src/Privacy/DataClassification.php').read_text()

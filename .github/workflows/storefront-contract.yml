@@ -83,7 +83,7 @@ jobs:
           set -euo pipefail
           python3 - <<'PY'
           from pathlib import Path
-          root = Path('packages/ultimate-commerce-for-woocommerce/**')
+          root = Path('packages/ultimate-commerce-for-woocommerce')
           entry = (root / 'ultimate-commerce-for-woocommerce.php').read_text()
           query = (root / 'src/Storefront/CatalogQuery.php').read_text()
           filters = (root / 'src/Storefront/CatalogFilterRegistry.php').read_text()

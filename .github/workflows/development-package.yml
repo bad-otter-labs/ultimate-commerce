@@ -96,7 +96,7 @@ jobs:
           for marker in forbidden:
               if marker in canonical:
                   raise SystemExit(f'Canonical Free source leaked development marker: {marker}')
-          if Path('packages/ultimate-commerce-for-woocommerce/src/DevelopmentUpdates/**').exists():
+          if Path('packages/ultimate-commerce-for-woocommerce/src/DevelopmentUpdates').exists():
               raise SystemExit('Canonical Free source must not contain DevelopmentUpdates')
           if Path('packages/ultimate-commerce-for-woocommerce/module.json').exists():
               raise SystemExit('Canonical Free source must not contain the development manifest')

@@ -36,7 +36,7 @@ for path in workflow_paths:
             f"{path.name}: pull_request_target is forbidden for this repository trust boundary."
         )
 
-    path_entries = re.findall(r"(?m)^\\s+- ['\\\"]([^'\\\"]+)['\\\"]\\s*$", text)
+    path_entries = re.findall(r"(?m)^\s+- ['\"]([^'\"]+)['\"]\s*$", text)
     for entry in path_entries:
         if not any(char in entry for char in "*?[") and (ROOT / entry).is_dir():
             raise SystemExit(

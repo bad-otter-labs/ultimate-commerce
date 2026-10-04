@@ -151,7 +151,7 @@ jobs:
           import re
           from pathlib import Path
 
-          root = Path('packages/ultimate-commerce-for-woocommerce/**')
+          root = Path('packages/ultimate-commerce-for-woocommerce')
           entry = (root / 'ultimate-commerce-for-woocommerce.php').read_text()
           interface = (root / 'src/Contracts/Module.php').read_text()
           plugin = (root / 'src/Plugin.php').read_text()
@@ -181,7 +181,7 @@ jobs:
           python3 - <<'PY'
           from pathlib import Path
 
-          root = Path('packages/ultimate-commerce-for-woocommerce/**')
+          root = Path('packages/ultimate-commerce-for-woocommerce')
           diagnostics = (root / 'src/Admin/DiagnosticsPage.php').read_text()
           capabilities = (root / 'src/Security/Capabilities.php').read_text()
           routes = (root / 'src/Rest/RouteRegistrar.php').read_text()
@@ -206,7 +206,7 @@ jobs:
           import re
           from pathlib import Path
 
-          root = Path('packages/ultimate-commerce-for-woocommerce/**')
+          root = Path('packages/ultimate-commerce-for-woocommerce')
           entry = (root / 'ultimate-commerce-for-woocommerce.php').read_text()
           guest = (root / 'src/Security/GuestToken.php').read_text()
           secrets = (root / 'src/Security/Secrets/EncryptedOptionSecretStore.php').read_text()
@@ -242,7 +242,7 @@ jobs:
           import json, re
           from pathlib import Path
 
-          root = Path('packages/ultimate-commerce-for-woocommerce/**')
+          root = Path('packages/ultimate-commerce-for-woocommerce')
           plugin = (root / 'ultimate-commerce-for-woocommerce.php').read_text()
           composer = json.loads((root / 'composer.json').read_text())
           modules = (root / 'config/modules.php').read_text()
@@ -306,7 +306,7 @@ jobs:
           python3 - <<'PY'
           import json
           from pathlib import Path
-          root = Path('packages/ultimate-commerce/**')
+          root = Path('packages/ultimate-commerce')
           plugin = (root / 'ultimate-commerce.php').read_text()
           manifest = json.loads((root / 'module.json').read_text())
           if manifest.get('product') != 'ultimate-commerce' or manifest.get('id') != 'core':

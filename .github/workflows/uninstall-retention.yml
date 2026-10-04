@@ -62,7 +62,7 @@ jobs:
           python3 - <<'PY'
           from pathlib import Path
 
-          root = Path('packages/ultimate-commerce-for-woocommerce/**')
+          root = Path('packages/ultimate-commerce-for-woocommerce')
           uninstall_entry = (root / 'uninstall.php').read_text()
           uninstall = (root / 'src/Privacy/Uninstall.php').read_text()
           settings = (root / 'src/Support/Settings.php').read_text()

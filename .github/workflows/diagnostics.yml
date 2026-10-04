@@ -53,7 +53,7 @@ jobs:
           python3 - <<'PY'
           from pathlib import Path
 
-          root = Path('packages/ultimate-commerce-for-woocommerce/**')
+          root = Path('packages/ultimate-commerce-for-woocommerce')
           status = (root / 'src/Support/SystemStatus.php').read_text()
           page = (root / 'src/Admin/DiagnosticsPage.php').read_text()
 
