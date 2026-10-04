@@ -8,12 +8,14 @@ on:
   pull_request:
     paths:
       - '.github/workflows/compatibility-matrix.yml'
+      - 'packages/ultimate-commerce-for-woocommerce/**'
       - 'scripts/run-compatibility-case.sh'
   push:
     branches:
       - main
     paths:
       - '.github/workflows/compatibility-matrix.yml'
+      - 'packages/ultimate-commerce-for-woocommerce/**'
       - 'scripts/run-compatibility-case.sh'
 
 permissions:
