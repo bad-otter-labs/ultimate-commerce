@@ -6,9 +6,49 @@ concurrency:
 
 on:
   pull_request:
+    paths:
+      - '.github/workflows/execution-controls.yml'
+      - 'composer.json'
+      - 'composer.lock'
+      - 'docs/execution-control-foundations.md'
+      - 'packages/ultimate-commerce-for-woocommerce'
+      - 'packages/ultimate-commerce-for-woocommerce/src/Concurrency/Lock.php'
+      - 'packages/ultimate-commerce-for-woocommerce/src/Concurrency/OptionLockStore.php'
+      - 'packages/ultimate-commerce-for-woocommerce/src/Contracts/IdempotencyStore.php'
+      - 'packages/ultimate-commerce-for-woocommerce/src/Contracts/LockStore.php'
+      - 'packages/ultimate-commerce-for-woocommerce/src/Contracts/RateLimiter.php'
+      - 'packages/ultimate-commerce-for-woocommerce/src/Idempotency/Idempotency.php'
+      - 'packages/ultimate-commerce-for-woocommerce/src/Idempotency/OptionIdempotencyStore.php'
+      - 'packages/ultimate-commerce-for-woocommerce/src/Jobs/ActionScheduler.php'
+      - 'packages/ultimate-commerce-for-woocommerce/src/Jobs/RetryPolicy.php'
+      - 'packages/ultimate-commerce-for-woocommerce/src/Plugin.php'
+      - 'packages/ultimate-commerce-for-woocommerce/src/RateLimit/RateLimit.php'
+      - 'packages/ultimate-commerce-for-woocommerce/src/RateLimit/TransientRateLimiter.php'
+      - 'packages/ultimate-commerce-for-woocommerce/ultimate-commerce-for-woocommerce.php'
+      - 'tests/execution-control-foundations.php'
   push:
     branches:
       - main
+    paths:
+      - '.github/workflows/execution-controls.yml'
+      - 'composer.json'
+      - 'composer.lock'
+      - 'docs/execution-control-foundations.md'
+      - 'packages/ultimate-commerce-for-woocommerce'
+      - 'packages/ultimate-commerce-for-woocommerce/src/Concurrency/Lock.php'
+      - 'packages/ultimate-commerce-for-woocommerce/src/Concurrency/OptionLockStore.php'
+      - 'packages/ultimate-commerce-for-woocommerce/src/Contracts/IdempotencyStore.php'
+      - 'packages/ultimate-commerce-for-woocommerce/src/Contracts/LockStore.php'
+      - 'packages/ultimate-commerce-for-woocommerce/src/Contracts/RateLimiter.php'
+      - 'packages/ultimate-commerce-for-woocommerce/src/Idempotency/Idempotency.php'
+      - 'packages/ultimate-commerce-for-woocommerce/src/Idempotency/OptionIdempotencyStore.php'
+      - 'packages/ultimate-commerce-for-woocommerce/src/Jobs/ActionScheduler.php'
+      - 'packages/ultimate-commerce-for-woocommerce/src/Jobs/RetryPolicy.php'
+      - 'packages/ultimate-commerce-for-woocommerce/src/Plugin.php'
+      - 'packages/ultimate-commerce-for-woocommerce/src/RateLimit/RateLimit.php'
+      - 'packages/ultimate-commerce-for-woocommerce/src/RateLimit/TransientRateLimiter.php'
+      - 'packages/ultimate-commerce-for-woocommerce/ultimate-commerce-for-woocommerce.php'
+      - 'tests/execution-control-foundations.php'
 
 permissions:
   contents: read
