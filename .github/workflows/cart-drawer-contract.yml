@@ -6,9 +6,37 @@ concurrency:
 
 on:
   pull_request:
+    paths:
+      - '.github/workflows/cart-drawer-contract.yml'
+      - 'composer.json'
+      - 'composer.lock'
+      - 'docs/cart-drawer-contract-v1.md'
+      - 'package-lock.json'
+      - 'package.json'
+      - 'packages/ultimate-commerce-for-woocommerce/assets/css/cart-drawer.css'
+      - 'packages/ultimate-commerce-for-woocommerce/assets/js/cart-drawer.js'
+      - 'packages/ultimate-commerce-for-woocommerce/src/Modules/Cart/CartModule.php'
+      - 'packages/ultimate-commerce-for-woocommerce/src/Plugin.php'
+      - 'packages/ultimate-commerce-for-woocommerce/src/Storefront/CartDrawer.php'
+      - 'packages/ultimate-commerce-for-woocommerce/ultimate-commerce-for-woocommerce.php'
+      - 'tests/cart-drawer-contract.php'
   push:
     branches:
       - main
+    paths:
+      - '.github/workflows/cart-drawer-contract.yml'
+      - 'composer.json'
+      - 'composer.lock'
+      - 'docs/cart-drawer-contract-v1.md'
+      - 'package-lock.json'
+      - 'package.json'
+      - 'packages/ultimate-commerce-for-woocommerce/assets/css/cart-drawer.css'
+      - 'packages/ultimate-commerce-for-woocommerce/assets/js/cart-drawer.js'
+      - 'packages/ultimate-commerce-for-woocommerce/src/Modules/Cart/CartModule.php'
+      - 'packages/ultimate-commerce-for-woocommerce/src/Plugin.php'
+      - 'packages/ultimate-commerce-for-woocommerce/src/Storefront/CartDrawer.php'
+      - 'packages/ultimate-commerce-for-woocommerce/ultimate-commerce-for-woocommerce.php'
+      - 'tests/cart-drawer-contract.php'
 
 permissions:
   contents: read
