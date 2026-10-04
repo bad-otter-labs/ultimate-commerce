@@ -10,7 +10,12 @@ TRUSTED_PUBLISHERS = {
     "development-release.yml",
     "release.yml",
 }
-SAFE_RUNNER = (
+HEAVY_SELF_HOSTED_WORKFLOWS = {
+    "accessibility.yml",
+    "wordpress-org.yml",
+}
+HOSTED_RUNNER = "runs-on: ubuntu-latest"
+FORK_SAFE_HEAVY_RUNNER = (
     "runs-on: ${{ github.event_name == 'pull_request' "
     "&& github.event.pull_request.head.repo.full_name != github.repository "
     "&& 'ubuntu-latest' || 'badotter' }}"
@@ -34,10 +39,14 @@ for path in workflow_paths:
     if "pull_request:" not in text:
         continue
 
-    if SAFE_RUNNER not in text:
+    expected_runner = (
+        FORK_SAFE_HEAVY_RUNNER
+        if path.name in HEAVY_SELF_HOSTED_WORKFLOWS
+        else HOSTED_RUNNER
+    )
+    if expected_runner not in text:
         raise SystemExit(
-            f"{path.name}: pull-request runner must route cross-repository heads to ubuntu-latest "
-            "and reserve the Bad Otter runner for same-repository branches."
+            f"{path.name}: pull-request runner does not match the approved hosted/heavy trust boundary."
         )
 
     if re.search(r"(?m)^\s*uses:\s*[^#\n]+@(main|master|HEAD)\s*$", text):
@@ -71,9 +80,9 @@ for name in TRUSTED_PUBLISHERS:
         raise SystemExit(
             f"{name}: trusted publishing must never execute from a pull-request event."
         )
-    if "self-hosted" not in text or "badotter" not in text:
+    if HOSTED_RUNNER not in text:
         raise SystemExit(
-            f"{name}: trusted publisher unexpectedly left the controlled release runner."
+            f"{name}: trusted publisher must use isolated GitHub-hosted capacity."
         )
 
 print("Ultimate Commerce public CI trust boundary validated.")
