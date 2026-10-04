@@ -6,9 +6,15 @@ concurrency:
 
 on:
   pull_request:
+    paths:
+      - '.github/workflows/compatibility-matrix.yml'
+      - 'scripts/run-compatibility-case.sh'
   push:
     branches:
       - main
+    paths:
+      - '.github/workflows/compatibility-matrix.yml'
+      - 'scripts/run-compatibility-case.sh'
 
 permissions:
   contents: read
