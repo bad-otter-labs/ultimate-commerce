@@ -6,9 +6,15 @@ concurrency:
 
 on:
   pull_request:
+    paths:
+      - '.github/workflows/ci-trust-boundary.yml'
+      - 'tests/ci-trust-boundary.py'
   push:
     branches:
       - main
+    paths:
+      - '.github/workflows/ci-trust-boundary.yml'
+      - 'tests/ci-trust-boundary.py'
 
 permissions:
   contents: read
