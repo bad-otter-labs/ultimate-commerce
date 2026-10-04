@@ -6,9 +6,27 @@ concurrency:
 
 on:
   pull_request:
+    paths:
+      - '.github/workflows/accessibility.yml'
+      - 'packages/ultimate-commerce-for-woocommerce/**'
+      - 'scripts/check-accessibility-toolchain.py'
+      - 'scripts/run-accessibility-baseline.sh'
+      - 'docs/accessibility-baseline.md'
+      - 'tests/fixtures/accessibility-mu-plugin.php'
+      - 'tests/setup-accessibility-fixture.php'
+      - 'tools/accessibility/**'
   push:
     branches:
       - main
+    paths:
+      - '.github/workflows/accessibility.yml'
+      - 'packages/ultimate-commerce-for-woocommerce/**'
+      - 'scripts/check-accessibility-toolchain.py'
+      - 'scripts/run-accessibility-baseline.sh'
+      - 'docs/accessibility-baseline.md'
+      - 'tests/fixtures/accessibility-mu-plugin.php'
+      - 'tests/setup-accessibility-fixture.php'
+      - 'tools/accessibility/**'
 
 permissions:
   contents: read

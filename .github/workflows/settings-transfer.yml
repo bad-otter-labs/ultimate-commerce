@@ -6,9 +6,31 @@ concurrency:
 
 on:
   pull_request:
+    paths:
+      - '.github/workflows/settings-transfer.yml'
+      - 'composer.json'
+      - 'composer.lock'
+      - 'packages/ultimate-commerce-for-woocommerce/**'
+      - 'packages/ultimate-commerce-for-woocommerce/src/Admin/SettingsPage.php'
+      - 'packages/ultimate-commerce-for-woocommerce/src/Plugin.php'
+      - 'packages/ultimate-commerce-for-woocommerce/src/Support/Settings.php'
+      - 'packages/ultimate-commerce-for-woocommerce/src/Support/SettingsTransfer.php'
+      - 'packages/ultimate-commerce-for-woocommerce/ultimate-commerce-for-woocommerce.php'
+      - 'tests/settings-transfer-contract.php'
   push:
     branches:
       - main
+    paths:
+      - '.github/workflows/settings-transfer.yml'
+      - 'composer.json'
+      - 'composer.lock'
+      - 'packages/ultimate-commerce-for-woocommerce/**'
+      - 'packages/ultimate-commerce-for-woocommerce/src/Admin/SettingsPage.php'
+      - 'packages/ultimate-commerce-for-woocommerce/src/Plugin.php'
+      - 'packages/ultimate-commerce-for-woocommerce/src/Support/Settings.php'
+      - 'packages/ultimate-commerce-for-woocommerce/src/Support/SettingsTransfer.php'
+      - 'packages/ultimate-commerce-for-woocommerce/ultimate-commerce-for-woocommerce.php'
+      - 'tests/settings-transfer-contract.php'
 
 permissions:
   contents: read

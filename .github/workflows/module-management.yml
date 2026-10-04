@@ -6,9 +6,33 @@ concurrency:
 
 on:
   pull_request:
+    paths:
+      - '.github/workflows/module-management.yml'
+      - 'composer.json'
+      - 'composer.lock'
+      - 'docs/module-management.md'
+      - 'packages/ultimate-commerce-for-woocommerce/**'
+      - 'packages/ultimate-commerce-for-woocommerce/src/Admin/AdminMenu.php'
+      - 'packages/ultimate-commerce-for-woocommerce/src/Admin/ModulesPage.php'
+      - 'packages/ultimate-commerce-for-woocommerce/src/Plugin.php'
+      - 'packages/ultimate-commerce-for-woocommerce/src/Support/Settings.php'
+      - 'packages/ultimate-commerce-for-woocommerce/ultimate-commerce-for-woocommerce.php'
+      - 'tests/module-settings-contract.php'
   push:
     branches:
       - main
+    paths:
+      - '.github/workflows/module-management.yml'
+      - 'composer.json'
+      - 'composer.lock'
+      - 'docs/module-management.md'
+      - 'packages/ultimate-commerce-for-woocommerce/**'
+      - 'packages/ultimate-commerce-for-woocommerce/src/Admin/AdminMenu.php'
+      - 'packages/ultimate-commerce-for-woocommerce/src/Admin/ModulesPage.php'
+      - 'packages/ultimate-commerce-for-woocommerce/src/Plugin.php'
+      - 'packages/ultimate-commerce-for-woocommerce/src/Support/Settings.php'
+      - 'packages/ultimate-commerce-for-woocommerce/ultimate-commerce-for-woocommerce.php'
+      - 'tests/module-settings-contract.php'
 
 permissions:
   contents: read

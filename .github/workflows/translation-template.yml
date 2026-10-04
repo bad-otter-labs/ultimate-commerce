@@ -6,9 +6,29 @@ concurrency:
 
 on:
   pull_request:
+    paths:
+      - '.github/workflows/translation-template.yml'
+      - 'composer.json'
+      - 'composer.lock'
+      - 'packages/ultimate-commerce-for-woocommerce/**'
+      - 'packages/ultimate-commerce-for-woocommerce/languages/bad-otter-ultimate-commerce-woocommerce.pot'
+      - 'packages/ultimate-commerce-for-woocommerce/src/Plugin.php'
+      - 'packages/ultimate-commerce-for-woocommerce/ultimate-commerce-for-woocommerce.php'
+      - 'scripts/check-i18n-toolchain.py'
+      - 'tools/i18n/**'
   push:
     branches:
       - main
+    paths:
+      - '.github/workflows/translation-template.yml'
+      - 'composer.json'
+      - 'composer.lock'
+      - 'packages/ultimate-commerce-for-woocommerce/**'
+      - 'packages/ultimate-commerce-for-woocommerce/languages/bad-otter-ultimate-commerce-woocommerce.pot'
+      - 'packages/ultimate-commerce-for-woocommerce/src/Plugin.php'
+      - 'packages/ultimate-commerce-for-woocommerce/ultimate-commerce-for-woocommerce.php'
+      - 'scripts/check-i18n-toolchain.py'
+      - 'tools/i18n/**'
 
 permissions:
   contents: read

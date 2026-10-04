@@ -6,9 +6,35 @@ concurrency:
 
 on:
   pull_request:
+    paths:
+      - '.github/workflows/admin-menu.yml'
+      - 'composer.json'
+      - 'composer.lock'
+      - 'packages/ultimate-commerce-for-woocommerce/**'
+      - 'packages/ultimate-commerce-for-woocommerce/src/Admin/AdminMenu.php'
+      - 'packages/ultimate-commerce-for-woocommerce/src/Admin/DiagnosticsPage.php'
+      - 'packages/ultimate-commerce-for-woocommerce/src/Admin/ModulesPage.php'
+      - 'packages/ultimate-commerce-for-woocommerce/src/Admin/OverviewPage.php'
+      - 'packages/ultimate-commerce-for-woocommerce/src/Admin/SettingsPage.php'
+      - 'packages/ultimate-commerce-for-woocommerce/src/Plugin.php'
+      - 'packages/ultimate-commerce-for-woocommerce/ultimate-commerce-for-woocommerce.php'
+      - 'tests/admin-menu-structure.php'
   push:
     branches:
       - main
+    paths:
+      - '.github/workflows/admin-menu.yml'
+      - 'composer.json'
+      - 'composer.lock'
+      - 'packages/ultimate-commerce-for-woocommerce/**'
+      - 'packages/ultimate-commerce-for-woocommerce/src/Admin/AdminMenu.php'
+      - 'packages/ultimate-commerce-for-woocommerce/src/Admin/DiagnosticsPage.php'
+      - 'packages/ultimate-commerce-for-woocommerce/src/Admin/ModulesPage.php'
+      - 'packages/ultimate-commerce-for-woocommerce/src/Admin/OverviewPage.php'
+      - 'packages/ultimate-commerce-for-woocommerce/src/Admin/SettingsPage.php'
+      - 'packages/ultimate-commerce-for-woocommerce/src/Plugin.php'
+      - 'packages/ultimate-commerce-for-woocommerce/ultimate-commerce-for-woocommerce.php'
+      - 'tests/admin-menu-structure.php'
 
 permissions:
   contents: read

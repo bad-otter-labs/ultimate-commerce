@@ -6,9 +6,33 @@ concurrency:
 
 on:
   pull_request:
+    paths:
+      - '.github/workflows/recently-viewed-contract.yml'
+      - 'composer.json'
+      - 'composer.lock'
+      - 'package-lock.json'
+      - 'package.json'
+      - 'packages/ultimate-commerce-for-woocommerce/assets/js/recently-viewed.js'
+      - 'packages/ultimate-commerce-for-woocommerce/src/Modules/RecentlyViewed/RecentlyViewedModule.php'
+      - 'packages/ultimate-commerce-for-woocommerce/src/Plugin.php'
+      - 'packages/ultimate-commerce-for-woocommerce/src/Storefront/RecentlyViewed.php'
+      - 'packages/ultimate-commerce-for-woocommerce/ultimate-commerce-for-woocommerce.php'
+      - 'tests/recently-viewed-contract.php'
   push:
     branches:
       - main
+    paths:
+      - '.github/workflows/recently-viewed-contract.yml'
+      - 'composer.json'
+      - 'composer.lock'
+      - 'package-lock.json'
+      - 'package.json'
+      - 'packages/ultimate-commerce-for-woocommerce/assets/js/recently-viewed.js'
+      - 'packages/ultimate-commerce-for-woocommerce/src/Modules/RecentlyViewed/RecentlyViewedModule.php'
+      - 'packages/ultimate-commerce-for-woocommerce/src/Plugin.php'
+      - 'packages/ultimate-commerce-for-woocommerce/src/Storefront/RecentlyViewed.php'
+      - 'packages/ultimate-commerce-for-woocommerce/ultimate-commerce-for-woocommerce.php'
+      - 'tests/recently-viewed-contract.php'
 
 permissions:
   contents: read

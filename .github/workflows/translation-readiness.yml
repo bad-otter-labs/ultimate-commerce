@@ -6,9 +6,41 @@ concurrency:
 
 on:
   pull_request:
+    paths:
+      - '.github/workflows/translation-readiness.yml'
+      - 'composer.json'
+      - 'composer.lock'
+      - 'docs/theme-store-integration.md'
+      - 'docs/translation-readiness.md'
+      - 'package-lock.json'
+      - 'package.json'
+      - 'packages/ultimate-commerce-for-woocommerce/assets/js/cart-drawer.js'
+      - 'packages/ultimate-commerce-for-woocommerce/assets/js/recently-viewed.js'
+      - 'packages/ultimate-commerce-for-woocommerce/assets/js/variation-controls.js'
+      - 'packages/ultimate-commerce-for-woocommerce/assets/js/wishlist.js'
+      - 'packages/ultimate-commerce-for-woocommerce/src/**'
+      - 'packages/ultimate-commerce-for-woocommerce/src/Plugin.php'
+      - 'packages/ultimate-commerce-for-woocommerce/ultimate-commerce-for-woocommerce.php'
+      - 'tests/translation-readiness.py'
   push:
     branches:
       - main
+    paths:
+      - '.github/workflows/translation-readiness.yml'
+      - 'composer.json'
+      - 'composer.lock'
+      - 'docs/theme-store-integration.md'
+      - 'docs/translation-readiness.md'
+      - 'package-lock.json'
+      - 'package.json'
+      - 'packages/ultimate-commerce-for-woocommerce/assets/js/cart-drawer.js'
+      - 'packages/ultimate-commerce-for-woocommerce/assets/js/recently-viewed.js'
+      - 'packages/ultimate-commerce-for-woocommerce/assets/js/variation-controls.js'
+      - 'packages/ultimate-commerce-for-woocommerce/assets/js/wishlist.js'
+      - 'packages/ultimate-commerce-for-woocommerce/src/**'
+      - 'packages/ultimate-commerce-for-woocommerce/src/Plugin.php'
+      - 'packages/ultimate-commerce-for-woocommerce/ultimate-commerce-for-woocommerce.php'
+      - 'tests/translation-readiness.py'
 
 permissions:
   contents: read

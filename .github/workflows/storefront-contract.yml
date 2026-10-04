@@ -6,9 +6,45 @@ concurrency:
 
 on:
   pull_request:
+    paths:
+      - '.github/workflows/storefront-contract.yml'
+      - 'composer.json'
+      - 'composer.lock'
+      - 'docs/storefront-catalogue-contract-v1.md'
+      - 'packages/ultimate-commerce-for-woocommerce/**'
+      - 'packages/ultimate-commerce-for-woocommerce/assets/js/variation-controls.js'
+      - 'packages/ultimate-commerce-for-woocommerce/src/Plugin.php'
+      - 'packages/ultimate-commerce-for-woocommerce/src/Storefront/**'
+      - 'packages/ultimate-commerce-for-woocommerce/src/Storefront/Catalog.php'
+      - 'packages/ultimate-commerce-for-woocommerce/src/Storefront/CatalogFilterRegistry.php'
+      - 'packages/ultimate-commerce-for-woocommerce/src/Storefront/CatalogQuery.php'
+      - 'packages/ultimate-commerce-for-woocommerce/src/Storefront/ProductCardRenderer.php'
+      - 'packages/ultimate-commerce-for-woocommerce/src/Storefront/ProductCardViewModel.php'
+      - 'packages/ultimate-commerce-for-woocommerce/src/Storefront/VariationViewModel.php'
+      - 'packages/ultimate-commerce-for-woocommerce/ultimate-commerce-for-woocommerce.php'
+      - 'tests/storefront-catalogue-contract.php'
+      - 'tests/storefront-filter-extension-boundary.php'
   push:
     branches:
       - main
+    paths:
+      - '.github/workflows/storefront-contract.yml'
+      - 'composer.json'
+      - 'composer.lock'
+      - 'docs/storefront-catalogue-contract-v1.md'
+      - 'packages/ultimate-commerce-for-woocommerce/**'
+      - 'packages/ultimate-commerce-for-woocommerce/assets/js/variation-controls.js'
+      - 'packages/ultimate-commerce-for-woocommerce/src/Plugin.php'
+      - 'packages/ultimate-commerce-for-woocommerce/src/Storefront/**'
+      - 'packages/ultimate-commerce-for-woocommerce/src/Storefront/Catalog.php'
+      - 'packages/ultimate-commerce-for-woocommerce/src/Storefront/CatalogFilterRegistry.php'
+      - 'packages/ultimate-commerce-for-woocommerce/src/Storefront/CatalogQuery.php'
+      - 'packages/ultimate-commerce-for-woocommerce/src/Storefront/ProductCardRenderer.php'
+      - 'packages/ultimate-commerce-for-woocommerce/src/Storefront/ProductCardViewModel.php'
+      - 'packages/ultimate-commerce-for-woocommerce/src/Storefront/VariationViewModel.php'
+      - 'packages/ultimate-commerce-for-woocommerce/ultimate-commerce-for-woocommerce.php'
+      - 'tests/storefront-catalogue-contract.php'
+      - 'tests/storefront-filter-extension-boundary.php'
 
 permissions:
   contents: read

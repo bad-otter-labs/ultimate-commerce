@@ -6,9 +6,31 @@ concurrency:
 
 on:
   pull_request:
+    paths:
+      - '.github/workflows/php-quality.yml'
+      - 'packages/ultimate-commerce-for-woocommerce/**'
+      - 'composer.json'
+      - 'composer.lock'
+      - 'scripts/check-quality-dependency-licenses.py'
+      - 'packages/ultimate-commerce/**'
+      - 'phpcompatibility.xml.dist'
+      - 'phpcs.xml.dist'
+      - 'phpstan-bootstrap.php'
+      - 'phpstan.neon'
   push:
     branches:
       - main
+    paths:
+      - '.github/workflows/php-quality.yml'
+      - 'packages/ultimate-commerce-for-woocommerce/**'
+      - 'composer.json'
+      - 'composer.lock'
+      - 'scripts/check-quality-dependency-licenses.py'
+      - 'packages/ultimate-commerce/**'
+      - 'phpcompatibility.xml.dist'
+      - 'phpcs.xml.dist'
+      - 'phpstan-bootstrap.php'
+      - 'phpstan.neon'
 
 permissions:
   contents: read
