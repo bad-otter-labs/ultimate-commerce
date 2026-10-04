@@ -6,9 +6,17 @@ concurrency:
 
 on:
   pull_request:
+    paths:
+      - '.github/workflows/accessibility.yml'
+      - 'scripts/check-accessibility-toolchain.py'
+      - 'scripts/run-accessibility-baseline.sh'
   push:
     branches:
       - main
+    paths:
+      - '.github/workflows/accessibility.yml'
+      - 'scripts/check-accessibility-toolchain.py'
+      - 'scripts/run-accessibility-baseline.sh'
 
 permissions:
   contents: read
