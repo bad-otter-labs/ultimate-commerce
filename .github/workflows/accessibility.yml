@@ -8,6 +8,7 @@ on:
   pull_request:
     paths:
       - '.github/workflows/accessibility.yml'
+      - 'packages/ultimate-commerce-for-woocommerce/**'
       - 'scripts/check-accessibility-toolchain.py'
       - 'scripts/run-accessibility-baseline.sh'
   push:
@@ -15,6 +16,7 @@ on:
       - main
     paths:
       - '.github/workflows/accessibility.yml'
+      - 'packages/ultimate-commerce-for-woocommerce/**'
       - 'scripts/check-accessibility-toolchain.py'
       - 'scripts/run-accessibility-baseline.sh'
 
