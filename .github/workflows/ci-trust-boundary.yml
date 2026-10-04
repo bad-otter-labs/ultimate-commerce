@@ -8,12 +8,14 @@ on:
   pull_request:
     paths:
       - '.github/workflows/ci-trust-boundary.yml'
+      - '.github/workflows/**'
       - 'tests/ci-trust-boundary.py'
   push:
     branches:
       - main
     paths:
       - '.github/workflows/ci-trust-boundary.yml'
+      - '.github/workflows/**'
       - 'tests/ci-trust-boundary.py'
 
 permissions:
