@@ -6,9 +6,37 @@ concurrency:
 
 on:
   pull_request:
+    paths:
+      - '.github/workflows/development-package.yml'
+      - 'composer.json'
+      - 'composer.lock'
+      - 'development/*.sha256'
+      - 'development/*.zip'
+      - 'development/canonical'
+      - 'development/free-updater/BadOtterDevelopmentClient.php'
+      - 'development/free-updater/ManagedDevelopmentUpdates.php'
+      - 'packages/ultimate-commerce-for-woocommerce/module.json'
+      - 'packages/ultimate-commerce-for-woocommerce/src/DevelopmentUpdates'
+      - 'packages/ultimate-commerce-for-woocommerce/src/Plugin.php'
+      - 'packages/ultimate-commerce-for-woocommerce/ultimate-commerce-for-woocommerce.php'
+      - 'scripts/build-development-package.py'
   push:
     branches:
       - main
+    paths:
+      - '.github/workflows/development-package.yml'
+      - 'composer.json'
+      - 'composer.lock'
+      - 'development/*.sha256'
+      - 'development/*.zip'
+      - 'development/canonical'
+      - 'development/free-updater/BadOtterDevelopmentClient.php'
+      - 'development/free-updater/ManagedDevelopmentUpdates.php'
+      - 'packages/ultimate-commerce-for-woocommerce/module.json'
+      - 'packages/ultimate-commerce-for-woocommerce/src/DevelopmentUpdates'
+      - 'packages/ultimate-commerce-for-woocommerce/src/Plugin.php'
+      - 'packages/ultimate-commerce-for-woocommerce/ultimate-commerce-for-woocommerce.php'
+      - 'scripts/build-development-package.py'
 
 permissions:
   contents: read
