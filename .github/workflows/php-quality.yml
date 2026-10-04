@@ -8,6 +8,7 @@ on:
   pull_request:
     paths:
       - '.github/workflows/php-quality.yml'
+      - 'packages/ultimate-commerce-for-woocommerce/**'
       - 'composer.json'
       - 'composer.lock'
       - 'scripts/check-quality-dependency-licenses.py'
@@ -16,6 +17,7 @@ on:
       - main
     paths:
       - '.github/workflows/php-quality.yml'
+      - 'packages/ultimate-commerce-for-woocommerce/**'
       - 'composer.json'
       - 'composer.lock'
       - 'scripts/check-quality-dependency-licenses.py'
