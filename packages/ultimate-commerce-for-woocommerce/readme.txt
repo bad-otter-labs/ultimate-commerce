@@ -71,10 +71,10 @@ The public source, architecture documents and release tooling are maintained at 
 
 == Screenshots ==
 
-1. Ultimate Commerce Overview shows Free module health, diagnostics access and the restrained optional Pro companion notice.
-2. Modules lets merchants enable or disable registered Free modules while seeing dependencies and runtime state.
-3. Live storefront controls show WooCommerce-backed variable-product selection, Wishlist and Recently Viewed enhancements.
-4. The accessible cart drawer reads and mutates the customer cart through WooCommerce Store API while preserving normal cart and checkout links.
+1. Ultimate Commerce Overview shows module health, diagnostics access and the optional Pro companion notice.
+2. Storefront features include an accessible cart drawer, variation controls and streamlined checkout access.
+3. Wishlist and Recently Viewed help shoppers return to products and convert faster.
+4. Modules can be enabled, reviewed and managed from one clear admin screen.
 
 == Privacy ==
 
