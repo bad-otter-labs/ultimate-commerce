@@ -1,0 +1,318 @@
+name: Publish WordPress.org Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: Exact plugin version to publish (for example 0.2.1)
+        required: true
+        type: string
+      confirm_publish:
+        description: Confirm this run may commit a new release to WordPress.org SVN
+        required: true
+        default: false
+        type: boolean
+
+permissions:
+  contents: read
+
+concurrency:
+  group: wordpress-org-release
+  cancel-in-progress: false
+
+env:
+  WPORG_SLUG: bad-otter-ultimate-commerce-woocommerce
+  WPORG_SOURCE: packages/ultimate-commerce-for-woocommerce
+  WPORG_MAIN_FILE: ultimate-commerce-for-woocommerce.php
+  WPORG_SVN_URL: https://plugins.svn.wordpress.org/bad-otter-ultimate-commerce-woocommerce
+
+jobs:
+  publish:
+    name: Publish ${{ inputs.version }} to WordPress.org
+    runs-on: ubuntu-latest
+    environment: wordpress-org
+    timeout-minutes: 20
+
+    steps:
+      - name: Checkout exact release source
+        uses: actions/checkout@v4
+
+      - name: Require main and explicit publication confirmation
+        shell: bash
+        env:
+          RELEASE_VERSION: ${{ inputs.version }}
+          CONFIRM_PUBLISH: ${{ inputs.confirm_publish }}
+        run: |
+          set -euo pipefail
+
+          if [[ "$GITHUB_REF" != "refs/heads/main" ]]; then
+            echo "WordPress.org releases must be dispatched from main; got $GITHUB_REF." >&2
+            exit 1
+          fi
+
+          if [[ "$CONFIRM_PUBLISH" != "true" ]]; then
+            echo "Publication was not explicitly confirmed." >&2
+            exit 1
+          fi
+
+          if [[ ! "$RELEASE_VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "Release version must be an exact x.y.z version; got '$RELEASE_VERSION'." >&2
+            exit 1
+          fi
+
+      - name: Require WordPress.org SVN credentials
+        shell: bash
+        env:
+          WPORG_USERNAME: ${{ secrets.WORDPRESS_ORG_SVN_USERNAME }}
+          WPORG_PASSWORD: ${{ secrets.WORDPRESS_ORG_SVN_PASSWORD }}
+        run: |
+          set -euo pipefail
+          if [[ -z "$WPORG_USERNAME" || -z "$WPORG_PASSWORD" ]]; then
+            echo "Configure WORDPRESS_ORG_SVN_USERNAME and WORDPRESS_ORG_SVN_PASSWORD in the wordpress-org GitHub environment." >&2
+            exit 1
+          fi
+
+      - name: Install Subversion
+        shell: bash
+        run: |
+          set -euo pipefail
+          sudo apt-get update
+          sudo apt-get install -y subversion
+
+      - name: Validate requested version against canonical source
+        shell: bash
+        env:
+          RELEASE_VERSION: ${{ inputs.version }}
+        run: |
+          set -euo pipefail
+
+          python3 - "$RELEASE_VERSION" "$WPORG_SOURCE/$WPORG_MAIN_FILE" "$WPORG_SOURCE/readme.txt" <<'PY'
+          import re
+          import sys
+          from pathlib import Path
+
+          requested = sys.argv[1]
+          plugin = Path(sys.argv[2]).read_text(encoding="utf-8")
+          readme = Path(sys.argv[3]).read_text(encoding="utf-8")
+
+          def require(pattern: str, text: str, label: str) -> str:
+              match = re.search(pattern, text, re.M)
+              if not match:
+                  raise SystemExit(f"Missing {label}.")
+              return match.group(1).strip()
+
+          header = require(r"^\s*\*\s*Version:\s*(\S+)\s*$", plugin, "plugin Version header")
+          constant = require(
+              r"define\(\s*['\"]ULTIMATE_COMMERCE_VERSION['\"]\s*,\s*['\"]([^'\"]+)['\"]\s*\);",
+              plugin,
+              "ULTIMATE_COMMERCE_VERSION",
+          )
+          stable = require(r"^Stable tag:\s*(\S+)\s*$", readme, "readme Stable tag")
+
+          values = {
+              "requested version": requested,
+              "plugin Version": header,
+              "ULTIMATE_COMMERCE_VERSION": constant,
+              "Stable tag": stable,
+          }
+          if len(set(values.values())) != 1:
+              details = ", ".join(f"{key}={value}" for key, value in values.items())
+              raise SystemExit(f"Release version mismatch: {details}")
+
+          print(f"Canonical release version validated: {requested}")
+          PY
+
+      - name: Validate WordPress.org directory metadata
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 scripts/check-wordpress-org-assets.py
+
+      - name: Build deterministic WordPress.org package twice
+        shell: bash
+        env:
+          RELEASE_VERSION: ${{ inputs.version }}
+        run: |
+          set -euo pipefail
+          rm -rf dist-wporg-a dist-wporg-b
+
+          python3 scripts/build-wordpress-org-package.py \
+            --source "$WPORG_SOURCE" \
+            --output-dir dist-wporg-a
+
+          python3 scripts/build-wordpress-org-package.py \
+            --source "$WPORG_SOURCE" \
+            --output-dir dist-wporg-b
+
+          package_a="dist-wporg-a/$WPORG_SLUG-$RELEASE_VERSION.zip"
+          package_b="dist-wporg-b/$WPORG_SLUG-$RELEASE_VERSION.zip"
+          checksum_a="$package_a.sha256"
+          checksum_b="$package_b.sha256"
+
+          test -f "$package_a"
+          test -f "$package_b"
+          test -f "$checksum_a"
+          test -f "$checksum_b"
+
+          cmp "$package_a" "$package_b"
+          cmp "$checksum_a" "$checksum_b"
+
+          python3 scripts/check-wordpress-org-package.py "$package_a"
+          sha256sum "$package_a"
+
+      - name: Expand exact validated package
+        shell: bash
+        env:
+          RELEASE_VERSION: ${{ inputs.version }}
+        run: |
+          set -euo pipefail
+          rm -rf wporg-package
+          mkdir -p wporg-package
+
+          package="dist-wporg-a/$WPORG_SLUG-$RELEASE_VERSION.zip"
+          unzip -q "$package" -d wporg-package
+
+          test -f "wporg-package/$WPORG_SLUG/$WPORG_MAIN_FILE"
+          test -f "wporg-package/$WPORG_SLUG/readme.txt"
+
+      - name: Check out WordPress.org SVN and refuse an existing tag
+        shell: bash
+        env:
+          RELEASE_VERSION: ${{ inputs.version }}
+          WPORG_USERNAME: ${{ secrets.WORDPRESS_ORG_SVN_USERNAME }}
+          WPORG_PASSWORD: ${{ secrets.WORDPRESS_ORG_SVN_PASSWORD }}
+        run: |
+          set -euo pipefail
+
+          rm -rf wporg-svn
+          svn checkout \
+            "$WPORG_SVN_URL" \
+            wporg-svn \
+            --username "$WPORG_USERNAME" \
+            --password "$WPORG_PASSWORD" \
+            --non-interactive \
+            --no-auth-cache
+
+          if svn info \
+            "$WPORG_SVN_URL/tags/$RELEASE_VERSION" \
+            --username "$WPORG_USERNAME" \
+            --password "$WPORG_PASSWORD" \
+            --non-interactive \
+            --no-auth-cache >/dev/null 2>&1; then
+            echo "WordPress.org tag $RELEASE_VERSION already exists. Refusing to republish or mutate an immutable release." >&2
+            exit 1
+          fi
+
+      - name: Stage trunk and immutable release tag
+        shell: bash
+        env:
+          RELEASE_VERSION: ${{ inputs.version }}
+        run: |
+          set -euo pipefail
+
+          rsync -a --delete --exclude='.svn/' \
+            "wporg-package/$WPORG_SLUG/" \
+            wporg-svn/trunk/
+
+          python3 - "wporg-svn/trunk" <<'PY'
+          import subprocess
+          import sys
+          import xml.etree.ElementTree as ET
+          from pathlib import Path
+
+          root = Path(sys.argv[1])
+          status_xml = subprocess.check_output(
+              ["svn", "status", "--xml", str(root)],
+              text=True,
+          )
+          document = ET.fromstring(status_xml)
+          missing = []
+          for entry in document.iter("entry"):
+              wc_status = entry.find("wc-status")
+              if wc_status is not None and wc_status.get("item") == "missing":
+                  missing.append(Path(entry.get("path")))
+
+          selected = []
+          for path in sorted(missing, key=lambda item: len(item.parts)):
+              if any(path == parent or parent in path.parents for parent in selected):
+                  continue
+              selected.append(path)
+
+          for path in selected:
+              subprocess.run(["svn", "rm", "--force", str(path)], check=True)
+          PY
+
+          svn add --force wporg-svn/trunk
+
+          if svn status wporg-svn/trunk | grep -E '^[?!]' >/dev/null; then
+            echo "SVN trunk contains an unhandled unversioned or missing path." >&2
+            svn status wporg-svn/trunk
+            exit 1
+          fi
+
+          svn copy \
+            wporg-svn/trunk \
+            "wporg-svn/tags/$RELEASE_VERSION"
+
+          if svn status wporg-svn/assets | grep -q .; then
+            echo "Plugin releases must not alter WordPress.org directory assets." >&2
+            svn status wporg-svn/assets
+            exit 1
+          fi
+
+          echo "Staged WordPress.org changes:"
+          svn status wporg-svn/trunk "wporg-svn/tags/$RELEASE_VERSION"
+
+      - name: Publish release to WordPress.org SVN
+        shell: bash
+        env:
+          RELEASE_VERSION: ${{ inputs.version }}
+          WPORG_USERNAME: ${{ secrets.WORDPRESS_ORG_SVN_USERNAME }}
+          WPORG_PASSWORD: ${{ secrets.WORDPRESS_ORG_SVN_PASSWORD }}
+        run: |
+          set -euo pipefail
+
+          svn commit \
+            wporg-svn/trunk \
+            "wporg-svn/tags/$RELEASE_VERSION" \
+            --username "$WPORG_USERNAME" \
+            --password "$WPORG_PASSWORD" \
+            --non-interactive \
+            --no-auth-cache \
+            -m "Release $WPORG_SLUG $RELEASE_VERSION from GitHub $GITHUB_SHA"
+
+      - name: Verify published WordPress.org tag
+        shell: bash
+        env:
+          RELEASE_VERSION: ${{ inputs.version }}
+          WPORG_USERNAME: ${{ secrets.WORDPRESS_ORG_SVN_USERNAME }}
+          WPORG_PASSWORD: ${{ secrets.WORDPRESS_ORG_SVN_PASSWORD }}
+        run: |
+          set -euo pipefail
+
+          plugin_text="$(svn cat \
+            "$WPORG_SVN_URL/tags/$RELEASE_VERSION/$WPORG_MAIN_FILE" \
+            --username "$WPORG_USERNAME" \
+            --password "$WPORG_PASSWORD" \
+            --non-interactive \
+            --no-auth-cache)"
+
+          readme_text="$(svn cat \
+            "$WPORG_SVN_URL/tags/$RELEASE_VERSION/readme.txt" \
+            --username "$WPORG_USERNAME" \
+            --password "$WPORG_PASSWORD" \
+            --non-interactive \
+            --no-auth-cache)"
+
+          grep -Eq "^[[:space:]]*\*[[:space:]]*Version:[[:space:]]*$RELEASE_VERSION[[:space:]]*$" <<<"$plugin_text"
+          grep -Eq "^Stable tag:[[:space:]]*$RELEASE_VERSION[[:space:]]*$" <<<"$readme_text"
+
+          svn info \
+            "$WPORG_SVN_URL/tags/$RELEASE_VERSION" \
+            --username "$WPORG_USERNAME" \
+            --password "$WPORG_PASSWORD" \
+            --non-interactive \
+            --no-auth-cache \
+            | grep -E '^(URL|Revision|Last Changed Rev):'
+
+          echo "WordPress.org release $RELEASE_VERSION published and verified."
