@@ -8,6 +8,7 @@ on:
   pull_request:
     paths:
       - '.github/workflows/wordpress-org.yml'
+      - '.github/workflows/wordpress-org-release.yml'
       - 'packages/ultimate-commerce-for-woocommerce/**'
       - 'package-lock.json'
       - 'package.json'
@@ -21,6 +22,7 @@ on:
       - main
     paths:
       - '.github/workflows/wordpress-org.yml'
+      - '.github/workflows/wordpress-org-release.yml'
       - 'packages/ultimate-commerce-for-woocommerce/**'
       - 'package-lock.json'
       - 'package.json'
