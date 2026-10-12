@@ -9,6 +9,7 @@ final class CatalogFilterRegistry
     public const MAX_FILTERS = 16;
     public const MAX_OPTIONS_PER_FILTER = 100;
     public const MAX_SELECTED_PER_FILTER = 12;
+    public const MAX_SEARCH_LENGTH = 120;
     public const DEFAULT_PER_PAGE = 24;
     public const MAX_PER_PAGE = 48;
     public const MAX_PAGE = 500;
@@ -124,6 +125,7 @@ final class CatalogFilterRegistry
             'page' => $input['page'] ?? 1,
             'per_page' => $input['per_page'] ?? self::DEFAULT_PER_PAGE,
             'sort' => $sort,
+            'search' => self::normaliseSearchTerm($input['search'] ?? ''),
             'filters' => $selected,
             'price' => array('min' => $minPrice, 'max' => $maxPrice),
             'availability' => $availability,
@@ -216,6 +218,9 @@ final class CatalogFilterRegistry
             sort($values, SORT_STRING);
             $query['availability'] = implode(',', $values);
         }
+        if (($state['search'] ?? '') !== '') {
+            $query['search'] = self::normaliseSearchTerm($state['search']);
+        }
         if (($state['sort'] ?? 'newest') !== 'newest') {
             $query['sort'] = sanitize_key((string) $state['sort']);
         }
@@ -241,6 +246,24 @@ final class CatalogFilterRegistry
     {
         $sorts = self::sortDefinitions();
         return $sorts[$id] ?? $sorts['newest'];
+    }
+
+    /** @param mixed $raw */
+    public static function normaliseSearchTerm($raw): string
+    {
+        if (!is_scalar($raw)) {
+            return '';
+        }
+
+        $value = sanitize_text_field((string) $raw);
+        $collapsed = preg_replace('/\\s+/', ' ', trim($value));
+        $value = is_string($collapsed) ? $collapsed : trim($value);
+
+        if (function_exists('mb_substr')) {
+            return mb_substr($value, 0, self::MAX_SEARCH_LENGTH);
+        }
+
+        return substr($value, 0, self::MAX_SEARCH_LENGTH);
     }
 
     /** @param mixed $raw @return array<int, string> */
@@ -297,6 +320,7 @@ final class CatalogFilterRegistry
 
         $sort = sanitize_key((string) ($state['sort'] ?? 'newest'));
         $validated['sort'] = isset($sorts[$sort]) ? $sort : 'newest';
+        $validated['search'] = self::normaliseSearchTerm($state['search'] ?? '');
 
         $filters = array();
         foreach ((array) ($state['filters'] ?? array()) as $id => $values) {
