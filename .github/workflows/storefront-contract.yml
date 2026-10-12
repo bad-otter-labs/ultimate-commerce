@@ -93,17 +93,21 @@ jobs:
           controller = (root / 'assets/js/variation-controls.js').read_text()
           docs = Path('docs/storefront-catalogue-contract-v1.md').read_text()
 
-          if "ULTIMATE_COMMERCE_STOREFRONT_API_VERSION', '1.0.0'" not in entry:
-              raise SystemExit('Storefront API v1 constant is missing')
+          if "ULTIMATE_COMMERCE_STOREFRONT_API_VERSION', '1.1.0'" not in entry:
+              raise SystemExit('Storefront API v1.1 constant is missing')
           if 'StoreApi\\Utilities\\ProductQuery' not in query or 'get_results($request)' not in query:
               raise SystemExit('Catalogue must delegate bounded product querying to Woo Store API ProductQuery')
           if '$wpdb' in query or 'meta_query' in query:
               raise SystemExit('UC catalogue query must not implement a direct SQL/product-meta query path')
           if "'ultimate_commerce_catalog_public_cache_safe'" not in query or "'public_cache_safe' => $publicCacheSafe" not in query:
               raise SystemExit('Public catalogue caching must remain explicit opt-in')
-          for marker in ('MAX_PER_PAGE = 48', 'MAX_PAGE = 500', 'MAX_SELECTED_PER_FILTER = 12'):
+          for marker in ('MAX_PER_PAGE = 48', 'MAX_PAGE = 500', 'MAX_SELECTED_PER_FILTER = 12', 'MAX_SEARCH_LENGTH = 120'):
               if marker not in filters:
                   raise SystemExit(f'Missing filter/query bound: {marker}')
+          if "'search' => (string) ($state['search'] ?? '')" not in query:
+              raise SystemExit('Catalogue must pass bounded search state to Woo Store API')
+          if 'normaliseSearchTerm' not in filters or 'normaliseSearchTerm' not in query:
+              raise SystemExit('Search state must be normalized before and after Store API extension filters')
           if "apply_filters('ultimate_commerce_catalog_filter_state'" not in filters or 'return self::validateState(' not in filters:
               raise SystemExit('Public filter state must be revalidated after extension hooks')
           if 'validateSortDefinitions' not in filters:
