@@ -854,36 +854,36 @@ msgstr ""
 msgid "Checkout"
 msgstr ""
 
-#: src/Storefront/CatalogFilterRegistry.php:22
+#: src/Storefront/CatalogFilterRegistry.php:23
 msgid "Price"
 msgstr ""
 
-#: src/Storefront/CatalogFilterRegistry.php:27
+#: src/Storefront/CatalogFilterRegistry.php:28
 msgid "Availability"
 msgstr ""
 
-#: src/Storefront/CatalogFilterRegistry.php:66
-#: src/Storefront/CatalogFilterRegistry.php:392
+#: src/Storefront/CatalogFilterRegistry.php:67
+#: src/Storefront/CatalogFilterRegistry.php:416
 msgid "Newest"
 msgstr ""
 
-#: src/Storefront/CatalogFilterRegistry.php:71
+#: src/Storefront/CatalogFilterRegistry.php:72
 msgid "Price: low to high"
 msgstr ""
 
-#: src/Storefront/CatalogFilterRegistry.php:76
+#: src/Storefront/CatalogFilterRegistry.php:77
 msgid "Price: high to low"
 msgstr ""
 
-#: src/Storefront/CatalogFilterRegistry.php:170
+#: src/Storefront/CatalogFilterRegistry.php:174
 msgid "In stock"
 msgstr ""
 
-#: src/Storefront/CatalogFilterRegistry.php:171
+#: src/Storefront/CatalogFilterRegistry.php:173
 msgid "Out of stock"
 msgstr ""
 
-#: src/Storefront/CatalogFilterRegistry.php:172
+#: src/Storefront/CatalogFilterRegistry.php:174
 msgid "On backorder"
 msgstr ""
 
