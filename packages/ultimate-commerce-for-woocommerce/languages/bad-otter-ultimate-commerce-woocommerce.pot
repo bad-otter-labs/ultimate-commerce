@@ -875,7 +875,7 @@ msgstr ""
 msgid "Price: high to low"
 msgstr ""
 
-#: src/Storefront/CatalogFilterRegistry.php:174
+#: src/Storefront/CatalogFilterRegistry.php:172
 msgid "In stock"
 msgstr ""
 
