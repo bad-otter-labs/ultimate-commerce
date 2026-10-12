@@ -2,7 +2,7 @@
 
 Status: **public Free contract**
 
-API version: `ULTIMATE_COMMERCE_STOREFRONT_API_VERSION = 1.0.0`
+API version: `ULTIMATE_COMMERCE_STOREFRONT_API_VERSION = 1.1.0`
 
 This contract is the supported theme/extension boundary for reusable product cards, bounded product lists, baseline variant state and catalogue filter state. WooCommerce remains authoritative for products, variations, prices, stock, visibility and cart mutations.
 
@@ -26,6 +26,7 @@ Themes should check the API constant or `class_exists(Catalog::class)` before co
 `Catalog::query()` accepts:
 
 - `include`: explicit product IDs, maximum 100
+- `search`: plain-text WooCommerce product search, maximum 120 characters
 - `page`: 1–500
 - `per_page`: 1–48, default 24
 - `sort`: `newest`, `price_asc`, `price_desc`
@@ -33,7 +34,7 @@ Themes should check the API constant or `class_exists(Catalog::class)` before co
 - `min_price` / `max_price`: non-negative Woo price values
 - `availability`: `in_stock`, `out_of_stock`, `on_backorder`
 
-The service translates validated state into WooCommerce Store API product-query parameters and delegates visibility, taxonomy/attribute, lookup-table price, stock and catalogue ordering semantics to WooCommerce. UC does not issue product-meta price queries or maintain a second stock/index table.
+The service translates validated state, including the bounded search term, into WooCommerce Store API product-query parameters and delegates product search, visibility, taxonomy/attribute, lookup-table price, stock and catalogue ordering semantics to WooCommerce. UC does not issue product-meta price queries or maintain a second stock/index table.
 
 The response contains:
 
@@ -111,11 +112,11 @@ Free automatically exposes Woo global product attributes (`pa_*`) plus price and
 
 For large catalogues, dimensions such as garment type, use case, weather, waterproof rating, warmth, fit, size, colour and material should be modeled as Woo global attributes or other indexed product taxonomies. Do not model storefront facets as arbitrary product-meta scans.
 
-Flat parameters such as `filter_colour=navy,olive&min_price=50&sort=price_asc&page=2` are deterministic. UC does not automatically emit canonical/noindex tags because indexation strategy is a store/SEO policy; the theme/SEO layer can use `canonical_query` when deciding canonical URLs.
+Flat parameters such as `search=waterproof+jacket&filter_colour=navy,olive&min_price=50&sort=price_asc&page=2` are deterministic. Search text is sanitized, whitespace-normalized and capped at 120 characters before it reaches WooCommerce. UC does not automatically emit canonical/noindex tags because indexation strategy is a store/SEO policy; the theme/SEO layer can use `canonical_query` when deciding canonical URLs.
 
 `filters[].options[].count` is the bounded Woo taxonomy term count for the option. It is not presented as a fully faceted post-filter result count. A future count provider may refine counts through the public descriptor/query extension points without changing URL state.
 
-`ultimate_commerce_catalog_filter_state` is an extension point, not a bypass around safety limits. UC revalidates the state after the hook, including page/per-page limits, selected-value caps, registered filter IDs, price ranges, availability values and sort identifiers.
+`ultimate_commerce_catalog_filter_state` is an extension point, not a bypass around safety limits. UC revalidates the state after the hook, including page/per-page limits, the search-length bound, selected-value caps, registered filter IDs, price ranges, availability values and sort identifiers.
 
 ## Public extension points
 
@@ -153,7 +154,7 @@ Browser event:
 
 - `uc:variation-change`
 
-Pro may add sort definitions such as Recommended, waterproof rating, warmth or Available in My Size and adapt the Store API request through the same public filters. Free contains no Pro ranking or My Size implementation.
+Pro may add sort definitions such as Recommended, waterproof rating, warmth or Available in My Size and adapt the Store API request through the same public filters. Storefront API 1.1 makes `search` part of the validated/canonical state so Pro search merchandising can consume it without inventing a parallel search endpoint. Free contains no Pro ranking or My Size implementation.
 
 ## Historical bridge migration
 
