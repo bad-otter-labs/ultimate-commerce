@@ -3,7 +3,7 @@
  * Plugin Name: Bad Otter Ultimate Commerce for WooCommerce
  * Plugin URI: https://badotter.io/ultimate-commerce
  * Description: A modular commerce experience enhancement platform for WooCommerce.
- * Version: 0.2.0
+ * Version: 0.2.1
  * Requires at least: 6.6
  * Requires PHP: 8.1
  * Requires Plugins: woocommerce
@@ -19,14 +19,14 @@
 
 defined('ABSPATH') || exit;
 
-define('ULTIMATE_COMMERCE_VERSION', '0.2.0');
+define('ULTIMATE_COMMERCE_VERSION', '0.2.1');
 define('ULTIMATE_COMMERCE_SCHEMA_VERSION', '1');
 define('ULTIMATE_COMMERCE_MODULE_API_VERSION', '1.0.0');
 define('ULTIMATE_COMMERCE_SECURITY_API_VERSION', '1.0.0');
 define('ULTIMATE_COMMERCE_AUDIT_API_VERSION', '1.0.0');
 define('ULTIMATE_COMMERCE_PRIVACY_API_VERSION', '1.0.0');
 define('ULTIMATE_COMMERCE_EXECUTION_API_VERSION', '1.0.0');
-define('ULTIMATE_COMMERCE_STOREFRONT_API_VERSION', '1.0.0');
+define('ULTIMATE_COMMERCE_STOREFRONT_API_VERSION', '1.1.0');
 define('ULTIMATE_COMMERCE_CART_API_VERSION', '1.1.0');
 define('ULTIMATE_COMMERCE_WISHLIST_API_VERSION', '1.0.0');
 define('ULTIMATE_COMMERCE_RECENTLY_VIEWED_API_VERSION', '1.0.0');
