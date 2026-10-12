@@ -25,7 +25,7 @@ uc_live_compat_assert((string) $wp_version === $expectedWordPress, 'Unexpected W
 uc_live_compat_assert(defined('WC_VERSION') && (string) WC_VERSION === $expectedWooCommerce, 'Unexpected WooCommerce version.');
 uc_live_compat_assert(str_starts_with(PHP_VERSION, $expectedPhpPrefix . '.'), 'Unexpected PHP version: ' . PHP_VERSION);
 uc_live_compat_assert(
-    defined('ULTIMATE_COMMERCE_VERSION') && ULTIMATE_COMMERCE_VERSION === '0.2.0',
+    defined('ULTIMATE_COMMERCE_VERSION') && ULTIMATE_COMMERCE_VERSION === '0.2.1',
     'Ultimate Commerce did not boot at the expected version.'
 );
 
