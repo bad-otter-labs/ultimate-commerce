@@ -4,7 +4,7 @@ Tags: woocommerce, ecommerce, wishlist, variations, cart
 Requires at least: 6.6
 Tested up to: 7.1
 Requires PHP: 8.1
-Stable tag: 0.2.0
+Stable tag: 0.2.1
 Requires Plugins: woocommerce
 WC requires at least: 9.8
 WC tested up to: 11.1
@@ -112,6 +112,10 @@ The deterministic WordPress.org release ZIP is built from the canonical Free sou
 The resulting ZIP is audited by `scripts/check-wordpress-org-package.py` and by the official WordPress Plugin Check workflow before release.
 
 == Changelog ==
+
+= 0.2.1 =
+* Extend Storefront API to v1.1 with bounded, canonical WooCommerce product-search state for extension-safe search merchandising.
+* Keep WooCommerce authoritative for product search, catalogue filtering and result hydration; Free adds no parallel search index or endpoint.
 
 = 0.2.0 =
 * Establish the canonical WordPress.org Free package identity and remove the private Bad Otter updater from the Free runtime.
