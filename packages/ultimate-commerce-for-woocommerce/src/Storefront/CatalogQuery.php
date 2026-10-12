@@ -116,7 +116,7 @@ final class CatalogQuery
             'per_page' => (int) $state['per_page'],
             'parent' => array(),
             'parent_exclude' => array(),
-            'search' => '',
+            'search' => (string) ($state['search'] ?? ''),
             'slug' => array(),
             'sku' => array(),
             'catalog_visibility' => 'visible',
@@ -188,6 +188,9 @@ final class CatalogQuery
     {
         $params['page'] = max(1, min(CatalogFilterRegistry::MAX_PAGE, (int) ($params['page'] ?? $state['page'])));
         $params['per_page'] = max(1, min(CatalogFilterRegistry::MAX_PER_PAGE, (int) ($params['per_page'] ?? $state['per_page'])));
+        $params['search'] = CatalogFilterRegistry::normaliseSearchTerm(
+            $params['search'] ?? ($state['search'] ?? '')
+        );
         $params['include'] = array_slice(array_values(array_unique(array_filter(array_map('absint', (array) ($params['include'] ?? array()))))), 0, self::MAX_INCLUDE_IDS);
         // phpcs:ignore WordPressVIPMinimum.Performance.WPQueryParams.PostNotIn_exclude -- Public Store API extension input is normalized and capped at MAX_INCLUDE_IDS before WooCommerce receives it.
         $params['exclude'] = array_slice(array_values(array_unique(array_filter(array_map('absint', (array) ($params['exclude'] ?? array()))))), 0, self::MAX_INCLUDE_IDS);
