@@ -37,7 +37,7 @@ permissions:
 
 jobs:
   package-review:
-    runs-on: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name != github.repository && 'ubuntu-latest' || 'badotter' }}
+    runs-on: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name != github.repository && 'ubuntu-latest' || fromJSON('["self-hosted","Linux","X64","badotter","ci"]') }}
     timeout-minutes: 20
     steps:
       - name: Checkout
@@ -89,16 +89,36 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          cat > .wp-env.json <<EOF
-          {
-            "core": null,
-            "port": 8880,
-            "testsPort": 8881,
-            "mappings": {
-              "wp-content/plugins/bad-otter-ultimate-commerce-woocommerce": "$(realpath wporg-check/bad-otter-ultimate-commerce-woocommerce)"
-            }
-          }
-          EOF
+          export PLUGIN_PATH="$(realpath wporg-check/bad-otter-ultimate-commerce-woocommerce)"
+          python3 - <<'PY'
+          import json
+          import os
+          import socket
+
+          # Allocate host ports dynamically: other CI repositories may retain
+          # wp-env containers on the shared heavy worker.
+          sockets = []
+          try:
+              for _ in range(2):
+                  sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+                  sock.bind(("0.0.0.0", 0))
+                  sockets.append(sock)
+              config = {
+                  "core": None,
+                  "port": sockets[0].getsockname()[1],
+                  "testsPort": sockets[1].getsockname()[1],
+                  "mappings": {
+                      "wp-content/plugins/bad-otter-ultimate-commerce-woocommerce": os.environ["PLUGIN_PATH"]
+                  },
+              }
+              with open(".wp-env.json", "w", encoding="utf-8") as handle:
+                  json.dump(config, handle)
+                  handle.write("\n")
+              print(f"Allocated isolated wp-env ports {config['port']} and {config['testsPort']}")
+          finally:
+              for sock in sockets:
+                  sock.close()
+          PY
           wp-env start --update
           wp-env run cli wp cli info
 

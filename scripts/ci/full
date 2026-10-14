@@ -1,0 +1,22 @@
+#!/usr/bin/env bash
+set -euo pipefail
+cd "$(dirname "$0")/../.."
+scripts/ci/draft
+for spec in \
+  tests/module-contract-v1.php \
+  tests/security-request-foundations.php \
+  tests/external-boundary-security.php \
+  tests/execution-control-foundations.php \
+  tests/audit-privacy-foundations.php \
+  tests/module-settings-contract.php \
+  tests/storefront-catalogue-contract.php \
+  tests/storefront-filter-extension-boundary.php \
+  tests/account-order-contract.php \
+  tests/cart-drawer-contract.php \
+  tests/wishlist-contract.php \
+  tests/recently-viewed-contract.php \
+  tests/settings-transfer-contract.php \
+  tests/system-status-contract.php; do
+  php "$spec"
+done
+echo 'Free standalone contract gate passed.'
