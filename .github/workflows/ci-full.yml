@@ -16,18 +16,54 @@ concurrency:
 
 jobs:
   full:
+    name: php (8.1)
     if: ${{ github.event_name != 'pull_request' || !github.event.pull_request.draft }}
-    uses: bad-otter-labs/.github/.github/workflows/reusable-wordpress-plugin-full.yml@c0a5f67842f2bc741afb1e59bafd2288e3603a32
-    with:
-      php-versions-json: '["8.1"]'
-      primary-php-version: '8.1'
-      composer-lock-path: composer.lock
-      runner: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name != github.repository && 'github-hosted' || 'self-hosted' }}
-      heavy-runner: self-hosted
-      max-parallel: 1
-      timeout-minutes: 25
-      integration-enabled: false
-      package-enabled: true
-      plugin-check-required: false
-      artifact-name: ultimate-commerce-free-full-package
-      artifact-path: dist
+    runs-on: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name != github.repository && 'ubuntu-latest' || fromJSON('["self-hosted","Linux","X64","badotter","ci"]') }}
+    timeout-minutes: 25
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      - name: Set up PHP
+        uses: shivammathur/setup-php@f3e473d116dcccaddc5834248c87452386958240
+        with:
+          php-version: '8.1'
+          coverage: none
+      - name: Run complete PHP contracts
+        run: test -x scripts/ci/full && scripts/ci/full
+
+  package:
+    name: release package
+    needs: full
+    if: ${{ github.event_name != 'pull_request' || !github.event.pull_request.draft }}
+    runs-on: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name != github.repository && 'ubuntu-latest' || fromJSON('["self-hosted","Linux","X64","badotter","ci"]') }}
+    timeout-minutes: 25
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      - name: Build and inspect canonical package
+        run: test -x scripts/ci/package && scripts/ci/package
+      - name: Retain validated package
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: ultimate-commerce-free-full-package
+          path: dist/
+          if-no-files-found: error
+          retention-days: 7
+
+  merge-gate:
+    name: full / merge-gate
+    needs: [full, package]
+    if: ${{ always() && !cancelled() && (github.event_name != 'pull_request' || !github.event.pull_request.draft) }}
+    runs-on: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name != github.repository && 'ubuntu-latest' || fromJSON('["self-hosted","Linux","X64","badotter","ci"]') }}
+    timeout-minutes: 5
+    steps:
+      - name: Verify mandatory checks
+        shell: bash
+        env:
+          PHP_RESULT: ${{ needs.full.result }}
+          PACKAGE_RESULT: ${{ needs.package.result }}
+        run: |
+          set -euo pipefail
+          test "$PHP_RESULT" = success
+          test "$PACKAGE_RESULT" = success
+          echo 'Both complete PHP validation and canonical packaging passed.'

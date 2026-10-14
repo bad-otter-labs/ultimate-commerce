@@ -47,3 +47,9 @@ A validation workflow must not be converted into a publisher merely to reuse cre
 This routing removes the path by which external fork code could reach a persistent Bad Otter runner. It does **not** itself change repository visibility or submit the plugin to WordPress.org.
 
 Repository visibility remains an explicit release decision after the remaining Phase 4 security, compatibility, accessibility, upgrade and submission gates are green. Once public, an external fork smoke test should confirm GitHub-hosted validation operates as expected before accepting community contributions.
+
+## Reusable workflow visibility and Full Gate
+
+GitHub does not allow a public repository to invoke reusable workflows from a private repository. The central `bad-otter-labs/.github` repository is private, so the public Free project uses local, reviewed `ci-draft.yml` and `ci-full.yml` workflows instead of making a nonfunctional external call. The local Full Gate runs complete standalone PHP contracts plus canonical WordPress.org packaging, and its `full / merge-gate` fails if either is unsuccessful. The separately required browser accessibility and official WordPress Plugin Check workflows remain unchanged.
+
+All new jobs retain fork-safe runner selection. The Free project must not publish or copy private Bad Otter organisation workflow source into this public repository without an explicit approved publication decision.

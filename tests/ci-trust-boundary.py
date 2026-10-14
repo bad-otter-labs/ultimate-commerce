@@ -12,17 +12,14 @@ TRUSTED_PUBLISHERS = {
 }
 FAST_SELF_HOSTED_WORKFLOWS = {
     "ci-trust-boundary.yml",
+    "ci-draft.yml",
 }
 HEAVY_SELF_HOSTED_WORKFLOWS = {
     "accessibility.yml",
     "wordpress-org.yml",
+    "ci-full.yml",
 }
 HOSTED_RUNNER = "runs-on: ubuntu-latest"
-SHARED_REUSABLE_REVISION = "c0a5f67842f2bc741afb1e59bafd2288e3603a32"
-REUSABLE_JOBS = {
-    "ci-draft.yml": "reusable-wordpress-plugin-draft.yml",
-    "ci-full.yml": "reusable-wordpress-plugin-full.yml",
-}
 FORK_SAFE_FAST_RUNNER = (
     "runs-on: ${{ github.event_name == 'pull_request' "
     "&& github.event.pull_request.head.repo.full_name != github.repository "
@@ -59,38 +56,21 @@ for path in workflow_paths:
     if "pull_request:" not in text:
         continue
 
-    if path.name in REUSABLE_JOBS:
-        central_use = (
-            "bad-otter-labs/.github/.github/workflows/"
-            + REUSABLE_JOBS[path.name]
-            + "@"
-            + SHARED_REUSABLE_REVISION
+    expected_runner = (
+        FORK_SAFE_FAST_RUNNER
+        if path.name in FAST_SELF_HOSTED_WORKFLOWS
+        else FORK_SAFE_HEAVY_RUNNER
+        if path.name in HEAVY_SELF_HOSTED_WORKFLOWS
+        else HOSTED_RUNNER
+    )
+    runner_lines = [
+        line.strip() for line in text.splitlines()
+        if line.strip().startswith("runs-on:")
+    ]
+    if not runner_lines or any(line != expected_runner for line in runner_lines):
+        raise SystemExit(
+            f"{path.name}: runner does not match the approved hosted/fast/heavy trust boundary."
         )
-        runner_option = (
-            "'github-hosted' || 'self-hosted-fast'"
-            if path.name == "ci-draft.yml"
-            else "'github-hosted' || 'self-hosted'"
-        )
-        if f"uses: {central_use}" not in text or runner_option not in text:
-            raise SystemExit(
-                f"{path.name}: central reusable workflow or fork-safe runner input changed."
-            )
-        if path.name == "ci-full.yml" and (
-            "self-hosted-fast" in text or "package-enabled: true" not in text
-        ):
-            raise SystemExit("ci-full.yml: full validation and packaging must not run on ci-fast.")
-    else:
-        expected_runner = (
-            FORK_SAFE_FAST_RUNNER
-            if path.name in FAST_SELF_HOSTED_WORKFLOWS
-            else FORK_SAFE_HEAVY_RUNNER
-            if path.name in HEAVY_SELF_HOSTED_WORKFLOWS
-            else HOSTED_RUNNER
-        )
-        if expected_runner not in text:
-            raise SystemExit(
-                f"{path.name}: pull-request runner does not match the approved hosted/fast/heavy trust boundary."
-            )
 
     if re.search(r"(?m)^\s*uses:\s*[^#\n]+@(main|master|HEAD)\s*$", text):
         raise SystemExit(
