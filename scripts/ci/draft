@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+set -euo pipefail
+cd "$(dirname "$0")/../.."
+python3 tests/ci-trust-boundary.py
+python3 -m py_compile scripts/*.py tests/*.py
+while IFS= read -r -d '' file; do
+  php -l "$file" >/dev/null
+done < <(find packages tests -type f -name '*.php' -print0)
+echo 'Free draft PHP syntax and public CI trust boundary passed.'

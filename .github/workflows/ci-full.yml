@@ -1,0 +1,33 @@
+name: Bad Otter Full Gate
+
+on:
+  pull_request:
+    types: [opened, reopened, synchronize, ready_for_review]
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.event_name == 'pull_request' && format('uc-free-full-pr-{0}', github.event.pull_request.number) || format('uc-free-full-run-{0}', github.run_id) }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  full:
+    if: ${{ github.event_name != 'pull_request' || !github.event.pull_request.draft }}
+    uses: bad-otter-labs/.github/.github/workflows/reusable-wordpress-plugin-full.yml@c0a5f67842f2bc741afb1e59bafd2288e3603a32
+    with:
+      php-versions-json: '["8.1"]'
+      primary-php-version: '8.1'
+      composer-lock-path: composer.lock
+      runner: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name != github.repository && 'github-hosted' || 'self-hosted' }}
+      heavy-runner: self-hosted
+      max-parallel: 1
+      timeout-minutes: 25
+      integration-enabled: false
+      package-enabled: true
+      plugin-check-required: false
+      artifact-name: ultimate-commerce-free-full-package
+      artifact-path: dist

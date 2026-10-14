@@ -1,0 +1,22 @@
+name: Bad Otter Draft Fast
+
+on:
+  pull_request:
+    types: [opened, reopened, synchronize, converted_to_draft]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ format('uc-free-draft-pr-{0}', github.event.pull_request.number) }}
+  cancel-in-progress: true
+
+jobs:
+  draft:
+    if: ${{ github.event.pull_request.draft }}
+    uses: bad-otter-labs/.github/.github/workflows/reusable-wordpress-plugin-draft.yml@c0a5f67842f2bc741afb1e59bafd2288e3603a32
+    with:
+      php-version: '8.1'
+      composer-lock-path: composer.lock
+      runner: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name != github.repository && 'github-hosted' || 'self-hosted-fast' }}
+      timeout-minutes: 15

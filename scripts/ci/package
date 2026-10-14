@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+set -euo pipefail
+cd "$(dirname "$0")/../.."
+rm -rf dist
+python3 scripts/build-wordpress-org-package.py --source packages/ultimate-commerce-for-woocommerce --output-dir dist
+shopt -s nullglob
+packages=(dist/*.zip)
+test "${#packages[@]}" -eq 1
+python3 scripts/check-wordpress-org-package.py "${packages[0]}"
+unzip -t "${packages[0]}" >/dev/null
+test -s "${packages[0]}.sha256"
+echo 'Free canonical WordPress.org package verified.'
