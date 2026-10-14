@@ -33,7 +33,7 @@ permissions:
 
 jobs:
   accessibility:
-    runs-on: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name != github.repository && 'ubuntu-latest' || 'badotter' }}
+    runs-on: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name != github.repository && 'ubuntu-latest' || fromJSON('["self-hosted","Linux","X64","badotter","ci"]') }}
     timeout-minutes: 35
     steps:
       - name: Checkout

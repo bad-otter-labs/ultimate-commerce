@@ -10,15 +10,23 @@ TRUSTED_PUBLISHERS = {
     "development-release.yml",
     "release.yml",
 }
+FAST_SELF_HOSTED_WORKFLOWS = {
+    "ci-trust-boundary.yml",
+}
 HEAVY_SELF_HOSTED_WORKFLOWS = {
     "accessibility.yml",
     "wordpress-org.yml",
 }
 HOSTED_RUNNER = "runs-on: ubuntu-latest"
+FORK_SAFE_FAST_RUNNER = (
+    "runs-on: ${{ github.event_name == 'pull_request' "
+    "&& github.event.pull_request.head.repo.full_name != github.repository "
+    "&& 'ubuntu-latest' || fromJSON('[\"self-hosted\",\"Linux\",\"X64\",\"badotter\",\"ci-fast\"]') }}"
+)
 FORK_SAFE_HEAVY_RUNNER = (
     "runs-on: ${{ github.event_name == 'pull_request' "
     "&& github.event.pull_request.head.repo.full_name != github.repository "
-    "&& 'ubuntu-latest' || 'badotter' }}"
+    "&& 'ubuntu-latest' || fromJSON('[\"self-hosted\",\"Linux\",\"X64\",\"badotter\",\"ci\"]') }}"
 )
 
 workflow_paths = sorted(
@@ -47,13 +55,15 @@ for path in workflow_paths:
         continue
 
     expected_runner = (
-        FORK_SAFE_HEAVY_RUNNER
+        FORK_SAFE_FAST_RUNNER
+        if path.name in FAST_SELF_HOSTED_WORKFLOWS
+        else FORK_SAFE_HEAVY_RUNNER
         if path.name in HEAVY_SELF_HOSTED_WORKFLOWS
         else HOSTED_RUNNER
     )
     if expected_runner not in text:
         raise SystemExit(
-            f"{path.name}: pull-request runner does not match the approved hosted/heavy trust boundary."
+            f"{path.name}: pull-request runner does not match the approved hosted/fast/heavy trust boundary."
         )
 
     if re.search(r"(?m)^\s*uses:\s*[^#\n]+@(main|master|HEAD)\s*$", text):

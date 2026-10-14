@@ -4,17 +4,21 @@ Ultimate Commerce separates **untrusted validation** from **trusted same-reposit
 
 ## Pull-request runner routing
 
-Every workflow triggered by `pull_request` uses the same trust-aware runner expression:
+Workflows selected for trusted Bad Otter runners use fork-aware routing. Lightweight policy checks select `ci-fast`; Docker, browser and package checks select `ci`. Other workflows retain GitHub-hosted isolation:
 
 ```yaml
-runs-on: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name != github.repository && 'ubuntu-latest' || 'badotter' }}
+# Lightweight policy validation
+runs-on: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name != github.repository && 'ubuntu-latest' || fromJSON('["self-hosted","Linux","X64","badotter","ci-fast"]') }}
+
+# Resource-intensive validation
+runs-on: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name != github.repository && 'ubuntu-latest' || fromJSON('["self-hosted","Linux","X64","badotter","ci"]') }}
 ```
 
 The result is intentionally asymmetric:
 
 - a pull request whose head branch is in another repository (the normal external/fork contribution path) runs on GitHub-hosted `ubuntu-latest`;
-- a same-repository pull request may use the controlled Bad Otter runner because creating its head branch requires repository write access;
-- a push to `main` may use the controlled Bad Otter validation runner;
+- a same-repository pull request may use the restricted Bad Otter `ci-fast` or `ci` worker according to its job class, because creating its head branch requires repository write access;
+- a push to `main` may use the dedicated Bad Otter validation workers;
 - a cross-repository pull request must never fall back to the Bad Otter runner if hosted capacity is unavailable.
 
 While the repository remains private, GitHub-hosted capacity may not be provisioned. In that case an external/cross-repository job can fail before execution; failing closed is preferable to executing untrusted code on the trusted runner.
@@ -34,7 +38,7 @@ The repository regression at `tests/ci-trust-boundary.py` enforces these rules a
 
 Publishing remains a separate trust domain.
 
-`.github/workflows/development-release.yml` and `.github/workflows/release.yml` use the controlled Bad Otter self-hosted runner and may hold the permissions needed for their explicit release duties. Neither workflow may accept `pull_request` or `pull_request_target`.
+`.github/workflows/development-release.yml` and `.github/workflows/release.yml` retain their existing GitHub-hosted routing and may hold the permissions needed for their explicit release duties. The `production-deploy` runner group is not used or modified by this validation migration. Neither workflow may accept `pull_request` or `pull_request_target`.
 
 A validation workflow must not be converted into a publisher merely to reuse credentials or release infrastructure.
 
