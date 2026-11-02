@@ -179,3 +179,7 @@ Create/revise an ADR when a proposed change materially affects:
 - backwards compatibility policy
 
 Accepted decisions must be reflected back into the blueprint/foundation/workflow where relevant.
+
+## Organisation-wide Bad Otter CI master (2 November 2026)
+
+For any CI, runner, testing or workflow changes, consult the authoritative [Bad Otter Master CI Operating Standard](https://github.com/bad-otter-labs/.github/blob/main/docs/MASTER_CI_OPERATING_STANDARD.md) in `bad-otter-labs/.github`, and verify the latest default-branch SHA, required checks and project roadmap. Approved projects call the [SHA-pinned shared CI router](https://github.com/bad-otter-labs/.github/blob/3551f45defc4d2a0f2980b706bedcd185533bc99/.github/workflows/reusable-ci-master-route.yml) with retained project-specific validation. Never replace required tests with a weaker generic workflow, trust an unverified budget snapshot, run untrusted forks on self-hosted CI, or disable the organisation's $0 paid Actions overage stop. Keep production releases, external credentials and live trading/customer authority independent of CI routing. This policy reference does **not** activate the router, buy capacity or grant deployment/trading approval; migrate ordinary CI separately through reviewed exact-head gates.
