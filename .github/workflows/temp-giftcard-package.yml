@@ -1,0 +1,28 @@
+name: Temporary Gift Card Package Build
+on:
+  push:
+    branches:
+      - artifact-giftcard-zips-20261104
+permissions:
+  contents: read
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      - name: Build canonical Free package
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 scripts/build-plugin-package.py --source packages/ultimate-commerce-for-woocommerce --output-dir dist
+          unzip -t dist/*.zip >/dev/null
+          grep -q 'Version: 0.2.1' packages/ultimate-commerce-for-woocommerce/ultimate-commerce-for-woocommerce.php
+      - name: Upload canonical Free package
+        uses: actions/upload-artifact@v4
+        with:
+          name: ultimate-commerce-for-woocommerce-0.2.1
+          path: |
+            dist/*.zip
+            dist/*.sha256
+          if-no-files-found: error
+          retention-days: 2
