@@ -14,7 +14,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          python3 scripts/build-plugin-package.py --source packages/ultimate-commerce-for-woocommerce --output-dir dist
+          python3 scripts/build-wordpress-org-package.py --source packages/ultimate-commerce-for-woocommerce --output-dir dist
           unzip -t dist/*.zip >/dev/null
           grep -q 'Version: 0.2.1' packages/ultimate-commerce-for-woocommerce/ultimate-commerce-for-woocommerce.php
       - name: Upload canonical Free package
