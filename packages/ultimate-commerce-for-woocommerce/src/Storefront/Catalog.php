@@ -75,9 +75,121 @@ final class Catalog
                 echo ProductCardRenderer::render($item, $context); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- renderer escapes its fields.
             }
         }
+        // Embedded catalogues opt in with a merchant-owned, unfiltered page URL.
+        // No URL is inferred from the current browser request or shopper input.
+        if ($items !== array()) {
+            echo self::renderPagination($result, $context); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- helper validates and escapes URLs and labels.
+        }
         echo '</div>';
         do_action('ultimate_commerce_product_list_after', $result, $context);
         return (string) ob_get_clean();
+    }
+
+    /**
+     * Optional, server-rendered previous/next navigation for host page themes.
+     *
+     * @param array<string,mixed> $result
+     * @param array<string,mixed> $context
+     */
+    private static function renderPagination(array $result, array $context): string
+    {
+        $pagination = is_array($result['pagination'] ?? null)
+            ? $result['pagination']
+            : array();
+        $page = (int) ($pagination['page'] ?? 1);
+        $pages = (int) ($pagination['pages'] ?? 1);
+
+        if ($page < 1 || $page > CatalogFilterRegistry::MAX_PAGE
+            || $pages <= 1 || $pages > CatalogFilterRegistry::MAX_PAGE || $page > $pages) {
+            return '';
+        }
+
+        $base = $context['pagination_base_url'] ?? null;
+        if (!is_string($base) || $base === ''
+            || !function_exists('wp_validate_redirect')
+            || !function_exists('add_query_arg') || !function_exists('esc_url')) {
+            return '';
+        }
+
+        $base = wp_validate_redirect($base, '');
+        if (!is_string($base) || $base === '') {
+            return '';
+        }
+
+        // A theme must supply the unfiltered destination. On WordPress plain
+        // permalinks only the known page/archive locator query keys may remain;
+        // reject any search, redirect, tracking or stale catalogue parameters.
+        $parts = parse_url($base);
+        if (!is_array($parts) || isset($parts['fragment'])) {
+            return '';
+        }
+        $baseParams = array();
+        if (isset($parts['query'])) {
+            parse_str($parts['query'], $baseParams);
+        }
+        foreach ($baseParams as $key => $value) {
+            if (!in_array($key, array('page_id', 'post_type', 'pagename'), true)
+                || !is_scalar($value)) {
+                return '';
+            }
+        }
+
+        // The canonical query has already been normalised by Free's Storefront
+        // registry. Do not accept arbitrary extension-supplied URL parameters.
+        $canonical = is_array($result['canonical_query'] ?? null)
+            ? $result['canonical_query']
+            : array();
+        $query = array();
+        foreach ($canonical as $key => $value) {
+            if (!is_string($key) || !is_string($value)
+                || (!in_array($key, array('search', 'sort', 'min_price', 'max_price', 'availability', 'per_page'), true)
+                    && preg_match('/^filter_[a-z0-9_-]{1,55}$/D', $key) !== 1)) {
+                continue;
+            }
+            $query[$key] = rawurlencode($value);
+        }
+
+        $links = array();
+        foreach (array('prev' => $page - 1, 'next' => $page + 1) as $direction => $target) {
+            if ($target < 1 || $target > $pages) {
+                continue;
+            }
+            $targetQuery = $query;
+            if ($target > 1) {
+                $targetQuery['page'] = (string) $target;
+            }
+            $url = add_query_arg($targetQuery, $base);
+            $url = is_string($url) ? wp_validate_redirect($url, '') : '';
+            if (!is_string($url) || $url === '') {
+                continue;
+            }
+            $links[$direction] = esc_url($url);
+        }
+
+        if ($links === array()) {
+            return '';
+        }
+
+        $domain = 'bad-otter-ultimate-commerce-woocommerce';
+        $html = '<nav class="uc-product-list__pagination" data-uc-catalog-pagination="1" aria-label="'
+            . esc_attr(__('Product catalogue pages', $domain)) . '">';
+        if (isset($links['prev'])) {
+            $html .= '<a class="uc-product-list__page-link uc-product-list__page-link--prev" rel="prev" href="'
+                . $links['prev'] . '">' . esc_html(__('Previous page', $domain)) . '</a>';
+        }
+        $html .= '<span class="uc-product-list__page-current" aria-current="page">'
+            . esc_html(sprintf(
+                /* translators: 1: Current catalogue page, 2: Total catalogue pages. */
+                __('Page %1$d of %2$d', $domain),
+                $page,
+                $pages
+            )) . '</span>';
+        if (isset($links['next'])) {
+            $html .= '<a class="uc-product-list__page-link uc-product-list__page-link--next" rel="next" href="'
+                . $links['next'] . '">' . esc_html(__('Next page', $domain)) . '</a>';
+        }
+
+        return $html . '</nav>';
     }
 
     /** @return array<string, mixed> */
