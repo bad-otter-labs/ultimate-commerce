@@ -872,11 +872,11 @@ msgstr ""
 msgid "Browse all products"
 msgstr ""
 
-#: src/Storefront/Catalog.php:152
+#: src/Storefront/Catalog.php:149
 msgid "Product catalogue pages"
 msgstr ""
 
-#: src/Storefront/Catalog.php:149
+#: src/Storefront/Catalog.php:152
 msgid "Previous page"
 msgstr ""
 
