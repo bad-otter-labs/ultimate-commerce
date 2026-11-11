@@ -103,3 +103,43 @@ add_shortcode(
             . '</section>';
     }
 );
+
+
+// Disposable browser acceptance only: read back a Woo-persisted order without
+// exposing a public production endpoint or requiring an admin login. The route
+// exists only when this repository's test MU plugin is installed.
+add_action(
+    'rest_api_init',
+    static function (): void {
+        register_rest_route(
+            'uc-fixture/v1',
+            '/order-proof',
+            array(
+                'methods' => 'GET',
+                'permission_callback' => static function (): bool {
+                    return defined('UC_A11Y_CHECKOUT_TEST') && UC_A11Y_CHECKOUT_TEST === true;
+                },
+                'callback' => static function (\\WP_REST_Request $request) {
+                    $id = absint($request->get_param('order_id'));
+                    $order = $id > 0 ? wc_get_order($id) : false;
+                    if (!$order || $order->get_billing_email() !== 'uc-checkout@example.test') {
+                        return new \\WP_Error('not_found', 'Fixture order not found.', array('status' => 404));
+                    }
+                    $items = $order->get_items('line_item');
+                    $item = reset($items);
+                    if (!$item instanceof \\WC_Order_Item_Product) {
+                        return new \\WP_Error('invalid_order', 'No fixture product.', array('status' => 404));
+                    }
+                    return rest_ensure_response(array(
+                        'id' => (int) $order->get_id(),
+                        'product_id' => (int) $item->get_product_id(),
+                        'variation_id' => (int) $item->get_variation_id(),
+                        'quantity' => (int) $item->get_quantity(),
+                        'payment_method' => (string) $order->get_payment_method(),
+                        'total_minor' => (int) round(((float) $order->get_total()) * 100),
+                    ));
+                },
+            )
+        );
+    }
+);
