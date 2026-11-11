@@ -1,0 +1,14 @@
+{
+  "schema": "labs.superpowers.module.v0",
+  "module_id": "ultimate-commerce-for-woocommerce/core",
+  "product_id": "ultimate-commerce-for-woocommerce",
+  "display_name": "Ultimate Commerce for WooCommerce",
+  "version": "0.2.1",
+  "runtime": "wordpress-plugin",
+  "capabilities": [],
+  "requires": [],
+  "optional_integrations": [],
+  "authorities": [],
+  "entitlement_id": null,
+  "legacy_module_id": "core"
+}
