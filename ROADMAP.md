@@ -2,6 +2,13 @@
 
 Status: **Sequenced outcome-based roadmap**
 
+## Foundation compatibility checkpoint — 11 November 2026
+
+**In progress, not a completed roadmap phase:** an opt-in, read-only Labs v0 module manifest mapping and automated compatibility tests have been added on a feature branch. This does not finish Phase 0/1, ship a central connector, approve a release, or move product, stock, staff, licence or stored-value authority. See [ADR 0003](docs/adr/0003-optional-labs-foundation-and-stock-authority.md).
+
+**Still required:** verify CI and existing Free/Pro integration on exact heads; reconcile pending Free CI PRs #50/#51 without weakening the public-fork boundary; independently validate any future Product Master or Stock/EPOS adapter; continue the next tested Phase 2 storefront improvement. No phase exit gate is waived.
+
+
 This roadmap turns `BLUEPRINT.md` and `FOUNDATION.md` into implementation order. It is intentionally outcome-based rather than date-based. A phase exits only when its product, security, performance and upgrade gates are satisfied.
 
 The roadmap serves four simultaneous goals:
