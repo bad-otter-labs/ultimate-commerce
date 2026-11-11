@@ -148,6 +148,15 @@ namespace {
             'Unsafe, stale or browser-controlled pagination base must fail closed: ' . $badBase);
     }
 
+    uc_page_fixture(499, 800);
+    $upper = Catalog::renderList(array(), array('pagination_base_url' => 'https://merchant.example/shop'));
+    uc_page_expect(str_contains($upper, 'Page 499 of 500') && str_contains($upper, 'page=500'),
+        'Large Woo catalogues must still page until Free public MAX_PAGE without offering page 501.');
+    uc_page_fixture(500, 800);
+    $limit = Catalog::renderList(array(), array('pagination_base_url' => 'https://merchant.example/shop'));
+    uc_page_expect(str_contains($limit, 'rel="prev"') && !str_contains($limit, 'rel="next"'),
+        'Maximum supported page must terminate Next navigation.');
+
     foreach (array(array(0, 3), array(501, 503), array(4, 3), array(1, 1)) as [$page, $pages]) {
         uc_page_fixture($page, $pages);
         $markup = Catalog::renderList(array(), array('pagination_base_url' => 'https://merchant.example/shop'));
