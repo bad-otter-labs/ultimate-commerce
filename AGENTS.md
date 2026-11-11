@@ -179,3 +179,9 @@ Create/revise an ADR when a proposed change materially affects:
 - backwards compatibility policy
 
 Accepted decisions must be reflected back into the blueprint/foundation/workflow where relevant.
+
+## Organisation-wide Bad Otter CI standard (11 November 2026)
+
+For any CI, runner, test or workflow change, read the authoritative [Bad Otter Master CI Operating Standard](https://github.com/bad-otter-labs/.github/blob/main/docs/MASTER_CI_OPERATING_STANDARD.md) and [Master Truth](https://github.com/bad-otter-labs/.github/blob/main/BAD_OTTER_MASTER_TRUTH.md) on the **current** `.github/main`. Verify repository rulesets, actual runner and billing availability, and the current PR head. Pin any accessible shared reusable workflow to a reviewed immutable SHA; this public Free repository must not require private reusable workflows.
+
+**Ultimate Commerce Free remains public standard GitHub-hosted CI**, including Docker/Playwright and WordPress.org checks: never run public forks or same-repository PRs on persistent `ci-fast`/`ci` workers. Pro may use eligible verified included hosted minutes or an explicitly approved self-hosted fallback, never paid Actions overage. Keep `production-deploy` isolated from routine validation, preserve the active strict `full / merge-gate` and the complete product/Free–Pro/release gates, and use exact-head validation, protected expected-head merges and post-merge verification. CI routing never grants publication, live store, stored-value migration or production authority.
