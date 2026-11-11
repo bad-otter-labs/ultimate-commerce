@@ -49,13 +49,19 @@ test('Free variable Quick Add reaches a real Woo order through checkout', async 
 
   const checkout = drawer.locator('[data-uc-cart-checkout="1"]');
   await expect(checkout).toHaveAttribute('aria-disabled', 'false');
+  const checkoutHref = await checkout.getAttribute('href');
+  const checkoutUrl = new URL(checkoutHref, page.url());
+  expect(checkoutUrl.origin).toBe(new URL(page.url()).origin);
   await checkout.click();
-  await expect(page).toHaveURL(/checkout/);
+
+  // WordPress plain permalinks legitimately use ?page_id= rather than /checkout/.
+  // The destination must be the actual Woo checkout link, with its real form.
+  await expect(page).toHaveURL(checkoutUrl.toString());
+  const form = page.locator('form.checkout');
+  await expect(form).toBeVisible();
 
   // The fixture deliberately enables BACS (no real payment or live gateway).
   // Submit Woo's native checkout form; never call a private order-creation API.
-  const form = page.locator('form.checkout');
-  await expect(form).toBeVisible();
   await page.locator('#billing_first_name').fill('Test');
   await page.locator('#billing_last_name').fill('Customer');
   await page.locator('#billing_address_1').fill('1 Example Street');
