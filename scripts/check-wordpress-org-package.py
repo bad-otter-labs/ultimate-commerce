@@ -147,7 +147,24 @@ def main() -> int:
         wc_support = {}
         for field in ('WC requires at least', 'WC tested up to'):
             plugin_value = header(plugin, field)
-            match = re.search(rf'^{re.escape(field)}:\s*(\S+)\s*
+            marker = field + ': '
+            readme_value = next((
+                line[len(marker):].strip()
+                for line in readme.splitlines()
+                if line.startswith(marker)
+            ), '')
+            if plugin_value != readme_value:
+                fail(f'WooCommerce compatibility metadata mismatch: {field}')
+            pieces = plugin_value.split('.')
+            if len(pieces) not in (2, 3) or not all(part.isascii() and part.isdigit() for part in pieces):
+                fail(f'Invalid WooCommerce compatibility version: {field}')
+            wc_support[field] = tuple(int(part) for part in pieces)
+
+        if wc_support['WC requires at least'] != (9, 8):
+            fail('WooCommerce minimum must remain 9.8 until explicitly reviewed')
+        if wc_support['WC tested up to'] < wc_support['WC requires at least']:
+            fail('WooCommerce tested maximum is below the minimum')
+
         for marker in (
             'does not contact any third-party service by default',
             'does not send usage telemetry',
