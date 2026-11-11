@@ -76,6 +76,28 @@ Canonical `search`, `filter_*`, `availability`, `sort`, `min_price`, `max_price`
 
 The regression `tests/storefront-pagination-contract.php` checks accessible landmarks, first/middle/last navigation, query preservation and escaping, WordPress plain-permalink links, hostile/missing base URLs, page boundaries, existing cards/hooks and Store API failures. WordPress POT contains the four new localisable labels.
 
+## Optional native Free/Pro catalogue sort control (additive)
+
+A host theme can opt into an accessible, server-rendered sort form **without new AJAX, JavaScript or a second catalogue query**. Pass the same trusted unfiltered permalink used for pagination, plus `show_sort_control => true`:
+
+```php
+echo \BadOtter\UltimateCommerce\Storefront\Catalog::renderList(
+    $catalogue_request, // Host theme passes a request through Free's validated normaliser.
+    array(
+        'pagination_base_url' => get_permalink(get_queried_object_id()),
+        'show_sort_control' => true,
+    )
+);
+```
+
+The normal `renderList()` output remains unchanged unless the flag is enabled, result cards exist, at least two validated sort definitions are registered and the permalink satisfies the same `wp_validate_redirect` and unfiltered-query checks as pagination. The GET form uses a native associated `Sort products` label, a select, and an explicit `Apply sort` submit button; keyboard and screen-reader users do not require JavaScript. The theme owns styles, field placement and passing submitted GET parameters back into `Catalog::renderList()`. Free continues to normalise and bound all search/filters/sorts before WooCommerce receives a query.
+
+The form carries forward only the canonical `search`, `filter_*`, `availability`, `min_price`, `max_price`, and `per_page` values. It preserves trusted WordPress `page_id`, `pagename` and `post_type` query locators for plain permalinks. It deliberately **drops the existing `page` number**, so changing sort returns to page one, and never copies unknown extension parameters or a browser-controlled redirect. All action URLs, option labels and values, and hidden inputs are escaped. Invalid/off-site/stale URLs produce no form.
+
+Free registers its three existing base sorts. Pro may add `recommended` through the existing `ultimate_commerce_catalog_sort_definitions` extension hook; the selector reads the currently registered and validated definitions instead of hard-coding Pro options or creating a dependency on Pro. Disabling Pro removes that option naturally. Woo's Store API ProductQuery remains the only catalogue query, and Free's public Storefront API remains 1.1.0.
+
+The updated `tests/storefront-pagination-contract.php` exercises opt-in behaviour, Free-only/registered-Pro options, escaped extension labels, canonical search/filter and price preservation, page reset, plain permalinks, unsafe destinations, zero-result handling, one-query behaviour and the original render hooks. The WordPress.org POT contains the two additional translated form labels.
+
 ## Product-card schema
 
 `uc.product-card.v1` exposes:
