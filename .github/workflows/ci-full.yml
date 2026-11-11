@@ -64,6 +64,9 @@ jobs:
           if test -f tests/storefront-empty-state-contract.php; then
             php tests/storefront-empty-state-contract.php
           fi
+          if test -f tests/storefront-pagination-contract.php; then
+            php tests/storefront-pagination-contract.php
+          fi
 
   package:
     name: release package
