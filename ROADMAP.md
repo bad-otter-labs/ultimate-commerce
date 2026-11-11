@@ -2,6 +2,13 @@
 
 Status: **Sequenced outcome-based roadmap**
 
+## Foundation compatibility checkpoint — 11 November 2026
+
+**In progress, not a completed roadmap phase:** an opt-in, read-only Labs v0 module manifest mapping and automated compatibility tests have been added on a feature branch. This does not finish Phase 0/1, ship a central connector, approve a release, or move product, stock, staff, licence or stored-value authority. See [ADR 0003](docs/adr/0003-optional-labs-foundation-and-stock-authority.md).
+
+**Still required:** verify CI and existing Free/Pro integration on exact heads; reconcile pending Free CI PRs #50/#51 without weakening the public-fork boundary; independently validate any future Product Master or Stock/EPOS adapter; continue the next tested Phase 2 storefront improvement. No phase exit gate is waived.
+
+
 This roadmap turns `BLUEPRINT.md` and `FOUNDATION.md` into implementation order. It is intentionally outcome-based rather than date-based. A phase exits only when its product, security, performance and upgrade gates are satisfied.
 
 The roadmap serves four simultaneous goals:
@@ -10,6 +17,12 @@ The roadmap serves four simultaneous goals:
 2. create a premium Pro product with obvious merchant ROI
 3. grow Pro into a coherent commerce + retail-operations platform rather than a bag of unrelated add-ons
 4. use FishingClothing.co.uk as the first serious proving ground without creating store-specific code paths
+
+## Storefront development checkpoint — 11 November 2026
+
+**Proposed, not merged or released:** Phase 2/3 catalogue search experience now has a concrete, shopper-visible accessible zero-results state on a separate stacked feature branch, with escaped search terms, filter-specific recovery guidance, translation strings, and regression tests. This is an incremental Free usability improvement beyond optional Labs foundation alignment, **not** evidence that Phase 2 or WordPress.org acceptance gates have exited. See [Storefront catalogue contract](docs/storefront-catalogue-contract-v1.md).
+
+**Next release evidence:** exact-head hosted CI and WordPress.org package/i18n checks, real WordPress/WooCommerce browser accessibility smoke, protected merge/review, and post-merge Free/Pro integration validation. No production publishing is approved.
 
 ## Roadmap principles
 

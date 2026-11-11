@@ -4,20 +4,11 @@ Ultimate Commerce separates **untrusted validation** from **trusted same-reposit
 
 ## Pull-request runner routing
 
-Every workflow triggered by `pull_request` uses the same trust-aware runner expression:
+Every public Free `pull_request` validation job with an explicit runner uses the **standard GitHub-hosted** `ubuntu-latest` environment. This applies to same-repository pull requests and untrusted external forks alike, including Docker/Playwright accessibility and official WordPress.org Plugin Check. Standard GitHub-hosted Actions usage for public repositories does not consume the private Pro runner budget. No PR may execute contributor-controlled code on persistent Bad Otter self-hosted machines.
 
-```yaml
-runs-on: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name != github.repository && 'ubuntu-latest' || 'badotter' }}
-```
+This replaces the older expression that sent same-repository pull requests to the unqualified `badotter` runner. That alias could dispatch Docker-heavy checks to the lightweight `ci-fast` runner without Docker socket permission, producing environmental failures unrelated to product code. All jobs now receive an ephemeral runner with Docker available and no shared working-directory state. A public fork must never fall back to self-hosted execution because hosted capacity is temporarily unavailable.
 
-The result is intentionally asymmetric:
-
-- a pull request whose head branch is in another repository (the normal external/fork contribution path) runs on GitHub-hosted `ubuntu-latest`;
-- a same-repository pull request may use the controlled Bad Otter runner because creating its head branch requires repository write access;
-- a push to `main` may use the controlled Bad Otter validation runner;
-- a cross-repository pull request must never fall back to the Bad Otter runner if hosted capacity is unavailable.
-
-While the repository remains private, GitHub-hosted capacity may not be provisioned. In that case an external/cross-repository job can fail before execution; failing closed is preferable to executing untrusted code on the trusted runner.
+A regression test checks each `pull_request` workflow for read-only permissions, no mutable action branch refs, no `pull_request_target`, and hosted-only declared runners. Publisher-only workflows are tested separately and retain their existing authorisation and release controls.
 
 ## Pull-request permissions
 
@@ -34,7 +25,7 @@ The repository regression at `tests/ci-trust-boundary.py` enforces these rules a
 
 Publishing remains a separate trust domain.
 
-`.github/workflows/development-release.yml` and `.github/workflows/release.yml` use the controlled Bad Otter self-hosted runner and may hold the permissions needed for their explicit release duties. Neither workflow may accept `pull_request` or `pull_request_target`.
+`.github/workflows/development-release.yml` and `.github/workflows/release.yml` use their existing isolated GitHub-hosted runners and may hold only the permissions needed for their explicit release duties. Neither workflow may accept `pull_request` or `pull_request_target`.
 
 A validation workflow must not be converted into a publisher merely to reuse credentials or release infrastructure.
 

@@ -624,7 +624,7 @@ msgstr ""
 msgid "Wishlist"
 msgstr ""
 
-#: src/Plugin.php:88
+#: src/Plugin.php:108
 msgid "Ultimate Commerce for WooCommerce requires WooCommerce to be installed and active."
 msgstr ""
 
@@ -852,6 +852,20 @@ msgstr ""
 
 #: src/Storefront/CartDrawer.php:99
 msgid "Checkout"
+msgstr ""
+
+#. translators: %s: The shopper's search term.
+#: src/Storefront/Catalog.php:47
+#, php-format
+msgid "No products found for \"%s\". Try another search or change your filters."
+msgstr ""
+
+#: src/Storefront/Catalog.php:51
+msgid "No products match these filters. Try removing a filter."
+msgstr ""
+
+#: src/Storefront/Catalog.php:53
+msgid "No products are available to display."
 msgstr ""
 
 #: src/Storefront/CatalogFilterRegistry.php:23

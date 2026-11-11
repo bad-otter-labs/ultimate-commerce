@@ -95,6 +95,14 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Validate optional Labs foundation bridge
+        shell: bash
+        run: |
+          set -euo pipefail
+          php -l packages/ultimate-commerce-for-woocommerce/src/Compatibility/LabsModuleMap.php
+          php -l tests/labs-foundation-contract.php
+          php tests/labs-foundation-contract.php
+
       - name: Validate package roots
         shell: bash
         run: |

@@ -37,8 +37,26 @@ final class Catalog
         ob_start();
         do_action('ultimate_commerce_product_list_before', $result, $context);
         echo '<div class="uc-product-list" data-uc-product-list="1">';
-        foreach ($result['items'] as $item) {
-            echo ProductCardRenderer::render($item, $context); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- renderer escapes its fields.
+        $items = (array) ($result['items'] ?? array());
+        if ($items === array()) {
+            $state = (array) ($result['state'] ?? array());
+            $search = (string) ($state['search'] ?? '');
+            if ($search !== '') {
+                $message = sprintf(
+                    /* translators: %s: The shopper's search term. */
+                    __('No products found for "%s". Try another search or change your filters.', 'bad-otter-ultimate-commerce-woocommerce'),
+                    $search
+                );
+            } elseif (!empty($state['selected_count'])) {
+                $message = __('No products match these filters. Try removing a filter.', 'bad-otter-ultimate-commerce-woocommerce');
+            } else {
+                $message = __('No products are available to display.', 'bad-otter-ultimate-commerce-woocommerce');
+            }
+            echo '<p class="uc-product-list__empty" data-uc-catalog-empty="1" role="status">' . esc_html($message) . '</p>';
+        } else {
+            foreach ($items as $item) {
+                echo ProductCardRenderer::render($item, $context); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- renderer escapes its fields.
+            }
         }
         echo '</div>';
         do_action('ultimate_commerce_product_list_after', $result, $context);
