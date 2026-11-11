@@ -171,9 +171,9 @@ test('real Woo catalogue connects search, category facets, sorting, paging and n
   const next = page.locator('[data-uc-catalog-pagination="1"] a[rel="next"]');
   await expect(next).toBeVisible();
   const nextHref = await next.getAttribute('href');
-  expect(new URL(nextHref, page.url()).searchParams.get('page')).toBe('2');
+  expect(new URL(nextHref, page.url()).searchParams.get('uc_catalog_page')).toBe('2');
   await next.click();
-  await expect(page).toHaveURL(/[?&]page=2(?:&|$)/);
+  await expect(page).toHaveURL(/[?&]uc_catalog_page=2(?:&|$)/);
   await expect(cards).toHaveCount(1);
   await expect(filters.getByRole('searchbox', { name: 'Search products' })).toHaveValue('Catalogue Fixture');
   await expect(filters.locator('input[name="filter_category[]"][value="uc-a11y-fixture-jackets"]')).toBeChecked();
@@ -184,6 +184,7 @@ test('real Woo catalogue connects search, category facets, sorting, paging and n
   await sorts.getByRole('button', { name: 'Apply sort' }).click();
   await expect(cards).toHaveCount(1);
   await expect(cards.first()).toContainText('Catalogue Fixture Jacket Red');
+  expect(new URL(page.url()).searchParams.get('uc_catalog_page')).toBeNull();
   expect(new URL(page.url()).searchParams.get('page')).toBeNull();
 
   // Price filtering narrows the real Woo query, while category/search/sort stay.
