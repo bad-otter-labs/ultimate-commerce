@@ -38,6 +38,9 @@ final class Catalog
         do_action('ultimate_commerce_product_list_before', $result, $context);
         echo '<div class="uc-product-list" data-uc-product-list="1">';
         $items = (array) ($result['items'] ?? array());
+        if (!empty($context['show_filter_controls'])) {
+            echo self::renderFilterControls($result, $context); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- native form validates its destination and escapes all form fields.
+        }
         if ($items !== array() && !empty($context['show_sort_control'])) {
             echo self::renderSortControl($result, $context); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- helper escapes the form URL, attributes and text.
         }
@@ -215,6 +218,147 @@ final class Catalog
         $html .= '</select></label>'
             . '<button type="submit" class="uc-product-list__sort-submit">'
             . esc_html(__('Apply sort', 'bad-otter-ultimate-commerce-woocommerce'))
+            . '</button></form>';
+
+        return $html;
+    }
+
+    /**
+     * Optional native search and facets form. The Woo-backed response already
+     * contains bounded, validated filter descriptions and state, so this form
+     * never performs an additional product or faceting query.
+     *
+     * @param array<string, mixed> $result
+     * @param array<string, mixed> $context
+     */
+    private static function renderFilterControls(array $result, array $context): string
+    {
+        $base = self::trustedCatalogueBase($context);
+        if ($base === null) {
+            return '';
+        }
+
+        $state = is_array($result['state'] ?? null) ? $result['state'] : array();
+        $canonical = self::canonicalUrlFields($result);
+        $registered = CatalogFilterRegistry::definitions();
+        $descriptors = array();
+
+        // Descriptors have a public extension filter. Do not let a malformed
+        // extension invent unregistered facets or create unbounded markup.
+        $raw = is_array($result['filters'] ?? null) ? $result['filters'] : array();
+        foreach (array_slice($raw, 0, CatalogFilterRegistry::MAX_FILTERS) as $descriptor) {
+            if (!is_array($descriptor) || !is_string($descriptor['id'] ?? null)) {
+                continue;
+            }
+            $id = sanitize_key($descriptor['id']);
+            if (isset($registered[$id]) && !isset($descriptors[$id])) {
+                $descriptors[$id] = $descriptor;
+            }
+        }
+
+        $html = '<form class="uc-product-list__filter-form" data-uc-catalog-filters="1"'
+            . ' method="get" action="' . esc_url($base['url']) . '">';
+        foreach ($base['locators'] as $name => $value) {
+            $html .= '<input type="hidden" name="' . esc_attr($name)
+                . '" value="' . esc_attr($value) . '">';
+        }
+
+        // Keep the registered sort and page size. Both search and facets are
+        // visible inputs below, while the old page is intentionally omitted.
+        foreach (array('sort', 'per_page') as $name) {
+            if (isset($canonical[$name])) {
+                $html .= '<input type="hidden" name="' . esc_attr($name)
+                    . '" value="' . esc_attr($canonical[$name]) . '">';
+            }
+        }
+
+        $search = CatalogFilterRegistry::normaliseSearchTerm($state['search'] ?? '');
+        $html .= '<label class="uc-product-list__search-label">'
+            . esc_html(__('Search products', 'bad-otter-ultimate-commerce-woocommerce'))
+            . ' <input class="uc-product-list__search-input" type="search" name="search" maxlength="'
+            . esc_attr((string) CatalogFilterRegistry::MAX_SEARCH_LENGTH) . '" value="'
+            . esc_attr($search) . '"></label>';
+
+        foreach ($registered as $id => $definition) {
+            if (!isset($descriptors[$id]) || !is_array($definition)) {
+                continue;
+            }
+
+            $type = (string) ($definition['type'] ?? '');
+            $descriptor = $descriptors[$id];
+            $label = is_scalar($descriptor['label'] ?? null)
+                ? (string) $descriptor['label']
+                : (string) ($definition['label'] ?? $id);
+
+            if ($type === 'taxonomy') {
+                $param = (string) ($definition['param'] ?? '');
+                if (preg_match('/^filter_[a-z0-9_-]{1,55}$/D', $param) !== 1) {
+                    continue;
+                }
+
+                $options = is_array($descriptor['options'] ?? null)
+                    ? array_slice($descriptor['options'], 0, CatalogFilterRegistry::MAX_OPTIONS_PER_FILTER)
+                    : array();
+                $selected = is_array($state['filters'][$id] ?? null)
+                    ? $state['filters'][$id]
+                    : array();
+                $choices = '';
+                foreach ($options as $option) {
+                    if (!is_array($option) || !is_scalar($option['value'] ?? null)) {
+                        continue;
+                    }
+                    $value = sanitize_title((string) $option['value']);
+                    if ($value === '' || strlen($value) > 200) {
+                        continue;
+                    }
+                    $optionLabel = is_scalar($option['label'] ?? null) ? (string) $option['label'] : $value;
+                    $choices .= '<label class="uc-product-list__filter-choice">'
+                        . '<input type="checkbox" name="' . esc_attr($param . '[]') . '" value="'
+                        . esc_attr($value) . '"'
+                        . (in_array($value, $selected, true) ? ' checked' : '')
+                        . '> ' . esc_html($optionLabel) . '</label>';
+                }
+                if ($choices !== '') {
+                    $html .= '<fieldset class="uc-product-list__filter-group"><legend>'
+                        . esc_html($label) . '</legend>' . $choices . '</fieldset>';
+                }
+            } elseif ($type === 'availability') {
+                $allowed = array('in_stock', 'out_of_stock', 'on_backorder');
+                $selected = is_array($state['availability'] ?? null) ? $state['availability'] : array();
+                $options = is_array($descriptor['options'] ?? null)
+                    ? array_slice($descriptor['options'], 0, count($allowed))
+                    : array();
+                $choices = '';
+                foreach ($options as $option) {
+                    if (!is_array($option) || !is_string($option['value'] ?? null)
+                        || !in_array($option['value'], $allowed, true)) {
+                        continue;
+                    }
+                    $value = $option['value'];
+                    $optionLabel = is_scalar($option['label'] ?? null) ? (string) $option['label'] : $value;
+                    $choices .= '<label class="uc-product-list__filter-choice">'
+                        . '<input type="checkbox" name="availability[]" value="' . esc_attr($value) . '"'
+                        . (in_array($value, $selected, true) ? ' checked' : '')
+                        . '> ' . esc_html($optionLabel) . '</label>';
+                }
+                if ($choices !== '') {
+                    $html .= '<fieldset class="uc-product-list__filter-group"><legend>'
+                        . esc_html($label) . '</legend>' . $choices . '</fieldset>';
+                }
+            } elseif ($type === 'price') {
+                $html .= '<fieldset class="uc-product-list__filter-group"><legend>'
+                    . esc_html($label) . '</legend>'
+                    . '<label>' . esc_html(__('Minimum price', 'bad-otter-ultimate-commerce-woocommerce'))
+                    . ' <input type="number" min="0" step="any" inputmode="decimal" name="min_price" value="'
+                    . esc_attr((string) ($canonical['min_price'] ?? '')) . '"></label>'
+                    . '<label>' . esc_html(__('Maximum price', 'bad-otter-ultimate-commerce-woocommerce'))
+                    . ' <input type="number" min="0" step="any" inputmode="decimal" name="max_price" value="'
+                    . esc_attr((string) ($canonical['max_price'] ?? '')) . '"></label></fieldset>';
+            }
+        }
+
+        $html .= '<button type="submit" class="uc-product-list__filter-submit">'
+            . esc_html(__('Apply filters', 'bad-otter-ultimate-commerce-woocommerce'))
             . '</button></form>';
 
         return $html;
