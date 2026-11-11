@@ -57,6 +57,25 @@ The result remains **server-rendered, local, and optional**: no remote search pr
 
 The regression test `tests/storefront-empty-state-contract.php` covers found products, escaped search misses, filter-only recovery, safely escaped Woo Shop links, off-site/script URL rejection, unavailable Shop URLs, truly empty catalogues, Store API errors and extension-hook order. The WordPress.org translation template includes the translatable link label. The existing Storefront API 1.1 contract remains source/backwards compatible.
 
+## Optional accessible catalogue pagination (additive)
+
+Themes embedding `Catalog::renderList()` can now supply an explicit **merchant-owned, unfiltered permalink** to opt into server-rendered previous/next navigation:
+
+```php
+echo \BadOtter\UltimateCommerce\Storefront\Catalog::renderList(
+    array('search' => 'navy jacket', 'page' => 2, 'per_page' => 24),
+    array('pagination_base_url' => get_permalink(get_queried_object_id()))
+);
+```
+
+A validated base URL renders a `nav` landmark (`uc-product-list__pagination`, `data-uc-catalog-pagination="1"`) with a translated `Product catalogue pages` accessible name, translated Previous/Next links and an `aria-current="page"` page position. Only links within Free's existing 1–500 page bound appear; one-page, out-of-range, missing-item and Store API error results do not generate controls. Ordinary calls without `pagination_base_url` preserve the prior markup and lifecycle.
+
+The link destination must pass WordPress `wp_validate_redirect`. Because host pages can use plain permalinks, the base may contain a WordPress `page_id`, `pagename` or `post_type` locator, but **not** an existing search/filter query, arbitrary redirect, fragment or tracking parameter. Missing/off-site/invalid destinations fail closed and no pagination link is rendered. Themes must pass the URL from trusted permalink APIs, **not** from `$_GET`, `$_REQUEST` or a redirect-to input.
+
+Canonical `search`, `filter_*`, `availability`, `sort`, `min_price`, `max_price`, and `per_page` values come from Free's already validated `canonical_query` and are percent-encoded into the next/previous page URL. Unknown extension query keys and user-supplied destinations are not carried forward. The renderer does not create a new endpoint, re-query products, change WooCommerce pagination, mutate stock/prices, or override a theme's layout; host themes own styling. Public Storefront API version remains 1.1.0.
+
+The regression `tests/storefront-pagination-contract.php` checks accessible landmarks, first/middle/last navigation, query preservation and escaping, WordPress plain-permalink links, hostile/missing base URLs, page boundaries, existing cards/hooks and Store API failures. WordPress POT contains the four new localisable labels.
+
 ## Product-card schema
 
 `uc.product-card.v1` exposes:

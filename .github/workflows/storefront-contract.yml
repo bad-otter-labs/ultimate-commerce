@@ -23,6 +23,7 @@ on:
       - 'packages/ultimate-commerce-for-woocommerce/src/Storefront/VariationViewModel.php'
       - 'packages/ultimate-commerce-for-woocommerce/ultimate-commerce-for-woocommerce.php'
       - 'tests/storefront-catalogue-contract.php'
+      - 'tests/storefront-pagination-contract.php'
       - 'tests/storefront-filter-extension-boundary.php'
   push:
     branches:
@@ -44,6 +45,7 @@ on:
       - 'packages/ultimate-commerce-for-woocommerce/src/Storefront/VariationViewModel.php'
       - 'packages/ultimate-commerce-for-woocommerce/ultimate-commerce-for-woocommerce.php'
       - 'tests/storefront-catalogue-contract.php'
+      - 'tests/storefront-pagination-contract.php'
       - 'tests/storefront-filter-extension-boundary.php'
 
 permissions:
@@ -83,6 +85,13 @@ jobs:
           set -euo pipefail
           php -l tests/storefront-empty-state-contract.php
           php tests/storefront-empty-state-contract.php
+
+      - name: Validate accessible bounded catalogue pagination
+        shell: bash
+        run: |
+          set -euo pipefail
+          php -l tests/storefront-pagination-contract.php
+          php tests/storefront-pagination-contract.php
 
       - name: Validate public contract and query boundaries
         shell: bash
