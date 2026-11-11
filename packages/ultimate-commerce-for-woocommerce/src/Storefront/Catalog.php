@@ -38,6 +38,9 @@ final class Catalog
         do_action('ultimate_commerce_product_list_before', $result, $context);
         echo '<div class="uc-product-list" data-uc-product-list="1">';
         $items = (array) ($result['items'] ?? array());
+        if ($items !== array() && !empty($context['show_sort_control'])) {
+            echo self::renderSortControl($result, $context); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- helper escapes the form URL, attributes and text.
+        }
         if ($items === array()) {
             $state = (array) ($result['state'] ?? array());
             $search = (string) ($state['search'] ?? '');
@@ -93,12 +96,10 @@ final class Catalog
      */
     private static function renderPagination(array $result, array $context): string
     {
-        // Most existing consumers do not opt into links. Return before
-        // touching any optional pagination contract or theme URL helpers.
-        $base = $context['pagination_base_url'] ?? null;
-        if (!is_string($base) || $base === ''
-            || !function_exists('wp_validate_redirect') || !function_exists('wp_parse_url')
-            || !function_exists('add_query_arg') || !function_exists('esc_url')) {
+        // Most embedded catalogues do not opt into navigation. Nothing in
+        // Free derives a navigation destination from the browser request.
+        $base = self::trustedCatalogueBase($context);
+        if ($base === null || !function_exists('add_query_arg')) {
             return '';
         }
 
@@ -106,51 +107,18 @@ final class Catalog
             ? $result['pagination']
             : array();
         $page = (int) ($pagination['page'] ?? 1);
-        // The Store API can report more result pages than Free permits a
-        // shopper to request; cap navigation to the public API's page bound.
+        // Woo may report more total pages than Free's public API permits.
         $pages = max(1, min(CatalogFilterRegistry::MAX_PAGE, (int) ($pagination['pages'] ?? 1)));
-
         if ($page < 1 || $page > CatalogFilterRegistry::MAX_PAGE
             || $pages <= 1 || $page > $pages) {
             return '';
         }
 
-        $base = wp_validate_redirect($base, '');
-        if (!is_string($base) || $base === '') {
-            return '';
-        }
-
-        // A theme must supply the unfiltered destination. On WordPress plain
-        // permalinks only the known page/archive locator query keys may remain;
-        // reject any search, redirect, tracking or stale catalogue parameters.
-        $parts = wp_parse_url($base);
-        if (!is_array($parts) || isset($parts['fragment'])) {
-            return '';
-        }
-        $baseParams = array();
-        if (isset($parts['query'])) {
-            parse_str($parts['query'], $baseParams);
-        }
-        foreach ($baseParams as $key => $value) {
-            if (!in_array($key, array('page_id', 'post_type', 'pagename'), true)
-                || !is_scalar($value)) {
-                return '';
-            }
-        }
-
-        // The canonical query has already been normalised by Free's Storefront
-        // registry. Do not accept arbitrary extension-supplied URL parameters.
-        $canonical = is_array($result['canonical_query'] ?? null)
-            ? $result['canonical_query']
-            : array();
         $query = array();
-        foreach ($canonical as $key => $value) {
-            if (!is_string($key) || !is_string($value)
-                || (!in_array($key, array('search', 'sort', 'min_price', 'max_price', 'availability', 'per_page'), true)
-                    && preg_match('/^filter_[a-z0-9_-]{1,55}$/D', $key) !== 1)) {
-                continue;
+        foreach (self::canonicalUrlFields($result) as $key => $value) {
+            if ($key !== 'page') {
+                $query[$key] = rawurlencode($value);
             }
-            $query[$key] = rawurlencode($value);
         }
 
         $links = array();
@@ -162,7 +130,7 @@ final class Catalog
             if ($target > 1) {
                 $targetQuery['page'] = (string) $target;
             }
-            $url = add_query_arg($targetQuery, $base);
+            $url = add_query_arg($targetQuery, $base['url']);
             $url = is_string($url) ? wp_validate_redirect($url, '') : '';
             if (!is_string($url) || $url === '') {
                 continue;
@@ -193,6 +161,125 @@ final class Catalog
         }
 
         return $html . '</nav>';
+    }
+
+    /**
+     * Optional native GET form for the already-registered Free/Pro catalogue sorts.
+     * The form preserves validated search/filter state but deliberately drops
+     * the old page number so the new sort starts from page one.
+     *
+     * @param array<string, mixed> $result
+     * @param array<string, mixed> $context
+     */
+    private static function renderSortControl(array $result, array $context): string
+    {
+        $base = self::trustedCatalogueBase($context);
+        if ($base === null) {
+            return '';
+        }
+
+        $definitions = CatalogFilterRegistry::sortDefinitions();
+        if (count($definitions) < 2) {
+            return '';
+        }
+
+        $state = is_array($result['state'] ?? null) ? $result['state'] : array();
+        $current = (string) ($state['sort'] ?? 'newest');
+        if (!isset($definitions[$current])) {
+            $current = 'newest';
+        }
+
+        $html = '<form class="uc-product-list__sort-form" data-uc-catalog-sort="1" method="get" action="'
+            . esc_url($base['url']) . '">';
+
+        // GET form submission replaces any query on the form action. Keep
+        // WordPress's vetted plain-permalink/page locator keys explicitly.
+        foreach ($base['locators'] as $key => $value) {
+            $html .= '<input type="hidden" name="' . esc_attr($key) . '" value="' . esc_attr($value) . '">';
+        }
+
+        foreach (self::canonicalUrlFields($result) as $key => $value) {
+            if ($key !== 'sort' && $key !== 'page') {
+                $html .= '<input type="hidden" name="' . esc_attr($key) . '" value="' . esc_attr($value) . '">';
+            }
+        }
+
+        $html .= '<label class="uc-product-list__sort-label">'
+            . esc_html(__('Sort products', 'bad-otter-ultimate-commerce-woocommerce'))
+            . ' <select class="uc-product-list__sort-select" name="sort">';
+        foreach ($definitions as $key => $definition) {
+            $html .= '<option value="' . esc_attr((string) $key) . '"'
+                . ($current === (string) $key ? ' selected' : '') . '>'
+                . esc_html((string) ($definition['label'] ?? $key)) . '</option>';
+        }
+        $html .= '</select></label>'
+            . '<button type="submit" class="uc-product-list__sort-submit">'
+            . esc_html(__('Apply sort', 'bad-otter-ultimate-commerce-woocommerce'))
+            . '</button></form>';
+
+        return $html;
+    }
+
+    /**
+     * Only an explicit theme-supplied, unfiltered, same-site permalink may
+     * become a GET action or a previous/next navigation target.
+     *
+     * @param array<string, mixed> $context
+     * @return array{url: string, locators: array<string, string>}|null
+     */
+    private static function trustedCatalogueBase(array $context): ?array
+    {
+        $base = $context['pagination_base_url'] ?? null;
+        if (!is_string($base) || $base === '' || !function_exists('wp_validate_redirect')
+            || !function_exists('wp_parse_url') || !function_exists('esc_url')) {
+            return null;
+        }
+        $base = wp_validate_redirect($base, '');
+        if (!is_string($base) || $base === '') {
+            return null;
+        }
+
+        $parts = wp_parse_url($base);
+        if (!is_array($parts) || isset($parts['fragment'])) {
+            return null;
+        }
+        $baseParams = array();
+        if (isset($parts['query'])) {
+            parse_str($parts['query'], $baseParams);
+        }
+        foreach ($baseParams as $key => $value) {
+            if (!in_array($key, array('page_id', 'post_type', 'pagename'), true)
+                || !is_string($value)) {
+                return null;
+            }
+        }
+
+        return array('url' => $base, 'locators' => $baseParams);
+    }
+
+    /**
+     * Free owns the normalised catalogue search and filter contract. Never
+     * echo arbitrary extension-provided keys into form fields or page links.
+     *
+     * @param array<string, mixed> $result
+     * @return array<string, string>
+     */
+    private static function canonicalUrlFields(array $result): array
+    {
+        $canonical = is_array($result['canonical_query'] ?? null)
+            ? $result['canonical_query']
+            : array();
+        $query = array();
+        foreach ($canonical as $key => $value) {
+            if (!is_string($key) || !is_string($value)
+                || (!in_array($key, array('search', 'sort', 'min_price', 'max_price', 'availability', 'per_page'), true)
+                    && preg_match('/^filter_[a-z0-9_-]{1,55}$/D', $key) !== 1)) {
+                continue;
+            }
+            $query[$key] = $value;
+        }
+
+        return $query;
     }
 
     /** @return array<string, mixed> */
