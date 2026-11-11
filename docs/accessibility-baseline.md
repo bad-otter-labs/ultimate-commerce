@@ -12,6 +12,7 @@ The harness in `scripts/run-accessibility-baseline.sh` creates a disposable Word
 - the UC cart trigger and modal cart drawer;
 - the guest Wishlist toggle/list;
 - the Recently Viewed list and clear control.
+- a second disposable Woo Shop-style page containing three real Woo simple products in two native Woo `product_cat` terms, the opt-in Free search/facet form, Pro-aware sort dropdown and bounded pagination.
 
 The browser side is pinned by `tools/accessibility/package-lock.json` to Playwright 1.63.0 and `@axe-core/playwright` 4.13.0. The matching browser image is `mcr.microsoft.com/playwright:v1.63.0-noble`.
 
@@ -32,6 +33,11 @@ The browser tests also verify behavior automated rule engines do not fully cover
 - Escape closes the drawer and restores focus to the invoking trigger;
 - Wishlist toggles update `aria-pressed` and their accessible label;
 - Recently Viewed dynamic content and clear controls work from browser-local state.
+- a real browser submits a native search, selects the Woo product-category facet, follows a bounded page link, changes sort and minimum price, and selects a product;
+- the product's native add-to-cart action changes the **WooCommerce guest cart**, verified through Woo's public Store API rather than any Ultimate Commerce-owned cart state;
+- axe scans the whole UC catalogue fixture region, including its labelled native forms and product cards.
+
+This browser journey validates the combined **search → Woo category filter → sort → pagination → product → Woo cart** contract using real Woo CRUD products, native product categories, actual GET submissions and the guest cart. It intentionally does **not** claim a complete merchant checkout/payment/order acceptance, a live-store rollout, or a validated Pro/Gift Card integration. Those remain separate gates.
 
 A green axe run is an automated baseline, not a claim of complete WCAG conformance or a substitute for human usability testing.
 
