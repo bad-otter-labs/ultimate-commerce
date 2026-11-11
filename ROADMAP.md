@@ -18,6 +18,12 @@ The roadmap serves four simultaneous goals:
 3. grow Pro into a coherent commerce + retail-operations platform rather than a bag of unrelated add-ons
 4. use FishingClothing.co.uk as the first serious proving ground without creating store-specific code paths
 
+## Storefront development checkpoint — 11 November 2026
+
+**Proposed, not merged or released:** Phase 2/3 catalogue search experience now has a concrete, shopper-visible accessible zero-results state on a separate stacked feature branch, with escaped search terms, filter-specific recovery guidance, translation strings, and regression tests. This is an incremental Free usability improvement beyond optional Labs foundation alignment, **not** evidence that Phase 2 or WordPress.org acceptance gates have exited. See [Storefront catalogue contract](docs/storefront-catalogue-contract-v1.md).
+
+**Next release evidence:** exact-head hosted CI and WordPress.org package/i18n checks, real WordPress/WooCommerce browser accessibility smoke, protected merge/review, and post-merge Free/Pro integration validation. No production publishing is approved.
+
 ## Roadmap principles
 
 - Free public contracts come first; Pro extends them
