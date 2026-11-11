@@ -119,16 +119,16 @@ add_action(
                 'permission_callback' => static function (): bool {
                     return defined('UC_A11Y_CHECKOUT_TEST') && UC_A11Y_CHECKOUT_TEST === true;
                 },
-                'callback' => static function (\\WP_REST_Request $request) {
+                'callback' => static function (\WP_REST_Request $request) {
                     $id = absint($request->get_param('order_id'));
                     $order = $id > 0 ? wc_get_order($id) : false;
                     if (!$order || $order->get_billing_email() !== 'uc-checkout@example.test') {
-                        return new \\WP_Error('not_found', 'Fixture order not found.', array('status' => 404));
+                        return new \WP_Error('not_found', 'Fixture order not found.', array('status' => 404));
                     }
                     $items = $order->get_items('line_item');
                     $item = reset($items);
-                    if (!$item instanceof \\WC_Order_Item_Product) {
-                        return new \\WP_Error('invalid_order', 'No fixture product.', array('status' => 404));
+                    if (!$item instanceof \WC_Order_Item_Product) {
+                        return new \WP_Error('invalid_order', 'No fixture product.', array('status' => 404));
                     }
                     return rest_ensure_response(array(
                         'id' => (int) $order->get_id(),
