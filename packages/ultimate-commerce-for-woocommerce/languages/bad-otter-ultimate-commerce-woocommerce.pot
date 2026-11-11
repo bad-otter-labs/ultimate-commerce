@@ -855,39 +855,47 @@ msgid "Checkout"
 msgstr ""
 
 #. translators: %s: The shopper's search term.
-#: src/Storefront/Catalog.php:47
+#: src/Storefront/Catalog.php:50
 #, php-format
 msgid "No products found for \"%s\". Try another search or change your filters."
 msgstr ""
 
-#: src/Storefront/Catalog.php:51
+#: src/Storefront/Catalog.php:54
 msgid "No products match these filters. Try removing a filter."
 msgstr ""
 
-#: src/Storefront/Catalog.php:53
+#: src/Storefront/Catalog.php:56
 msgid "No products are available to display."
 msgstr ""
 
-#: src/Storefront/Catalog.php:69
+#: src/Storefront/Catalog.php:72
 msgid "Browse all products"
 msgstr ""
 
-#: src/Storefront/Catalog.php:178
+#: src/Storefront/Catalog.php:146
 msgid "Product catalogue pages"
 msgstr ""
 
-#: src/Storefront/Catalog.php:181
+#: src/Storefront/Catalog.php:149
 msgid "Previous page"
 msgstr ""
 
 #. translators: 1: Current catalogue page, 2: Total catalogue pages.
-#: src/Storefront/Catalog.php:186
+#: src/Storefront/Catalog.php:154
 #, php-format
 msgid "Page %1$d of %2$d"
 msgstr ""
 
-#: src/Storefront/Catalog.php:192
+#: src/Storefront/Catalog.php:160
 msgid "Next page"
+msgstr ""
+
+#: src/Storefront/Catalog.php:208
+msgid "Sort products"
+msgstr ""
+
+#: src/Storefront/Catalog.php:217
+msgid "Apply sort"
 msgstr ""
 
 #: src/Storefront/CatalogFilterRegistry.php:23

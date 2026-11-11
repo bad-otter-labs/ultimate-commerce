@@ -10,6 +10,8 @@ namespace {
     $GLOBALS['uc_page_result'] = array();
     $GLOBALS['uc_page_actions'] = array();
     $GLOBALS['uc_page_render_count'] = 0;
+    $GLOBALS['uc_page_queries'] = 0;
+    $GLOBALS['uc_sort_pro_active'] = false;
 
     function __(string $text, string $domain = ''): string { return $text; }
     function esc_html($text): string { return htmlspecialchars((string) $text, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); }
@@ -60,12 +62,28 @@ namespace BadOtter\UltimateCommerce\Storefront {
     final class CatalogFilterRegistry
     {
         public const MAX_PAGE = 500;
+
+        public static function sortDefinitions(): array
+        {
+            $sorts = array(
+                'newest' => array('label' => 'Newest'),
+                'price_asc' => array('label' => 'Price: low to high'),
+                'price_desc' => array('label' => 'Price: high to low'),
+            );
+            if (!empty($GLOBALS['uc_sort_pro_active'])) {
+                $sorts['recommended'] = array(
+                    'label' => (string) ($GLOBALS['uc_sort_pro_label'] ?? 'Recommended'),
+                );
+            }
+            return $sorts;
+        }
     }
 
     final class CatalogQuery
     {
         public static function query(array $args = array())
         {
+            ++$GLOBALS['uc_page_queries'];
             return $GLOBALS['uc_page_result'];
         }
     }
@@ -98,10 +116,11 @@ namespace {
             'items' => $items,
             'pagination' => array('page' => $page, 'pages' => $pages, 'total' => 20),
             'canonical_query' => $canonical,
-            'state' => array(),
+            'state' => array('sort' => 'newest'),
         );
         $GLOBALS['uc_page_actions'] = array();
         $GLOBALS['uc_page_render_count'] = 0;
+        $GLOBALS['uc_page_queries'] = 0;
     }
 
     uc_page_fixture(1, 4, array('search' => 'red & navy', 'filter_colour' => 'blue,red', 'per_page' => '2'));
@@ -172,11 +191,99 @@ namespace {
     $noItems = Catalog::renderList(array(), array('pagination_base_url' => 'https://merchant.example/shop'));
     uc_page_expect(!str_contains($noItems, 'data-uc-catalog-pagination'), 'Do not present paging controls with no visible result cards.');
 
+    // Sorting is opt-in. It must use the same trusted permalink contract as
+    // pagination and must preserve only Free's canonical filter/search fields.
+    uc_page_fixture(3, 5, array(
+        'search' => 'red & navy',
+        'filter_colour' => 'navy,red',
+        'min_price' => '12.50',
+        'availability' => 'in_stock',
+        'per_page' => '24',
+        'sort' => 'price_desc',
+        'page' => '3',
+        'redirect_to' => 'https://attacker.example/private',
+    ));
+    $noSort = Catalog::renderList(array(), array('pagination_base_url' => 'https://merchant.example/shop'));
+    uc_page_expect(!str_contains($noSort, 'data-uc-catalog-sort'),
+        'Sort form must remain opt-in even when a safe pagination permalink exists.');
+
+    $GLOBALS['uc_page_result']['state']['sort'] = 'price_desc';
+    $GLOBALS['uc_page_queries'] = 0;
+    $GLOBALS['uc_page_render_count'] = 0;
+    $GLOBALS['uc_page_actions'] = array();
+    $sorted = Catalog::renderList(array(), array(
+        'pagination_base_url' => 'https://merchant.example/?page_id=12',
+        'show_sort_control' => true,
+    ));
+    $form = explode('</form>', $sorted, 2)[0];
+    uc_page_expect(str_contains($form, 'data-uc-catalog-sort="1"') && str_contains($form, 'method="get"'),
+        'Sort controls should use a native GET form without JavaScript.');
+    uc_page_expect(str_contains($form, '<label') && str_contains($form, 'Sort products')
+        && str_contains($form, '<select') && str_contains($form, 'name="sort"')
+        && str_contains($form, 'Apply sort'), 'Native sorting requires an accessible label and explicit submit button.');
+    uc_page_expect(str_contains($form, '<option value="price_desc" selected>'),
+        'The validated active Free sort must be selected.');
+    uc_page_expect(!str_contains($form, '<option value="recommended"'),
+        'Free must not expose paid Recommended sort when Pro has not registered it.');
+    uc_page_expect(str_contains($form, 'name="page_id" value="12"'),
+        'Plain-permalink page locators must survive GET form submission.');
+    uc_page_expect(str_contains($form, 'name="search" value="red &amp; navy"')
+        && str_contains($form, 'name="filter_colour" value="navy,red"')
+        && str_contains($form, 'name="min_price" value="12.50"')
+        && str_contains($form, 'name="availability" value="in_stock"'),
+        'Search, attribute, price and stock filters should survive a sort change.');
+    uc_page_expect(!str_contains($form, 'name="page"') && !str_contains($form, 'redirect_to')
+        && !str_contains($form, 'attacker.example'),
+        'Changing sort must reset pagination and omit non-canonical extension query keys.');
+    uc_page_expect($GLOBALS['uc_page_queries'] === 1 && $GLOBALS['uc_page_render_count'] === 1,
+        'Sort form must use the current Woo result without another product query.');
+    uc_page_expect($GLOBALS['uc_page_actions'] === array('ultimate_commerce_product_list_before', 'ultimate_commerce_product_list_after'),
+        'Sort controls must preserve the public catalogue extension hooks.');
+
+    $GLOBALS['uc_sort_pro_active'] = true;
+    $GLOBALS['uc_sort_pro_label'] = 'Recommended <script>alert(1)</script>';
+    $GLOBALS['uc_page_result']['state']['sort'] = 'recommended';
+    $withPro = Catalog::renderList(array(), array(
+        'pagination_base_url' => 'https://merchant.example/shop',
+        'show_sort_control' => true,
+    ));
+    $proForm = explode('</form>', $withPro, 2)[0];
+    uc_page_expect(str_contains($proForm, '<option value="recommended" selected>'),
+        'Registered Pro Recommended sort must be selected when active.');
+    uc_page_expect(str_contains($proForm, 'Recommended &lt;script&gt;alert(1)&lt;/script&gt;')
+        && !str_contains($proForm, '<script>'),
+        'Even extension-provided sort labels must be HTML escaped.');
+    $GLOBALS['uc_sort_pro_active'] = false;
+    unset($GLOBALS['uc_sort_pro_label']);
+
+    foreach (array(
+        'https://attacker.example/shop',
+        'https://merchant.example/shop?search=stale',
+        'https://merchant.example/shop#fragment',
+        'https://merchant.example/?page_id%5B%5D=12',
+    ) as $badSortAction) {
+        uc_page_fixture(1, 3);
+        $badSort = Catalog::renderList(array(), array(
+            'show_sort_control' => true,
+            'pagination_base_url' => $badSortAction,
+        ));
+        uc_page_expect(!str_contains($badSort, 'data-uc-catalog-sort'),
+            'Untrusted or filtered sort destinations must fail closed: ' . $badSortAction);
+    }
+
+    uc_page_fixture(1, 3, array(), array());
+    $emptySort = Catalog::renderList(array(), array(
+        'pagination_base_url' => 'https://merchant.example/shop',
+        'show_sort_control' => true,
+    ));
+    uc_page_expect(!str_contains($emptySort, 'data-uc-catalog-sort'),
+        'An empty result must not render a misleading sort control.');
+
     $GLOBALS['uc_page_result'] = new WP_Error();
     $GLOBALS['uc_page_actions'] = array();
     uc_page_expect(Catalog::renderList(array(), array('pagination_base_url' => 'https://merchant.example/shop')) === '',
         'Store API failures must retain the existing no-markup error behaviour.');
     uc_page_expect($GLOBALS['uc_page_actions'] === array(), 'Store API errors must not call catalogue hooks.');
 
-    fwrite(STDOUT, "PASS accessible opt-in catalogue paging, canonical search state, trusted destinations and existing hooks\n");
+    fwrite(STDOUT, "PASS native accessible Free/Pro sorting, safe catalogue paging, canonical filters and lifecycle hooks\n");
 }
