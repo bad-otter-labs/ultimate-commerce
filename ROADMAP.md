@@ -4,10 +4,9 @@ Status: **Sequenced outcome-based roadmap**
 
 ## Foundation compatibility checkpoint — 11 November 2026
 
-**In progress, not a completed roadmap phase:** an opt-in, read-only Labs v0 module manifest mapping and automated compatibility tests have been added on a feature branch. This does not finish Phase 0/1, ship a central connector, approve a release, or move product, stock, staff, licence or stored-value authority. See [ADR 0003](docs/adr/0003-optional-labs-foundation-and-stock-authority.md).
+**Merged and CI-verified, not a completed roadmap phase:** Free PR #52 and Pro PR #80 introduced the optional, read-only Labs v0 discovery mapping, preserved the existing public Module API and paid `ultimate-commerce-pro-core` entitlement, and documented the standalone-versus-central stock authority decision in [ADR 0003](docs/adr/0003-optional-labs-foundation-and-stock-authority.md). Hosted public Free Full Gate and subsequent Free/Pro integration checks passed. The stale Free runner PR #50 was closed; CI guidance PR #51 was reconciled and merged.
 
-**Still required:** verify CI and existing Free/Pro integration on exact heads; reconcile pending Free CI PRs #50/#51 without weakening the public-fork boundary; independently validate any future Product Master or Stock/EPOS adapter; continue the next tested Phase 2 storefront improvement. No phase exit gate is waived.
-
+**Still required:** any centrally writable Product Master/Stock/EPOS integration must have independently reviewed contracts, single-writer/stock cutover proof, real merchant testing and separate authority. No phase exit, licence issuer change, WordPress.org publication, live store deployment or stored-value migration follows from discovery.
 
 This roadmap turns `BLUEPRINT.md` and `FOUNDATION.md` into implementation order. It is intentionally outcome-based rather than date-based. A phase exits only when its product, security, performance and upgrade gates are satisfied.
 
@@ -20,9 +19,11 @@ The roadmap serves four simultaneous goals:
 
 ## Storefront development checkpoint — 11 November 2026
 
-**Proposed, not merged or released:** Phase 2/3 catalogue search experience now has a concrete, shopper-visible accessible zero-results state on a separate stacked feature branch, with escaped search terms, filter-specific recovery guidance, translation strings, and regression tests. This is an incremental Free usability improvement beyond optional Labs foundation alignment, **not** evidence that Phase 2 or WordPress.org acceptance gates have exited. See [Storefront catalogue contract](docs/storefront-catalogue-contract-v1.md).
+**Merged:** Free PR #53 added accessible, translatable zero-result search/filter messages without extra catalogue queries, preserving WooCommerce product truth, module hooks and public Storefront API 1.1. All exact-head and post-merge gates passed.
 
-**Next release evidence:** exact-head hosted CI and WordPress.org package/i18n checks, real WordPress/WooCommerce browser accessibility smoke, protected merge/review, and post-merge Free/Pro integration validation. No production publishing is approved.
+**Proposed in this focused PR:** link search/filter misses to the merchant's validated WooCommerce Shop permalink, escaping the final output, omitting rejected links, and never suggesting a browse-all action for a truly empty shop. Tests cover URL hostility and existing screen-reader/status behaviour. See [Storefront catalogue contract](docs/storefront-catalogue-contract-v1.md).
+
+**Next phase evidence:** exact-head WordPress.org/i18n/Plugin Check, live browser accessibility and matrix, protected merge and subsequent Free/Pro integration. Neither this incremental shopper journey nor foundation discovery completes Phase 2/3 or authorizes publication.
 
 ## Roadmap principles
 
