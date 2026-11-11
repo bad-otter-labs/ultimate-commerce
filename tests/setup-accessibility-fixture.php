@@ -12,6 +12,11 @@ function uc_a11y_fixture_assert(bool $condition, string $message): void
 uc_a11y_fixture_assert(class_exists('WooCommerce'), 'WooCommerce must be active before fixture setup.');
 uc_a11y_fixture_assert(class_exists('WC_Product_Variable'), 'WooCommerce product CRUD is unavailable.');
 
+// New WooCommerce installs default to Coming Soon mode, which hides checkout
+// from guest shoppers. This disposable browser acceptance needs a visible store.
+update_option('woocommerce_coming_soon', 'no', false);
+update_option('woocommerce_store_pages_only', 'no', false);
+
 $attribute = new WC_Product_Attribute();
 $attribute->set_name('Colour');
 $attribute->set_options(array('Red', 'Blue'));
@@ -118,6 +123,32 @@ uc_a11y_fixture_assert(
     'Could not create live Woo catalogue integration page.'
 );
 update_option('badotulc_a11y_catalogue_page_id', (int) $cataloguePageId, false);
+
+// Checkout is real Woo order placement but uses only offline bank transfer;
+ // never connect a live provider or collect real customer/payment details.
+$checkoutPage = wp_insert_post(
+    array(
+        'post_title' => 'Checkout',
+        'post_name' => 'checkout',
+        'post_status' => 'publish',
+        'post_type' => 'page',
+        'post_content' => '[woocommerce_checkout]',
+    ),
+    true
+);
+uc_a11y_fixture_assert(!is_wp_error($checkoutPage) && (int) $checkoutPage > 0, 'Could not create checkout page.');
+update_option('woocommerce_checkout_page_id', (int) $checkoutPage, false);
+update_option('woocommerce_enable_guest_checkout', 'yes', false);
+update_option('woocommerce_default_country', 'GB', false);
+update_option('woocommerce_allowed_countries', 'specific', false);
+update_option('woocommerce_specific_allowed_countries', array('GB'), false);
+update_option('woocommerce_currency', 'GBP', false);
+update_option('woocommerce_bacs_settings', array(
+    'enabled' => 'yes',
+    'title' => 'Direct bank transfer (fixture only)',
+    'description' => 'No payment is processed in this disposable test.',
+    'instructions' => '',
+), false);
 
 update_option('show_on_front', 'page');
 update_option('page_on_front', (int) $pageId);

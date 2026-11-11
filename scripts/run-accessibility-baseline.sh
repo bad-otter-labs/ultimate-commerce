@@ -96,6 +96,7 @@ unzip -q "$wc_zip" -d "$plugins"
 cp -R "$workspace/packages/ultimate-commerce-for-woocommerce" "$plugins/ultimate-commerce-for-woocommerce"
 cp "$workspace/tests/fixtures/accessibility-mu-plugin.php" "$mu_plugins/uc-accessibility-fixture.php"
 
+wpcli config set UC_A11Y_CHECKOUT_TEST true --raw --type=constant
 wpcli plugin activate woocommerce ultimate-commerce-for-woocommerce
 wpcli eval-file /workspace/tests/setup-accessibility-fixture.php
 
