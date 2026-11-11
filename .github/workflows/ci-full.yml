@@ -1,0 +1,114 @@
+name: Bad Otter Full Gate
+
+on:
+  pull_request:
+    types: [opened, reopened, synchronize, ready_for_review]
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.event_name == 'pull_request' && format('uc-free-full-pr-{0}', github.event.pull_request.number) || format('uc-free-full-run-{0}', github.run_id) }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  php:
+    name: php (8.1)
+    if: ${{ github.event_name != 'pull_request' || !github.event.pull_request.draft }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - name: Checkout immutable PR head
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      - name: Set up supported PHP baseline
+        uses: shivammathur/setup-php@f3e473d116dcccaddc5834248c87452386958240
+        with:
+          php-version: '8.1'
+          coverage: none
+      - name: Validate public-fork security boundary and all PHP syntax
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 tests/ci-trust-boundary.py
+          python3 -m py_compile scripts/*.py tests/*.py
+          while IFS= read -r -d '' file; do
+            php -l "$file" >/dev/null
+          done < <(find packages tests -type f -name '*.php' -print0)
+      - name: Run canonical Free product, security and foundation contract suite
+        shell: bash
+        run: |
+          set -euo pipefail
+          for spec in \
+            tests/module-contract-v1.php \
+            tests/security-request-foundations.php \
+            tests/external-boundary-security.php \
+            tests/execution-control-foundations.php \
+            tests/audit-privacy-foundations.php \
+            tests/module-settings-contract.php \
+            tests/storefront-catalogue-contract.php \
+            tests/storefront-filter-extension-boundary.php \
+            tests/account-order-contract.php \
+            tests/cart-drawer-contract.php \
+            tests/wishlist-contract.php \
+            tests/recently-viewed-contract.php \
+            tests/settings-transfer-contract.php \
+            tests/system-status-contract.php \
+            tests/labs-foundation-contract.php; do
+            php "$spec"
+          done
+          if test -f tests/storefront-empty-state-contract.php; then
+            php tests/storefront-empty-state-contract.php
+          fi
+
+  package:
+    name: release package
+    needs: php
+    if: ${{ github.event_name != 'pull_request' || !github.event.pull_request.draft }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      - name: Build and inspect deterministic public Free packages
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 scripts/build-wordpress-org-package.py --source packages/ultimate-commerce-for-woocommerce --output-dir dist-full
+          python3 scripts/build-wordpress-org-package.py --source packages/ultimate-commerce-for-woocommerce --output-dir dist-full-repeat
+          first="$(sha256sum dist-full/*.zip | awk '{print $1}')"
+          second="$(sha256sum dist-full-repeat/*.zip | awk '{print $1}')"
+          test "$first" = "$second"
+          shopt -s nullglob
+          packages=(dist-full/*.zip)
+          test "${#packages[@]}" -eq 1
+          python3 scripts/check-wordpress-org-package.py "${packages[0]}"
+          unzip -t "${packages[0]}" >/dev/null
+          test -s "${packages[0]}.sha256"
+      - name: Retain inspected package (not a release)
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: ultimate-commerce-free-gate-package
+          path: dist-full/
+          if-no-files-found: error
+          retention-days: 7
+
+  merge-gate:
+    name: full / merge-gate
+    needs: [php, package]
+    if: ${{ always() && !cancelled() && (github.event_name != 'pull_request' || !github.event.pull_request.draft) }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Fail closed unless both required gate jobs pass
+        shell: bash
+        env:
+          PHP_RESULT: ${{ needs.php.result }}
+          PACKAGE_RESULT: ${{ needs.package.result }}
+        run: |
+          set -euo pipefail
+          test "$PHP_RESULT" = success
+          test "$PACKAGE_RESULT" = success
+          echo 'Canonical PHP, security, Foundation and deterministic package gates passed.'
