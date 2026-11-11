@@ -210,6 +210,7 @@ namespace {
     $GLOBALS['uc_page_result']['state']['sort'] = 'price_desc';
     $GLOBALS['uc_page_queries'] = 0;
     $GLOBALS['uc_page_render_count'] = 0;
+    $GLOBALS['uc_page_actions'] = array();
     $sorted = Catalog::renderList(array(), array(
         'pagination_base_url' => 'https://merchant.example/?page_id=12',
         'show_sort_control' => true,
