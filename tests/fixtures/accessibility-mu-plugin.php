@@ -90,6 +90,7 @@ add_shortcode(
             $query,
             array(
                 'pagination_base_url' => $url,
+                'pagination_query_key' => 'uc_catalog_page',
                 'show_filter_controls' => true,
                 'show_sort_control' => true,
                 'accessibility_fixture' => true,
