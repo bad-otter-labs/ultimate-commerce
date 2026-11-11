@@ -72,8 +72,8 @@ add_shortcode(
 add_shortcode(
     'badotulc_catalogue_a11y_fixture',
     static function (): string {
-        $catalogue = \\BadOtter\\UltimateCommerce\\Storefront\\Catalog::class;
-        $drawer = \\BadOtter\\UltimateCommerce\\Storefront\\CartDrawer::class;
+        $catalogue = \BadOtter\UltimateCommerce\Storefront\Catalog::class;
+        $drawer = \BadOtter\UltimateCommerce\Storefront\CartDrawer::class;
         $pageId = (int) get_option('badotulc_a11y_catalogue_page_id', 0);
         $url = $pageId > 0 ? get_permalink($pageId) : '';
         if (!class_exists($catalogue) || !is_string($url) || $url === '') {
