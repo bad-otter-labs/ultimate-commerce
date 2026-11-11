@@ -104,6 +104,7 @@ namespace BadOtter\UltimateCommerce\Storefront {
         public static function query(array $args = array())
         {
             ++$GLOBALS['uc_page_queries'];
+            $GLOBALS['uc_page_query_args'] = $args;
             return $GLOBALS['uc_page_result'];
         }
     }
@@ -142,6 +143,7 @@ namespace {
         $GLOBALS['uc_page_actions'] = array();
         $GLOBALS['uc_page_render_count'] = 0;
         $GLOBALS['uc_page_queries'] = 0;
+        $GLOBALS['uc_page_query_args'] = array();
     }
 
     uc_page_fixture(1, 4, array('search' => 'red & navy', 'filter_colour' => 'blue,red', 'per_page' => '2'));
@@ -450,11 +452,46 @@ namespace {
         && !str_contains($largeFacet, 'value="shade100"'),
         'Extension-provided descriptor options must be bounded to 100 per facet.');
 
+    // WordPress Page templates reserve "page" for multipage post content.
+    // A theme may opt into the UC-owned GET query key without changing the
+    // existing public Catalog::query(page) API or default navigation links.
+    uc_page_fixture(2, 3, array('search' => 'jacket', 'per_page' => '1', 'page' => '2'));
+    $safePage = Catalog::renderList(
+        array('search' => 'jacket', 'uc_catalog_page' => '2', 'per_page' => 1),
+        array(
+            'pagination_base_url' => 'https://merchant.example/?page_id=12',
+            'pagination_query_key' => 'uc_catalog_page',
+            'show_filter_controls' => true,
+        )
+    );
+    uc_page_expect(
+        ($GLOBALS['uc_page_query_args']['page'] ?? null) === '2'
+            && !array_key_exists('uc_catalog_page', $GLOBALS['uc_page_query_args']),
+        'Explicit namespaced URL page must map to the existing bounded internal page contract.'
+    );
+    uc_page_expect(
+        str_contains($safePage, 'uc_catalog_page=3')
+            && str_contains($safePage, 'uc_catalog_page=1') === false
+            && str_contains($safePage, 'page_id=12')
+            && !str_contains($safePage, '&amp;page=3')
+            && !str_contains($safePage, 'name="uc_catalog_page"'),
+        'Namespaced paging must preserve WordPress page locators and reset on form submission.'
+    );
+    uc_page_fixture(2, 3);
+    $legacy = Catalog::renderList(
+        array('page' => '2'),
+        array('pagination_base_url' => 'https://merchant.example/shop')
+    );
+    uc_page_expect(
+        str_contains($legacy, 'page=3') && !str_contains($legacy, 'uc_catalog_page'),
+        'Default existing pagination URLs must remain backwards compatible.'
+    );
+
     $GLOBALS['uc_page_result'] = new WP_Error();
     $GLOBALS['uc_page_actions'] = array();
     uc_page_expect(Catalog::renderList(array(), array('pagination_base_url' => 'https://merchant.example/shop')) === '',
         'Store API failures must retain the existing no-markup error behaviour.');
     uc_page_expect($GLOBALS['uc_page_actions'] === array(), 'Store API errors must not call catalogue hooks.');
 
-    fwrite(STDOUT, "PASS opt-in search/filter/sort/pagination native integration, trusted URLs, bounded facets and lifecycle hooks\n");
+    fwrite(STDOUT, "PASS opt-in native Free/Pro search/sort/facet URL contracts, WordPress-safe pagination and lifecycle hooks\n");
 }
