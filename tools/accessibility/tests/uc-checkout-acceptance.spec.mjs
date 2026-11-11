@@ -82,7 +82,9 @@ test('Free variable Quick Add reaches a real Woo order through checkout', async 
   await expect(page).toHaveURL(/order-received/);
   await expect(page.locator('.woocommerce-order-overview__order')).toBeVisible().catch(async () => {
     const current = new URL(page.url());
-    const orderNumber = Number(current.searchParams.get('order-received') || current.pathname.match(/order-received\\/(\\d+)/)?.[1] || 0);
+    const segments = current.pathname.split('/');
+    const index = segments.indexOf('order-received');
+    const orderNumber = Number(current.searchParams.get('order-received') || (index >= 0 ? segments[index + 1] : 0));
     const content = (await page.locator('body').innerText()).slice(0, 1400);
     throw new Error('Woo confirmation overview missing; order ID from route: ' + orderNumber + '; page: ' + content);
   });
