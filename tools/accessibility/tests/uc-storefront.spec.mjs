@@ -170,9 +170,11 @@ test('real Woo catalogue connects search, category facets, sorting, paging and n
   await expect(cards).toHaveCount(1);
   const next = page.locator('[data-uc-catalog-pagination="1"] a[rel="next"]');
   await expect(next).toBeVisible();
+  const nextHref = await next.getAttribute('href');
+  expect(new URL(nextHref, page.url()).searchParams.get('page')).toBe('2');
   await next.click();
+  await expect(page).toHaveURL(/[?&]page=2(?:&|$)/);
   await expect(cards).toHaveCount(1);
-  expect(new URL(page.url()).searchParams.get('page')).toBe('2');
   await expect(filters.getByRole('searchbox', { name: 'Search products' })).toHaveValue('Catalogue Fixture');
   await expect(filters.locator('input[name="filter_category[]"][value="uc-a11y-fixture-jackets"]')).toBeChecked();
 
