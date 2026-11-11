@@ -138,3 +138,72 @@ test('wishlist pressed state and recently viewed live UI remain operable', async
   const recentState = await page.evaluate(() => window.localStorage.getItem('badotulc_recently_viewed_v1'));
   expect(recentState).toBeNull();
 });
+
+
+test('real Woo catalogue connects search, category facets, sorting, paging and native cart truth', async ({ page }) => {
+  await page.locator('[data-uc-catalogue-fixture-link="1"]').click();
+  await expect(page.locator('[data-uc-catalogue-fixture="1"]')).toBeVisible();
+
+  const cards = page.locator('[data-uc-catalogue-fixture="1"] [data-uc-product-card="1"]');
+  const filters = page.locator('[data-uc-catalog-filters="1"]');
+  await expect(filters).toBeVisible();
+  await expect(page.locator('[data-uc-catalog-sort="1"]')).toBeVisible();
+  await expectNoUcAxeViolations(page, ['[data-uc-catalogue-fixture="1"]']);
+
+  await filters.getByRole('searchbox', { name: 'Search products' }).fill('Catalogue Fixture');
+  await filters.getByRole('button', { name: 'Apply filters' }).click();
+  await expect(cards).toHaveCount(3);
+  await expect(filters.getByRole('searchbox', { name: 'Search products' })).toHaveValue('Catalogue Fixture');
+
+  await filters.locator('input[name="filter_category[]"][value="uc-a11y-fixture-jackets"]').check();
+  await filters.getByRole('button', { name: 'Apply filters' }).click();
+  await expect(cards).toHaveCount(2);
+  await expect(cards.first()).toContainText('Catalogue Fixture Jacket');
+  await expect(cards.nth(1)).toContainText('Catalogue Fixture Jacket');
+  await expect(filters.locator('input[name="filter_category[]"][value="uc-a11y-fixture-jackets"]')).toBeChecked();
+
+  // Exercise real Store API page navigation and assert the canonical search,
+  // facet and per-page fields survive the next-page link.
+  const pagedUrl = new URL(page.url());
+  pagedUrl.searchParams.set('per_page', '1');
+  await page.goto(pagedUrl.toString());
+  await expect(cards).toHaveCount(1);
+  const next = page.locator('[data-uc-catalog-pagination="1"] a[rel="next"]');
+  await expect(next).toBeVisible();
+  const nextHref = await next.getAttribute('href');
+  expect(new URL(nextHref, page.url()).searchParams.get('uc_catalog_page')).toBe('2');
+  await next.click();
+  await expect(page).toHaveURL(/[?&]uc_catalog_page=2(?:&|$)/);
+  await expect(cards).toHaveCount(1);
+  await expect(filters.getByRole('searchbox', { name: 'Search products' })).toHaveValue('Catalogue Fixture');
+  await expect(filters.locator('input[name="filter_category[]"][value="uc-a11y-fixture-jackets"]')).toBeChecked();
+
+  // Sorting is a native GET, resets the page, and uses Woo's price order.
+  const sorts = page.locator('[data-uc-catalog-sort="1"]');
+  await sorts.getByRole('combobox', { name: 'Sort products' }).selectOption('price_asc');
+  await sorts.getByRole('button', { name: 'Apply sort' }).click();
+  await expect(cards).toHaveCount(1);
+  await expect(cards.first()).toContainText('Catalogue Fixture Jacket Red');
+  expect(new URL(page.url()).searchParams.get('uc_catalog_page')).toBeNull();
+  expect(new URL(page.url()).searchParams.get('page')).toBeNull();
+
+  // Price filtering narrows the real Woo query, while category/search/sort stay.
+  await filters.locator('input[name="min_price"]').fill('20');
+  await filters.getByRole('button', { name: 'Apply filters' }).click();
+  await expect(cards).toHaveCount(1);
+  await expect(cards.first()).toContainText('Catalogue Fixture Jacket Navy');
+  await expect(page.locator('[data-uc-catalog-sort="1"] select[name="sort"]')).toHaveValue('price_asc');
+
+  // A card's native Woo add-to-cart link must feed Woo's actual guest cart,
+  // never a UC-owned duplicate total or session.
+  await cards.first().locator('[data-uc-action="add_to_cart"]').click();
+  await page.waitForLoadState('networkidle');
+
+  const cart = await page.evaluate(async () => {
+    const response = await fetch('/?rest_route=/wc/store/v1/cart', { credentials: 'same-origin' });
+    return { status: response.status, body: await response.json() };
+  });
+  expect(cart.status).toBe(200);
+  expect(Array.isArray(cart.body.items)).toBe(true);
+  expect(cart.body.items.some((item) => item.name === 'Catalogue Fixture Jacket Navy' && item.quantity === 1)).toBe(true);
+});

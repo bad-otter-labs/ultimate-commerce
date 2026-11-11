@@ -29,6 +29,15 @@ final class Catalog
 
     public static function renderList(array $args = array(), array $context = array()): string
     {
+        // WordPress reserves "page" on ordinary Page templates for paginated
+        // post content. Themes may opt into a UC-owned public GET key while
+        // the internal Storefront API continues to use its existing "page".
+        if (($context['pagination_query_key'] ?? null) === 'uc_catalog_page'
+            && array_key_exists('uc_catalog_page', $args)) {
+            $args['page'] = $args['uc_catalog_page'];
+            unset($args['uc_catalog_page']);
+        }
+
         $result = self::query($args);
         if ($result instanceof \WP_Error) {
             return '';
@@ -124,6 +133,11 @@ final class Catalog
             }
         }
 
+        // The default "page" link is retained for backwards compatibility.
+        // Only the explicit Page-template opt-in uses a WP-safe namespaced key.
+        $pageKey = ($context['pagination_query_key'] ?? null) === 'uc_catalog_page'
+            ? 'uc_catalog_page'
+            : 'page';
         $links = array();
         foreach (array('prev' => $page - 1, 'next' => $page + 1) as $direction => $target) {
             if ($target < 1 || $target > $pages) {
@@ -131,7 +145,7 @@ final class Catalog
             }
             $targetQuery = $query;
             if ($target > 1) {
-                $targetQuery['page'] = (string) $target;
+                $targetQuery[$pageKey] = (string) $target;
             }
             $url = add_query_arg($targetQuery, $base['url']);
             $url = is_string($url) ? wp_validate_redirect($url, '') : '';
