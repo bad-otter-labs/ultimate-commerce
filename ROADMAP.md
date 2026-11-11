@@ -19,13 +19,11 @@ The roadmap serves four simultaneous goals:
 
 ## Storefront development checkpoint — 11 November 2026
 
-**Merged, not a phase exit:** Free PR #53 introduced translatable, accessible zero-result search/filter messages. Free PR #54 added a validated same-site WooCommerce Shop recovery link for those misses. Both passed their required protected checks; #54 passed **17/17** post-merge workflows without triggering any publication.
+**Merged, green and not a phase exit:** Free PRs #53–#54 introduced accessible zero-result search/filter messages and a safe Woo Shop recovery link. PR #55 added optional translated Previous/Next navigation; PR #56 added an opt-in native GET sort selector, including only Pro-registered `recommended` when available. Their exact-head gates and post-merge CI passed. No new release, WordPress.org publication or live-site change was made.
 
-**Merged Phase 2 usability increment:** Free PR #55 added optional semantic Previous/Next navigation, an accessible page position, translated labels, and same-site links preserving the validated Free search/price/filter state. Its 17/17 exact-head workflows and 18/18 post-merge workflows passed, including Plugin Check and live browser accessibility. Woo ProductQuery, the 500-page bound and public Storefront API remain unchanged.
+**Proposed next Phase 2 storefront slice:** pair the existing Free search/query state and Woo-backed filter descriptions with opt-in native search, taxonomy/attribute, availability and price controls. Preserve the validated sort and page size, reset the page when filters change, and use one trusted unfiltered Woo Shop permalink for GET forms. A host theme still owns its GET integration, style and Woo fallback; all cards/cart flows remain Woo authoritative. The focused PHP contract test covers search → filter → sort → page → product cards; real-browser cart/checkout merchant acceptance is **not yet proven**. See [Storefront catalogue contract](docs/storefront-catalogue-contract-v1.md) and [theme integration](docs/theme-store-integration.md).
 
-**Proposed next Free storefront increment:** add an opt-in native GET sort control using the existing validated `CatalogFilterRegistry::sortDefinitions()` choices. A host theme explicitly supplies the same unfiltered trusted permalink; the form retains canonical search/filter state while resetting page to one. Pro's `recommended` sort appears only if registered, without Free depending on the Pro repository, licensing or release process. See [Storefront catalogue contract](docs/storefront-catalogue-contract-v1.md).
-
-**Still required:** exact-head storefront PHP, translation, WordPress.org and browser accessibility CI, protected merge and post-merge Free/Pro integration, plus real-merchant acceptance. This incremental shopper UX does not complete Phase 2/3, publish Free or change product, inventory, checkout, payment or stored-value ownership.
+**Still required:** exact-head Free Full Gate, translation/POT, WordPress.org Plugin Check and live compatibility/accessibility checks, protected merge and post-merge verification, then staged host-theme/variation/quick-add/cart/checkout acceptance. These incremental Free UX pieces do not exit Phase 2/3 or authorize publication, production activation, stock migration, licence changes or gift-card/stored-value changes.
 
 ## Roadmap principles
 
