@@ -98,6 +98,29 @@ Free registers its three existing base sorts. Pro may add `recommended` through 
 
 The updated `tests/storefront-pagination-contract.php` exercises opt-in behaviour, Free-only/registered-Pro options, escaped extension labels, canonical search/filter and price preservation, page reset, plain permalinks, unsafe destinations, zero-result handling, one-query behaviour and the original render hooks. The WordPress.org POT contains the two additional translated form labels.
 
+## Optional native search and facet filters (additive)
+
+Merchants can now enable a single, server-rendered **search + Woo facet filter form** alongside the existing sort selector and Previous/Next links. All three are opt-in, share the same merchant-owned **unfiltered, trusted permalink**, and continue to use one existing WooCommerce Store API product query.
+
+```php
+echo \BadOtter\UltimateCommerce\Storefront\Catalog::renderList(
+    $catalogue_request, // Validated inside Free; a theme can pass its submitted GET fields.
+    array(
+        'pagination_base_url' => get_permalink(get_queried_object_id()),
+        'show_filter_controls' => true,
+        'show_sort_control' => true,
+    )
+);
+```
+
+The filter form is a native GET form with a labelled search input (120-character Free limit), bounded taxonomy choice fieldsets/checkboxes, the registered Woo availability statuses, minimum and maximum price inputs, and an explicit translated `Apply filters` button. It uses Free's existing `state`, `filters` and `canonical_query` from the same query result. No additional product, facet or search provider request occurs to render it. Filters are capped at 16 registered definitions and 100 options per taxonomy; extension-supplied descriptors cannot introduce arbitrary new input keys. Selected values come from validated state, **not** untrusted descriptor `selected` markers. HTML labels/values are escaped.
+
+Submitting a search or filter change **resets the page to one** and retains only the validated `sort` and `per_page` fields plus a WordPress plain-permalink locator (`page_id`, `pagename`, or `post_type`). Unchecked facets naturally disappear from the next GET request, clearing their selection. The existing sort form preserves validated search/facets/price/availability, and Previous/Next navigation preserves all canonical state. The theme must pass the incoming GET fields back to `Catalog::renderList()`; Free normalises and clamps them before querying Woo.
+
+The form **remains available when a search returns zero visible cards**, allowing shoppers to broaden a search or remove a filter. Sort and pagination controls still remain absent for a zero-result page. If Woo Store API fails, the renderer continues to return no catalogue markup rather than falsely reporting a no-result page. Untrusted external or stale-query base URLs fail closed, and calls omitting `show_filter_controls` retain previous markup. Styles, page layout, native Woo checkout and optional Quick Add/cart-drawer integration stay theme-owned or governed by their existing public contracts.
+
+`tests/storefront-pagination-contract.php` covers the combined search → filters → sort → page → product-card output, including one-query/hook invariants, selected state, plain permalinks, zero-result recovery, escaping, invalid URLs and bounded hostile extension descriptors. Free's Storefront API constant remains 1.1.0; no new endpoint, datastore, licence entitlement, remote provider or Pro dependency is introduced. A real merchant theme/browser checkout acceptance pass remains an explicit later gate.
+
 ## Product-card schema
 
 `uc.product-card.v1` exposes:
