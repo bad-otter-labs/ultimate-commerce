@@ -868,6 +868,10 @@ msgstr ""
 msgid "No products are available to display."
 msgstr ""
 
+#: src/Storefront/Catalog.php:69
+msgid "Browse all products"
+msgstr ""
+
 #: src/Storefront/CatalogFilterRegistry.php:23
 msgid "Price"
 msgstr ""

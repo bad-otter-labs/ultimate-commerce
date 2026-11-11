@@ -53,6 +53,23 @@ final class Catalog
                 $message = __('No products are available to display.', 'bad-otter-ultimate-commerce-woocommerce');
             }
             echo '<p class="uc-product-list__empty" data-uc-catalog-empty="1" role="status">' . esc_html($message) . '</p>';
+
+            // Offer an explicit recovery path only for a search/filter miss.
+            // WordPress validates the shop URL against the store's allowed hosts;
+            // no user-provided redirect or query parameter is ever accepted.
+            if ($search !== '' || !empty($state['selected_count'])) {
+                $shopUrl = function_exists('wc_get_page_permalink')
+                    ? wc_get_page_permalink('shop')
+                    : '';
+                $shopUrl = is_string($shopUrl) && function_exists('wp_validate_redirect')
+                    ? wp_validate_redirect($shopUrl, '')
+                    : '';
+                if ($shopUrl !== '' && function_exists('esc_url')) {
+                    echo '<a class="uc-product-list__recovery" data-uc-catalog-recovery="1" href="' . esc_url($shopUrl) . '">'
+                        . esc_html(__('Browse all products', 'bad-otter-ultimate-commerce-woocommerce'))
+                        . '</a>';
+                }
+            }
         } else {
             foreach ($items as $item) {
                 echo ProductCardRenderer::render($item, $context); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- renderer escapes its fields.
