@@ -60,7 +60,8 @@ update_option('badotulc_a11y_recent_product_id', (int) $recentId, false);
 $content = sprintf(
     '[badotulc_accessibility_fixture product_id="%1$d"]' . "\n\n" .
     '[ultimate_commerce_wishlist title="Wishlist"]' . "\n\n" .
-    '[ultimate_commerce_recently_viewed title="Recently viewed"]',
+    '[ultimate_commerce_recently_viewed title="Recently viewed"]' . "\n\n" .
+    '[badotulc_catalogue_fixture_link]',
     (int) $variableId
 );
 
@@ -76,6 +77,48 @@ $pageId = wp_insert_post(
 );
 uc_a11y_fixture_assert(!is_wp_error($pageId) && (int) $pageId > 0, 'Could not create accessibility fixture page.');
 
+// Disposable catalogue products exercise the actual Woo category, price,
+// product-card, cart and search paths rather than only static HTML contracts.
+$jackets = wp_insert_term('Catalogue Fixture Jackets', 'product_cat', array('slug' => 'uc-a11y-fixture-jackets'));
+$accessories = wp_insert_term('Catalogue Fixture Accessories', 'product_cat', array('slug' => 'uc-a11y-fixture-accessories'));
+uc_a11y_fixture_assert(is_array($jackets) && (int) ($jackets['term_id'] ?? 0) > 0, 'Jackets fixture category was not created.');
+uc_a11y_fixture_assert(is_array($accessories) && (int) ($accessories['term_id'] ?? 0) > 0, 'Accessories fixture category was not created.');
+
+$catalogueProducts = array(
+    array('name' => 'Catalogue Fixture Jacket Red', 'price' => '15.00', 'category' => (int) $jackets['term_id']),
+    array('name' => 'Catalogue Fixture Jacket Navy', 'price' => '39.00', 'category' => (int) $jackets['term_id']),
+    array('name' => 'Catalogue Fixture Hat Blue', 'price' => '9.00', 'category' => (int) $accessories['term_id']),
+);
+$catalogueIds = array();
+foreach ($catalogueProducts as $spec) {
+    $product = new WC_Product_Simple();
+    $product->set_name($spec['name']);
+    $product->set_status('publish');
+    $product->set_regular_price($spec['price']);
+    $product->set_manage_stock(true);
+    $product->set_stock_quantity(10);
+    $product->set_category_ids(array($spec['category']));
+    $id = (int) $product->save();
+    uc_a11y_fixture_assert($id > 0, 'Could not create a real Woo catalogue fixture product.');
+    $catalogueIds[] = $id;
+}
+
+$cataloguePageId = wp_insert_post(
+    array(
+        'post_title' => 'Ultimate Commerce Catalogue Fixture',
+        'post_name' => 'ultimate-commerce-catalogue-fixture',
+        'post_status' => 'publish',
+        'post_type' => 'page',
+        'post_content' => '[badotulc_catalogue_a11y_fixture]',
+    ),
+    true
+);
+uc_a11y_fixture_assert(
+    !is_wp_error($cataloguePageId) && (int) $cataloguePageId > 0,
+    'Could not create live Woo catalogue integration page.'
+);
+update_option('badotulc_a11y_catalogue_page_id', (int) $cataloguePageId, false);
+
 update_option('show_on_front', 'page');
 update_option('page_on_front', (int) $pageId);
 
@@ -84,6 +127,8 @@ echo wp_json_encode(
         'page_id' => (int) $pageId,
         'variable_product_id' => (int) $variableId,
         'recent_product_id' => (int) $recentId,
+        'catalogue_page_id' => (int) $cataloguePageId,
+        'catalogue_product_ids' => $catalogueIds,
     ),
     JSON_UNESCAPED_SLASHES
 ) . PHP_EOL;
