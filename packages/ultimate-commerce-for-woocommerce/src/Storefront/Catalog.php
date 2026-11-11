@@ -93,6 +93,15 @@ final class Catalog
      */
     private static function renderPagination(array $result, array $context): string
     {
+        // Most existing consumers do not opt into links. Return before
+        // touching any optional pagination contract or theme URL helpers.
+        $base = $context['pagination_base_url'] ?? null;
+        if (!is_string($base) || $base === ''
+            || !function_exists('wp_validate_redirect') || !function_exists('wp_parse_url')
+            || !function_exists('add_query_arg') || !function_exists('esc_url')) {
+            return '';
+        }
+
         $pagination = is_array($result['pagination'] ?? null)
             ? $result['pagination']
             : array();
@@ -106,13 +115,6 @@ final class Catalog
             return '';
         }
 
-        $base = $context['pagination_base_url'] ?? null;
-        if (!is_string($base) || $base === ''
-            || !function_exists('wp_validate_redirect')
-            || !function_exists('add_query_arg') || !function_exists('esc_url')) {
-            return '';
-        }
-
         $base = wp_validate_redirect($base, '');
         if (!is_string($base) || $base === '') {
             return '';
@@ -121,7 +123,7 @@ final class Catalog
         // A theme must supply the unfiltered destination. On WordPress plain
         // permalinks only the known page/archive locator query keys may remain;
         // reject any search, redirect, tracking or stale catalogue parameters.
-        $parts = parse_url($base);
+        $parts = wp_parse_url($base);
         if (!is_array($parts) || isset($parts['fragment'])) {
             return '';
         }
@@ -172,23 +174,22 @@ final class Catalog
             return '';
         }
 
-        $domain = 'bad-otter-ultimate-commerce-woocommerce';
         $html = '<nav class="uc-product-list__pagination" data-uc-catalog-pagination="1" aria-label="'
-            . esc_attr(__('Product catalogue pages', $domain)) . '">';
+            . esc_attr(__('Product catalogue pages', 'bad-otter-ultimate-commerce-woocommerce')) . '">';
         if (isset($links['prev'])) {
             $html .= '<a class="uc-product-list__page-link uc-product-list__page-link--prev" rel="prev" href="'
-                . $links['prev'] . '">' . esc_html(__('Previous page', $domain)) . '</a>';
+                . $links['prev'] . '">' . esc_html(__('Previous page', 'bad-otter-ultimate-commerce-woocommerce')) . '</a>';
         }
         $html .= '<span class="uc-product-list__page-current" aria-current="page">'
             . esc_html(sprintf(
                 /* translators: 1: Current catalogue page, 2: Total catalogue pages. */
-                __('Page %1$d of %2$d', $domain),
+                __('Page %1$d of %2$d', 'bad-otter-ultimate-commerce-woocommerce'),
                 $page,
                 $pages
             )) . '</span>';
         if (isset($links['next'])) {
             $html .= '<a class="uc-product-list__page-link uc-product-list__page-link--next" rel="next" href="'
-                . $links['next'] . '">' . esc_html(__('Next page', $domain)) . '</a>';
+                . $links['next'] . '">' . esc_html(__('Next page', 'bad-otter-ultimate-commerce-woocommerce')) . '</a>';
         }
 
         return $html . '</nav>';
