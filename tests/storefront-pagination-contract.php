@@ -17,6 +17,11 @@ namespace {
     function esc_url($text): string { return esc_html($text); }
     function do_action(string $hook, ...$args): void { $GLOBALS['uc_page_actions'][] = $hook; }
 
+    function wp_parse_url(string $url)
+    {
+        return parse_url($url);
+    }
+
     function wp_validate_redirect(string $url, string $fallback = ''): string
     {
         $parts = parse_url($url);
