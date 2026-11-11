@@ -80,7 +80,7 @@ namespace BadOtter\UltimateCommerce\Storefront {
 
         public static function normaliseSearchTerm($value): string
         {
-            return substr(\\sanitize_text_field($value), 0, self::MAX_SEARCH_LENGTH);
+            return substr(\sanitize_text_field($value), 0, self::MAX_SEARCH_LENGTH);
         }
 
         public static function sortDefinitions(): array
