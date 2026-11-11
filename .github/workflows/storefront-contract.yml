@@ -77,6 +77,13 @@ jobs:
           php tests/storefront-catalogue-contract.php
           php tests/storefront-filter-extension-boundary.php
 
+      - name: Validate accessible catalogue empty states
+        shell: bash
+        run: |
+          set -euo pipefail
+          php -l tests/storefront-empty-state-contract.php
+          php tests/storefront-empty-state-contract.php
+
       - name: Validate public contract and query boundaries
         shell: bash
         run: |
