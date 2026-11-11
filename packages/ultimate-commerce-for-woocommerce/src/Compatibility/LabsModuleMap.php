@@ -111,7 +111,7 @@ final class LabsModuleMap
         }
 
         foreach ($manifests as $manifest) {
-            $foundationRegistry->register($manifest);
+            call_user_func(array($foundationRegistry, 'register'), $manifest);
         }
         return true;
     }
