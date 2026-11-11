@@ -47,6 +47,14 @@ The response contains:
 
 The result contains no cart token, nonce or customer identity. UC conservatively reports `public_cache_safe=false` by default because guest prices can still vary by tax, market, geolocation or currency integrations. A deployment may opt in through `ultimate_commerce_catalog_public_cache_safe` only after `ultimate_commerce_catalog_cache_context` includes every required cache-vary dimension for that store. UC never assumes that logged-out implies globally cacheable.
 
+## Search and filter empty-state experience (additive)
+
+The default `Catalog::renderList()` renderer retains the existing `uc-product-list` wrapper and `ultimate_commerce_product_list_before` / `ultimate_commerce_product_list_after` hooks. When the Woo Store API returns zero visible product-card items, it now renders a theme-styleable paragraph with `class="uc-product-list__empty"`, `data-uc-catalog-empty="1"` and `role="status"`. A non-empty validated search term is reflected only as HTML-escaped text alongside a suggestion to retry or change filters. With selected filters but no search term, the paragraph suggests removing a filter; an empty catalogue without search/filters gets a neutral availability message.
+
+The result remains **server-rendered, local, and optional**: no remote search provider, new catalogue index, frontend dependency, stock/price write, access control, content-style override or additional mandatory service is introduced. Themes can style the semantic class and keep their own filter UI. This does not implement an automatic reset URL or accept one from a browser, and does not interfere with WooCommerce's native product search or query ownership. Errors from unavailable Store API product queries continue to return empty markup, rather than displaying a misleading no-results message.
+
+The regression test `tests/storefront-empty-state-contract.php` covers found products, zero-result search and search-term escaping, filter-only misses, truly empty catalogues, Store API errors and extension-hook order. The translation template includes the new translatable strings. The existing Storefront API 1.1 contract remains source/backwards compatible.
+
 ## Product-card schema
 
 `uc.product-card.v1` exposes:
