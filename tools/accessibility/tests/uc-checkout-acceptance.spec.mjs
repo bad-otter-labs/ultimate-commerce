@@ -58,7 +58,15 @@ test('Free variable Quick Add reaches a real Woo order through checkout', async 
   // The destination must be the actual Woo checkout link, with its real form.
   await expect(page).toHaveURL(checkoutUrl.toString());
   const form = page.locator('form.checkout');
-  await expect(form).toBeVisible();
+  await expect(form).toBeVisible().catch(async () => {
+    const cartResponse = await page.evaluate(async () => {
+      const response = await fetch('/?rest_route=/wc/store/v1/cart', { credentials: 'same-origin' });
+      const cart = await response.json().catch(() => ({}));
+      return { status: response.status, items_count: cart.items_count };
+    });
+    const text = (await page.locator('body').innerText()).slice(0, 1000);
+    throw new Error('Native Woo checkout form not visible. Cart: ' + JSON.stringify(cartResponse) + '; page: ' + text);
+  });
 
   // The fixture deliberately enables BACS (no real payment or live gateway).
   // Submit Woo's native checkout form; never call a private order-creation API.
