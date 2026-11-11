@@ -97,10 +97,12 @@ final class Catalog
             ? $result['pagination']
             : array();
         $page = (int) ($pagination['page'] ?? 1);
-        $pages = (int) ($pagination['pages'] ?? 1);
+        // The Store API can report more result pages than Free permits a
+        // shopper to request; cap navigation to the public API's page bound.
+        $pages = max(1, min(CatalogFilterRegistry::MAX_PAGE, (int) ($pagination['pages'] ?? 1)));
 
         if ($page < 1 || $page > CatalogFilterRegistry::MAX_PAGE
-            || $pages <= 1 || $pages > CatalogFilterRegistry::MAX_PAGE || $page > $pages) {
+            || $pages <= 1 || $page > $pages) {
             return '';
         }
 
