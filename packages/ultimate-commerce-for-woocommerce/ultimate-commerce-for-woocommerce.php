@@ -8,7 +8,7 @@
  * Requires PHP: 8.1
  * Requires Plugins: woocommerce
  * WC requires at least: 9.8
- * WC tested up to: 11.1
+ * WC tested up to: 11.2
  * Author: Bad Otter Labs
  * Author URI: https://badotter.io
  * Text Domain: bad-otter-ultimate-commerce-woocommerce

@@ -26,6 +26,7 @@ This candidate includes merged Free development from the Storefront API 1.1 line
 
 ## Engineering gates before publication
 
+- [x] Live compatibility matrix passed for WordPress 6.6.4/WooCommerce 9.8.5/PHP 8.1, WordPress 7.1.1/WooCommerce 11.1.0/PHP 8.3 and WordPress 7.1.4/WooCommerce 11.2.2/PHP 8.3 (HPOS smoke); rerun after final metadata edits.
 - [ ] All **exact-head** Free PR checks green: Full Gate, official WordPress.org Plugin Check and package inspection, translation POT, WPCS/PHPStan/dependency audits, PHP/WooCommerce compatibility, frontend accessibility and browser acceptance.
 - [ ] Verify the release ZIP is deterministic, uses the canonical WordPress.org slug and only contains expected Free package files. Review the checksum and retained CI candidate artifact.
 - [ ] Confirm the current WordPress.org SVN tag `0.2.2` does not already exist and plugin version metadata matches the requested release.
