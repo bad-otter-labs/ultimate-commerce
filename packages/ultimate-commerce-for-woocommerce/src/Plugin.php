@@ -6,6 +6,7 @@ use BadOtter\UltimateCommerce\Admin\AdminMenu;
 use BadOtter\UltimateCommerce\Admin\ModulesPage;
 use BadOtter\UltimateCommerce\Admin\SettingsPage;
 use BadOtter\UltimateCommerce\Compatibility\WooCommerceCompatibility;
+use BadOtter\UltimateCommerce\Compatibility\LabsModuleMap;
 use BadOtter\UltimateCommerce\Concurrency\OptionLockStore;
 use BadOtter\UltimateCommerce\Idempotency\OptionIdempotencyStore;
 use BadOtter\UltimateCommerce\Privacy\PersonalDataRegistry;
@@ -62,6 +63,25 @@ final class Plugin
         SettingsPage::hooks();
         AdminMenu::hooks();
         do_action('ultimate_commerce_loaded', $registry);
+    }
+
+    /**
+     * Optional, read-only Labs discovery. Call after modules_registered/loaded.
+     * The standalone Free plugin never needs the Labs foundation to run.
+     *
+     * @return list<array<string, mixed>>
+     */
+    public static function labsModuleManifests(): array
+    {
+        return LabsModuleMap::declarations(self::registry(), array(
+            'bad-otter-ultimate-commerce-woocommerce' => array(
+                'product_id' => 'ultimate-commerce-for-woocommerce',
+                'display_name' => 'Ultimate Commerce for WooCommerce',
+                'version' => ULTIMATE_COMMERCE_VERSION,
+                'entitlement_id' => null,
+                'requires' => array(),
+            ),
+        ));
     }
 
     public static function activate(): void
