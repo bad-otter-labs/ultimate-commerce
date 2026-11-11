@@ -19,11 +19,11 @@ The roadmap serves four simultaneous goals:
 
 ## Storefront development checkpoint — 11 November 2026
 
-**Merged:** Free PR #53 added accessible, translatable zero-result search/filter messages without extra catalogue queries, preserving WooCommerce product truth, module hooks and public Storefront API 1.1. All exact-head and post-merge gates passed.
+**Merged, not a phase exit:** Free PR #53 introduced translatable, accessible zero-result search/filter messages. Free PR #54 added a validated same-site WooCommerce Shop recovery link for those misses. Both passed their required protected checks; #54 passed **17/17** post-merge workflows without triggering any publication.
 
-**Proposed in this focused PR:** link search/filter misses to the merchant's validated WooCommerce Shop permalink, escaping the final output, omitting rejected links, and never suggesting a browse-all action for a truly empty shop. Tests cover URL hostility and existing screen-reader/status behaviour. See [Storefront catalogue contract](docs/storefront-catalogue-contract-v1.md).
+**Proposed next Phase 2 usability increment:** host themes can opt into semantic Previous/Next pagination, with an accessible page position, localised labels and safe same-site navigation that preserves Free's canonical search, sort, price and filter state. An explicit unfiltered theme permalink is mandatory; customer-provided URL parameters never become redirect targets. WordPress's 500-page public bound, existing Woo ProductQuery ownership and renderer hooks remain unchanged. See [Storefront catalogue contract](docs/storefront-catalogue-contract-v1.md).
 
-**Next phase evidence:** exact-head WordPress.org/i18n/Plugin Check, live browser accessibility and matrix, protected merge and subsequent Free/Pro integration. Neither this incremental shopper journey nor foundation discovery completes Phase 2/3 or authorizes publication.
+**Still required:** exact-head storefront PHP, i18n, WordPress.org and browser accessibility CI, protected merge, post-merge Free/Pro integration and serious-merchant acceptance. These quality-of-life features do not complete Phase 2/3, publish Free or change inventory/payment authority.
 
 ## Roadmap principles
 
