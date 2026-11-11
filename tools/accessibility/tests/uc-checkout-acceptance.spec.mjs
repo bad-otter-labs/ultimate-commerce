@@ -80,19 +80,20 @@ test('Free variable Quick Add reaches a real Woo order through checkout', async 
   await expect(page.locator('input[name="payment_method"][value="bacs"]')).toBeAttached();
   await page.locator('#place_order').click();
   await expect(page).toHaveURL(/order-received/);
-  await expect(page.locator('.woocommerce-order-overview__order')).toBeVisible().catch(async () => {
-    const current = new URL(page.url());
-    const segments = current.pathname.split('/');
-    const index = segments.indexOf('order-received');
-    const orderNumber = Number(current.searchParams.get('order-received') || (index >= 0 ? segments[index + 1] : 0));
-    const content = (await page.locator('body').innerText()).slice(0, 1400);
-    throw new Error('Woo confirmation overview missing; order ID from route: ' + orderNumber + '; page: ' + content);
-  });
-
-  // Verify persisted Woo-owned order and variation using a narrowly scoped
-  // disposable-only fixture endpoint, not UC or browser-local order state.
-  const orderId = Number((await page.locator('.woocommerce-order-overview__order').innerText()).replace(/[^0-9]/g, ''));
+  // Modern Woo order-received templates need not use classic overview CSS.
+  // Verify shopper-visible confirmation and resolve the order ID from the
+  // Woo receipt route, including WordPress plain permalink installations.
+  const receipt = new URL(page.url());
+  const segments = receipt.pathname.split('/');
+  const endpointIndex = segments.indexOf('order-received');
+  const orderId = Number(receipt.searchParams.get('order-received') || (endpointIndex >= 0 ? segments[endpointIndex + 1] : 0));
   expect(orderId).toBeGreaterThan(0);
+  await expect(page.locator('body')).toContainText('Thank you. Your order has been received.');
+  await expect(page.locator('body')).toContainText('Order #: ' + orderId);
+  await expect(page.locator('body')).toContainText('Accessible Variable Product');
+  await expect(page.locator('body')).toContainText('Blue');
+
+  // Read back the persisted Woo order, not a UC/browser-local snapshot.
   const proof = await page.evaluate(async (id) => {
     const response = await fetch('/?rest_route=/uc-fixture/v1/order-proof&order_id=' + encodeURIComponent(id), {
       credentials: 'same-origin', cache: 'no-store',
