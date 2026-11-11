@@ -12,6 +12,11 @@ function uc_a11y_fixture_assert(bool $condition, string $message): void
 uc_a11y_fixture_assert(class_exists('WooCommerce'), 'WooCommerce must be active before fixture setup.');
 uc_a11y_fixture_assert(class_exists('WC_Product_Variable'), 'WooCommerce product CRUD is unavailable.');
 
+// New WooCommerce installs default to Coming Soon mode, which hides checkout
+// from guest shoppers. This disposable browser acceptance needs a visible store.
+update_option('woocommerce_coming_soon', 'no', false);
+update_option('woocommerce_store_pages_only', 'no', false);
+
 $attribute = new WC_Product_Attribute();
 $attribute->set_name('Colour');
 $attribute->set_options(array('Red', 'Blue'));
