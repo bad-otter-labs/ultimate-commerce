@@ -41,6 +41,43 @@ For local/custom variation attributes, use each option's `request_value` when ha
 
 The variation controller emits the bubbling `uc:variation-change` event for presentation integrations. It does not create a second stock or variation truth.
 
+## Merchant-owned catalogue GET integration (native search, filters and sorting)
+
+For a conventional Woo Shop page, a theme can opt into Free's semantic forms without creating a second catalogue query or replacing Woo product/cart truth. This is a **template integration example, not a plugin-wide shortcode or automatic archive hijack**:
+
+```php
+<?php
+use BadOtter\UltimateCommerce\Storefront\Catalog;
+
+$uc_ready = defined('ULTIMATE_COMMERCE_STOREFRONT_API_VERSION')
+    && version_compare((string) ULTIMATE_COMMERCE_STOREFRONT_API_VERSION, '1.1.0', '>=')
+    && class_exists(Catalog::class);
+$shop_url = function_exists('wc_get_page_permalink') ? wc_get_page_permalink('shop') : '';
+
+if ($uc_ready && is_string($shop_url) && $shop_url !== '') {
+    // Use the unfiltered Shop permalink as the destination; do NOT pass
+    // $_SERVER['REQUEST_URI'], a return_to field or an arbitrary GET URL.
+    $request = isset($_GET) && is_array($_GET) ? wp_unslash($_GET) : array();
+
+    echo Catalog::renderList(
+        $request,
+        array(
+            'pagination_base_url' => $shop_url,
+            'show_filter_controls' => true,
+            'show_sort_control' => true,
+        )
+    ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- UC's documented renderer escapes its HTML.
+} else {
+    // Render this theme's ordinary WooCommerce archive loop and controls.
+}
+```
+
+On every GET request, Free normalises the supported `search`, `filter_<attribute>`, price, availability, sort, page and per-page fields before delegating the product query to Woo Store API. The search and filter form preserves the chosen sort/page size, then resets to page one. The separate sort form preserves current validated search/facets, then resets to page one. Previous/Next links preserve all canonical state and enforce Free's page limit. Global product/category archive styling is the theme's responsibility, and the theme should not render a duplicate native Woo archive loop beside the UC cards.
+
+The filter form uses the existing registered Woo attribute/taxonomy descriptors and native GET checkboxes, so unchecked facets clear normally. Pro's `recommended` choice appears through the supported sort-definition extension hook only while registered. Only the trusted unfiltered permalink can become a form action; it must pass WordPress same-host validation. When the Free plugin is inactive, the theme's normal Woo loop remains its fallback.
+
+Product cards still use Woo's actual product, variation, price and stock view models and Woo's native add-to-cart/Store API cart boundaries; this does **not** implement checkout or claim a complete merchant journey test. The standalone PHP regression exercises the combined search/filter/sort/page/card rendering. Before enabling this on a live theme, separately check the rendered archive in a real Woo installation for mobile layout, attribute choices, keyboard/screen-reader order, variation selection, quick add, cart drawer, checkout and Woo order creation. No live store is changed by this example.
+
 ## Cart drawer and Quick Add
 
 Cart API v1 is documented in `docs/cart-drawer-contract-v1.md`.
@@ -96,7 +133,7 @@ A theme should not register product behavior by reaching into `ModuleRegistry`, 
 
 ## Translation
 
-Theme-owned copy uses the theme's own text domain. Ultimate Commerce runtime copy uses `ultimate-commerce-for-woocommerce`. Do not hard-code replacements for UC JavaScript status/error strings; WordPress language packs can translate those through the registered `wp-i18n` runtime.
+Theme-owned copy uses the theme's own text domain. Ultimate Commerce runtime copy uses `bad-otter-ultimate-commerce-woocommerce`. Do not hard-code replacements for UC JavaScript status/error strings; WordPress language packs can translate those through the registered `wp-i18n` runtime.
 
 See `docs/translation-readiness.md`.
 
