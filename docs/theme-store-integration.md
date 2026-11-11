@@ -63,6 +63,9 @@ if ($uc_ready && is_string($shop_url) && $shop_url !== '') {
         $request,
         array(
             'pagination_base_url' => $shop_url,
+            // WordPress reserves "page" for multi-page post content;
+            // use a namespaced GET key on ordinary Shop/Page templates.
+            'pagination_query_key' => 'uc_catalog_page',
             'show_filter_controls' => true,
             'show_sort_control' => true,
         )
@@ -73,6 +76,8 @@ if ($uc_ready && is_string($shop_url) && $shop_url !== '') {
 ```
 
 On every GET request, Free normalises the supported `search`, `filter_<attribute>`, price, availability, sort, page and per-page fields before delegating the product query to Woo Store API. The search and filter form preserves the chosen sort/page size, then resets to page one. The separate sort form preserves current validated search/facets, then resets to page one. Previous/Next links preserve all canonical state and enforce Free's page limit. Global product/category archive styling is the theme's responsibility, and the theme should not render a duplicate native Woo archive loop beside the UC cards.
+
+On an ordinary WordPress Page template, **never use raw `?page=2` for UC pagination**: WordPress reserves `page` for multipage post content and can redirect to the first page. Opting into `pagination_query_key => 'uc_catalog_page'` tells `Catalog::renderList()` to emit `uc_catalog_page` in Previous/Next URLs and translate incoming GET `uc_catalog_page` to the existing bounded internal `page` input. The default `page` URL behavior and `Catalog::query(array('page' => ...))` API are unchanged for existing integrations. Search/filter/sort GET forms omit both page keys so changes reset to the first page.
 
 The filter form uses the existing registered Woo attribute/taxonomy descriptors and native GET checkboxes, so unchecked facets clear normally. Pro's `recommended` choice appears through the supported sort-definition extension hook only while registered. Only the trusted unfiltered permalink can become a form action; it must pass WordPress same-host validation. When the Free plugin is inactive, the theme's normal Woo loop remains its fallback.
 
