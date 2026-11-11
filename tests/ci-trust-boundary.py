@@ -10,16 +10,7 @@ TRUSTED_PUBLISHERS = {
     "development-release.yml",
     "release.yml",
 }
-HEAVY_SELF_HOSTED_WORKFLOWS = {
-    "accessibility.yml",
-    "wordpress-org.yml",
-}
 HOSTED_RUNNER = "runs-on: ubuntu-latest"
-FORK_SAFE_HEAVY_RUNNER = (
-    "runs-on: ${{ github.event_name == 'pull_request' "
-    "&& github.event.pull_request.head.repo.full_name != github.repository "
-    "&& 'ubuntu-latest' || 'badotter' }}"
-)
 
 workflow_paths = sorted(
     list(WORKFLOWS.glob("*.yml")) + list(WORKFLOWS.glob("*.yaml"))
@@ -46,15 +37,15 @@ for path in workflow_paths:
     if "pull_request:" not in text:
         continue
 
-    expected_runner = (
-        FORK_SAFE_HEAVY_RUNNER
-        if path.name in HEAVY_SELF_HOSTED_WORKFLOWS
-        else HOSTED_RUNNER
-    )
-    if expected_runner not in text:
+    if HOSTED_RUNNER not in text:
         raise SystemExit(
-            f"{path.name}: pull-request runner does not match the approved hosted/heavy trust boundary."
+            f"{path.name}: public Free PR validation must use an isolated GitHub-hosted runner."
         )
+    for runner in re.findall(r"(?m)^\\s*runs-on:\\s*(.+?)\\s*$", text):
+        if runner.strip() != "ubuntu-latest":
+            raise SystemExit(
+                f"{path.name}: public Free pull requests may not access a self-hosted or dynamic runner."
+            )
 
     if re.search(r"(?m)^\s*uses:\s*[^#\n]+@(main|master|HEAD)\s*$", text):
         raise SystemExit(
