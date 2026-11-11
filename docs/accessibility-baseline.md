@@ -50,6 +50,7 @@ The first live browser runs found and fixed real Free runtime issues:
 3. cart initial focus targeted the non-focusable overlay instead of the Close button;
 4. Wishlist/Recently Viewed Store API query construction broke when `rest_url()` used plain-permalink `?rest_route=` URLs;
 5. variation radio buttons lacked a roving `tabindex`.
+6. the first real WordPress Page-template catalogue test exposed a conflict between UC's existing `page=2` link and WordPress's own multi-page post query variable; WordPress redirected away the requested catalogue page. The backward-compatible, opt-in `uc_catalog_page` query key now avoids that collision, translating to the same bounded internal Free `page` state before Woo's Store API query.
 
 These are now regression-protected by the browser baseline plus the existing PHP contract tests.
 
