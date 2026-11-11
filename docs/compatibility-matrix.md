@@ -7,9 +7,10 @@ Ultimate Commerce Free declares compatibility only after a live WordPress/WooCom
 | Purpose | WordPress | PHP | WooCommerce | Woo package SHA-256 |
 | --- | --- | --- | --- | --- |
 | Declared floor | 6.6.4 | 8.1 | 9.8.5 | `9008e72eacda8f3bda01d0b704502eaddd8bc147651d61bd9aa7a015bf583964` |
-| Current stable | 7.1.1 | 8.3 | 11.1.0 | `ab56c02b4e0b0685702408624822d8f598ba8f9a9333bcc3673b5da24e03e4f1` |
+| Previous stable | 7.1.1 | 8.3 | 11.1.0 | `ab56c02b4e0b0685702408624822d8f598ba8f9a9333bcc3673b5da24e03e4f1` |
+| Current stable | 7.1.4 | 8.3 | 11.2.2 | `19f669c2d052c9c55ce4d34d21caa32810f86f8bac2ed30c73a8a1e1ca8e78de` |
 
-WooCommerce 11.1.0 itself requires WordPress 7.0 or newer, so it is not a valid dependency for testing the WordPress 6.6 floor. WooCommerce 9.8.5 is used for the floor case because that release declares WordPress 6.6 support.
+Current WooCommerce 11.2.2 is tested with WordPress 7.1.4; WooCommerce 11.1.0 is retained as a prior-stable regression. These newer WooCommerce versions cannot be used to test the WordPress 6.6 minimum. WooCommerce 9.8.5 is used for the floor case because that release declares WordPress 6.6 support.
 
 The plugin metadata therefore records:
 
@@ -17,7 +18,7 @@ The plugin metadata therefore records:
 - `Requires PHP: 8.1`
 - `WC requires at least: 9.8`
 - `Tested up to: 7.1`
-- `WC tested up to: 11.1`
+- `WC tested up to: 11.2`
 
 These are tested support claims, not an assertion that every historical WordPress/WooCommerce cross-product is a valid upstream combination.
 
