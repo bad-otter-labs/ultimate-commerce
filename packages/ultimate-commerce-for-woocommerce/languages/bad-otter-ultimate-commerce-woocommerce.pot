@@ -872,21 +872,21 @@ msgstr ""
 msgid "Browse all products"
 msgstr ""
 
-#: src/Storefront/Catalog.php:177
+#: src/Storefront/Catalog.php:178
 msgid "Product catalogue pages"
 msgstr ""
 
-#: src/Storefront/Catalog.php:180
+#: src/Storefront/Catalog.php:181
 msgid "Previous page"
 msgstr ""
 
 #. translators: 1: Current catalogue page, 2: Total catalogue pages.
-#: src/Storefront/Catalog.php:185
+#: src/Storefront/Catalog.php:186
 #, php-format
 msgid "Page %1$d of %2$d"
 msgstr ""
 
-#: src/Storefront/Catalog.php:191
+#: src/Storefront/Catalog.php:192
 msgid "Next page"
 msgstr ""
 
