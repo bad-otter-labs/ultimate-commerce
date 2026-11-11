@@ -624,7 +624,7 @@ msgstr ""
 msgid "Wishlist"
 msgstr ""
 
-#: src/Plugin.php:88
+#: src/Plugin.php:108
 msgid "Ultimate Commerce for WooCommerce requires WooCommerce to be installed and active."
 msgstr ""
 
