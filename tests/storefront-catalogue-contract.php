@@ -5,7 +5,7 @@ declare(strict_types=1);
 define('ABSPATH', __DIR__ . '/');
 define('ULTIMATE_COMMERCE_URL', 'https://example.test/wp-content/plugins/ultimate-commerce-for-woocommerce/');
 define('ULTIMATE_COMMERCE_DIR', dirname(__DIR__) . '/packages/ultimate-commerce-for-woocommerce/');
-define('ULTIMATE_COMMERCE_VERSION', '0.2.1');
+define('ULTIMATE_COMMERCE_VERSION', '0.2.2');
 
 $GLOBALS['uc_test_registered_scripts'] = array();
 $GLOBALS['uc_test_enqueued_scripts'] = array();

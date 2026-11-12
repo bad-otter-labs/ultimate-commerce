@@ -61,7 +61,7 @@ $products = array(
     'bad-otter-ultimate-commerce-woocommerce' => array(
         'product_id' => 'ultimate-commerce-for-woocommerce',
         'display_name' => 'Ultimate Commerce for WooCommerce',
-        'version' => '0.2.1',
+        'version' => '0.2.2',
         'entitlement_id' => null,
         'requires' => array(),
     ),

@@ -4,10 +4,10 @@ Tags: woocommerce, ecommerce, wishlist, variations, cart
 Requires at least: 6.6
 Tested up to: 7.1
 Requires PHP: 8.1
-Stable tag: 0.2.1
+Stable tag: 0.2.2
 Requires Plugins: woocommerce
 WC requires at least: 9.8
-WC tested up to: 11.1
+WC tested up to: 11.2
 License: GPL v2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -112,6 +112,12 @@ The deterministic WordPress.org release ZIP is built from the canonical Free sou
 The resulting ZIP is audited by `scripts/check-wordpress-org-package.py` and by the official WordPress Plugin Check workflow before release.
 
 == Changelog ==
+
+= 0.2.2 =
+* Add opt-in, accessible, native catalogue search and facet controls for merchant themes, with WooCommerce category/attribute, availability and price filters.
+* Add sorting and bounded pagination support, including the WordPress-safe `uc_catalog_page` alias for catalogue views embedded in normal pages.
+* Preserve selected validated Woo Store API filter state across sorting and pagination while retaining empty-result recovery controls and the original WooCommerce product authority.
+* Extend disposable WordPress/WooCommerce browser acceptance through variation-aware Quick Add, the cart drawer, guest checkout and a persisted offline-payment WooCommerce order; no external payment is charged.
 
 = 0.2.1 =
 * Extend Storefront API to v1.1 with bounded, canonical WooCommerce product-search state for extension-safe search merchandising.

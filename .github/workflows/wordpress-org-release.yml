@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       version:
-        description: Exact plugin version to publish (for example 0.2.1)
+        description: Exact plugin version to publish (for example 0.2.2)
         required: true
         type: string
       confirm_publish:

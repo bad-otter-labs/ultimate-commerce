@@ -141,12 +141,29 @@ def main() -> int:
             if not re.search(pattern, readme, re.I | re.M):
                 fail(f'readme.txt is missing required submission section: {section}')
 
-        for compatibility_marker in (
-            'WC requires at least: 9.8',
-            'WC tested up to: 11.1',
-        ):
-            if compatibility_marker not in plugin or compatibility_marker not in readme:
-                fail(f'WooCommerce compatibility metadata mismatch: {compatibility_marker}')
+        # The published readme and PHP headers must agree on the same
+        # WooCommerce support range. The CI compatibility matrix, not a
+        # stale hard-coded maximum here, proves each tested upper bound.
+        wc_support = {}
+        for field in ('WC requires at least', 'WC tested up to'):
+            plugin_value = header(plugin, field)
+            marker = field + ': '
+            readme_value = next((
+                line[len(marker):].strip()
+                for line in readme.splitlines()
+                if line.startswith(marker)
+            ), '')
+            if plugin_value != readme_value:
+                fail(f'WooCommerce compatibility metadata mismatch: {field}')
+            pieces = plugin_value.split('.')
+            if len(pieces) not in (2, 3) or not all(part.isascii() and part.isdigit() for part in pieces):
+                fail(f'Invalid WooCommerce compatibility version: {field}')
+            wc_support[field] = tuple(int(part) for part in pieces)
+
+        if wc_support['WC requires at least'] != (9, 8):
+            fail('WooCommerce minimum must remain 9.8 until explicitly reviewed')
+        if wc_support['WC tested up to'] < wc_support['WC requires at least']:
+            fail('WooCommerce tested maximum is below the minimum')
 
         for marker in (
             'does not contact any third-party service by default',
