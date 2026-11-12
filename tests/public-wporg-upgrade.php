@@ -7,8 +7,6 @@
  * The fixture is intentionally not distributed in the WordPress.org ZIP.
  */
 
-declare(strict_types=1);
-
 use Automattic\WooCommerce\Utilities\OrderUtil;
 use BadOtter\UltimateCommerce\Support\Settings;
 use BadOtter\UltimateCommerce\Wishlist\WishlistStore;
