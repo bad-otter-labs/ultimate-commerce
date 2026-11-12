@@ -1,0 +1,58 @@
+name: Validate Public Free ZIP Upgrade
+
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/public-wporg-upgrade.yml'
+      - 'scripts/run-wporg-020-upgrade-case.sh'
+      - 'tests/public-wporg-upgrade.php'
+      - 'scripts/build-wordpress-org-package.py'
+      - 'scripts/check-wordpress-org-package.py'
+      - 'packages/ultimate-commerce-for-woocommerce/**'
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/public-wporg-upgrade.yml'
+      - 'scripts/run-wporg-020-upgrade-case.sh'
+      - 'tests/public-wporg-upgrade.php'
+      - 'scripts/build-wordpress-org-package.py'
+      - 'scripts/check-wordpress-org-package.py'
+      - 'packages/ultimate-commerce-for-woocommerce/**'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  public-upgrade:
+    name: published 0.2.0 to candidate 0.2.2 ZIP
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - name: Checkout exact candidate head
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          persist-credentials: false
+
+      - name: Validate upgrade harness syntax
+        shell: bash
+        run: |
+          set -euo pipefail
+          bash -n scripts/run-wporg-020-upgrade-case.sh
+          php -l tests/public-wporg-upgrade.php
+
+      - name: Prove actual public package upgrade and rollback
+        shell: bash
+        env:
+          WP_VERSION: '7.1.4'
+          PHP_VERSION: '8.3'
+          WC_VERSION: '11.2.2'
+          WC_SHA256: '19f669c2d052c9c55ce4d34d21caa32810f86f8bac2ed30c73a8a1e1ca8e78de'
+          # Official WordPress.org Free 0.2.0 ZIP, verified by Pro CI 42997582427.
+          UC_WPORG_020_SHA256: 'da6d7f6c35efd2e72b749f4b54e5a0e78d48b9b2e7672ee7d57505bc685007a2'
+        run: bash scripts/run-wporg-020-upgrade-case.sh
