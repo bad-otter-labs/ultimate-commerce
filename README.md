@@ -16,6 +16,10 @@ Read these before designing or implementing features:
 
 If the documents appear to conflict, do not silently choose the convenient interpretation. Reconcile them deliberately through the architecture decision process.
 
+## 24 November completion navigation
+
+Use [the completion and interface map](docs/completion-and-interface-map.md) and [responsibility index](.badotter/documentation-index.json) with the existing authoritative product documents. Main source is 0.2.1; #60 is the separate 0.2.2 candidate, not publication approval. Actual public plugin identity and installed basename follow the reviewed package and directory evidence, not the older planned-slug wording below. No new product gate or runtime change.
+
 ## Phase 0 package layout
 
 During the pre-WordPress.org identity migration this repository intentionally contains two Free package roots:
