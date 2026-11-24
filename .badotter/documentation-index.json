@@ -1,0 +1,584 @@
+{
+  "schema_version": 1,
+  "repository": "bad-otter-labs/ultimate-commerce",
+  "responsibilities": {
+    "readme": {
+      "status": "incomplete",
+      "owner": "bad-otter-labs/ultimate-commerce",
+      "evidence": [
+        {
+          "path": "README.md",
+          "blob": "3c7dee365a45904a771d9333b1455d17fd0f2787"
+        },
+        {
+          "path": "docs/completion-and-interface-map.md",
+          "blob": "cd038aa3053f06a6bb3c7bdcf54dfe655e07a66c"
+        }
+      ],
+      "upstream": [],
+      "review_receipt": "",
+      "note": "Exact local document evidence; semantic, runtime and independent review remain open.",
+      "next_action": "Review product navigation against actual source and distribution."
+    },
+    "agent_instructions": {
+      "status": "incomplete",
+      "owner": "bad-otter-labs/ultimate-commerce",
+      "evidence": [
+        {
+          "path": "AGENTS.md",
+          "blob": "de63dc6b3e75aed9f2a43cca1cec249ab188cdc1"
+        },
+        {
+          "path": "BUILD-WORKFLOW.md",
+          "blob": "b81f17186e6abcf76c4b176dad41c753e14e2fd5"
+        }
+      ],
+      "upstream": [],
+      "review_receipt": "",
+      "note": "Exact local document evidence; semantic, runtime and independent review remain open.",
+      "next_action": "Review exact-head public CI and continuation guidance."
+    },
+    "source_of_truth": {
+      "status": "incomplete",
+      "owner": "bad-otter-labs/ultimate-commerce",
+      "evidence": [
+        {
+          "path": "FOUNDATION.md",
+          "blob": "d5ba6dd35d28d443f88deaa0700e7e069e504f0d"
+        },
+        {
+          "path": "BLUEPRINT.md",
+          "blob": "562a22f516d8ebca552a30e29f32997c583a574f"
+        },
+        {
+          "path": "ROADMAP.md",
+          "blob": "d9fdef7810cbab1988fea829e510095c7457f7cf"
+        },
+        {
+          "path": "docs/completion-and-interface-map.md",
+          "blob": "cd038aa3053f06a6bb3c7bdcf54dfe655e07a66c"
+        }
+      ],
+      "upstream": [],
+      "review_receipt": "",
+      "note": "Exact local document evidence; semantic, runtime and independent review remain open.",
+      "next_action": "Reconcile current exact source/official release/install evidence."
+    },
+    "vision_blueprint": {
+      "status": "incomplete",
+      "owner": "bad-otter-labs/ultimate-commerce",
+      "evidence": [
+        {
+          "path": "BLUEPRINT.md",
+          "blob": "562a22f516d8ebca552a30e29f32997c583a574f"
+        },
+        {
+          "path": "FOUNDATION.md",
+          "blob": "d5ba6dd35d28d443f88deaa0700e7e069e504f0d"
+        }
+      ],
+      "upstream": [],
+      "review_receipt": "",
+      "note": "Exact local document evidence; semantic, runtime and independent review remain open.",
+      "next_action": "Preserve useful Free and separate Pro/Hub and merchant roles."
+    },
+    "roadmap": {
+      "status": "incomplete",
+      "owner": "bad-otter-labs/ultimate-commerce",
+      "evidence": [
+        {
+          "path": "ROADMAP.md",
+          "blob": "d9fdef7810cbab1988fea829e510095c7457f7cf"
+        },
+        {
+          "path": "docs/completion-and-interface-map.md",
+          "blob": "cd038aa3053f06a6bb3c7bdcf54dfe655e07a66c"
+        }
+      ],
+      "upstream": [],
+      "review_receipt": "",
+      "note": "Exact local document evidence; semantic, runtime and independent review remain open.",
+      "next_action": "Trace remaining phases and #60 without false exit."
+    },
+    "requirements": {
+      "status": "incomplete",
+      "owner": "bad-otter-labs/ultimate-commerce",
+      "evidence": [
+        {
+          "path": "BLUEPRINT.md",
+          "blob": "562a22f516d8ebca552a30e29f32997c583a574f"
+        },
+        {
+          "path": "ROADMAP.md",
+          "blob": "d9fdef7810cbab1988fea829e510095c7457f7cf"
+        },
+        {
+          "path": "docs/storefront-catalogue-contract-v1.md",
+          "blob": "907e5da6a0d5f374e76c3def78a69e43c6c25057"
+        }
+      ],
+      "upstream": [],
+      "review_receipt": "",
+      "note": "Exact local document evidence; semantic, runtime and independent review remain open.",
+      "next_action": "Map real requirements to source and test evidence."
+    },
+    "feature_completion": {
+      "status": "incomplete",
+      "owner": "bad-otter-labs/ultimate-commerce",
+      "evidence": [
+        {
+          "path": "docs/completion-and-interface-map.md",
+          "blob": "cd038aa3053f06a6bb3c7bdcf54dfe655e07a66c"
+        },
+        {
+          "path": "ROADMAP.md",
+          "blob": "d9fdef7810cbab1988fea829e510095c7457f7cf"
+        },
+        {
+          "path": "docs/storefront-catalogue-contract-v1.md",
+          "blob": "907e5da6a0d5f374e76c3def78a69e43c6c25057"
+        }
+      ],
+      "upstream": [],
+      "review_receipt": "",
+      "note": "Exact local document evidence; semantic, runtime and independent review remain open.",
+      "next_action": "Finish per-feature and actual browser/runtime proof."
+    },
+    "architecture": {
+      "status": "incomplete",
+      "owner": "bad-otter-labs/ultimate-commerce",
+      "evidence": [
+        {
+          "path": "FOUNDATION.md",
+          "blob": "d5ba6dd35d28d443f88deaa0700e7e069e504f0d"
+        },
+        {
+          "path": "docs/adr/0003-optional-labs-foundation-and-stock-authority.md",
+          "blob": "145c43beca7e60386333b9ec6bbbd01e07396566"
+        },
+        {
+          "path": "docs/module-extension-contract-v1.md",
+          "blob": "4fe3a13fb90d6842707a930378f272e334010ec5"
+        }
+      ],
+      "upstream": [],
+      "review_receipt": "",
+      "note": "Exact local document evidence; semantic, runtime and independent review remain open.",
+      "next_action": "Verify dependency/authority boundaries in actual consumers."
+    },
+    "ownership": {
+      "status": "incomplete",
+      "owner": "bad-otter-labs/ultimate-commerce",
+      "evidence": [
+        {
+          "path": "FOUNDATION.md",
+          "blob": "d5ba6dd35d28d443f88deaa0700e7e069e504f0d"
+        },
+        {
+          "path": "BLUEPRINT.md",
+          "blob": "562a22f516d8ebca552a30e29f32997c583a574f"
+        },
+        {
+          "path": "docs/adr/0003-optional-labs-foundation-and-stock-authority.md",
+          "blob": "145c43beca7e60386333b9ec6bbbd01e07396566"
+        }
+      ],
+      "upstream": [],
+      "review_receipt": "",
+      "note": "Exact local document evidence; semantic, runtime and independent review remain open.",
+      "next_action": "Confirm maintainers and one writer per domain; no merchant-specific Free."
+    },
+    "api_contracts": {
+      "status": "incomplete",
+      "owner": "bad-otter-labs/ultimate-commerce",
+      "evidence": [
+        {
+          "path": "docs/storefront-catalogue-contract-v1.md",
+          "blob": "907e5da6a0d5f374e76c3def78a69e43c6c25057"
+        },
+        {
+          "path": "docs/cart-drawer-contract-v1.md",
+          "blob": "067d12b8e65b4ece3c9009e63ad568d8bc5a533e"
+        },
+        {
+          "path": "docs/wishlist-contract-v1.md",
+          "blob": "245aab8b0bcd76389cab4c924f29a7209f9a5633"
+        },
+        {
+          "path": "docs/account-order-contract-v1.md",
+          "blob": "905579b38c9e756846e441839c4449b600826e63"
+        }
+      ],
+      "upstream": [],
+      "review_receipt": "",
+      "note": "Exact local document evidence; semantic, runtime and independent review remain open.",
+      "next_action": "Complete route/schema/capability/denial and compatibility review."
+    },
+    "data_model": {
+      "status": "incomplete",
+      "owner": "bad-otter-labs/ultimate-commerce",
+      "evidence": [
+        {
+          "path": "FOUNDATION.md",
+          "blob": "d5ba6dd35d28d443f88deaa0700e7e069e504f0d"
+        },
+        {
+          "path": "docs/audit-privacy-foundations.md",
+          "blob": "72c414d5262ea91bd110b3ac047e32e0d5b40f59"
+        },
+        {
+          "path": "docs/uninstall-data-retention.md",
+          "blob": "d2623b8b841ef6fdd7bcd19baaa79aea3bb319d7"
+        }
+      ],
+      "upstream": [],
+      "review_receipt": "",
+      "note": "Exact local document evidence; semantic, runtime and independent review remain open.",
+      "next_action": "Trace actual option/user data, Woo ownership and retention."
+    },
+    "migrations": {
+      "status": "incomplete",
+      "owner": "bad-otter-labs/ultimate-commerce",
+      "evidence": [
+        {
+          "path": "docs/free-identity-migration.md",
+          "blob": "7e4068ff89031d1776ce25b6d92cad9a3f7d7191"
+        },
+        {
+          "path": "docs/uninstall-data-retention.md",
+          "blob": "d2623b8b841ef6fdd7bcd19baaa79aea3bb319d7"
+        }
+      ],
+      "upstream": [],
+      "review_receipt": "",
+      "note": "Exact local document evidence; semantic, runtime and independent review remain open.",
+      "next_action": "Actual installed basename/data migration and rollback proof."
+    },
+    "security": {
+      "status": "incomplete",
+      "owner": "bad-otter-labs/ultimate-commerce",
+      "evidence": [
+        {
+          "path": "SECURITY.md",
+          "blob": "e9bc8bbc2d32f4ca7fc55b5725b2157df9152425"
+        },
+        {
+          "path": "docs/security-request-conventions.md",
+          "blob": "ee6add60248b5cfef7752609f911285b83e54e79"
+        },
+        {
+          "path": "docs/external-boundary-security.md",
+          "blob": "59adf2df4f50bedeb1ed257596a5ac578167883f"
+        }
+      ],
+      "upstream": [],
+      "review_receipt": "",
+      "note": "Exact local document evidence; semantic, runtime and independent review remain open.",
+      "next_action": "Trace real callback auth/CSRF/secret/replay/denial."
+    },
+    "privacy": {
+      "status": "incomplete",
+      "owner": "bad-otter-labs/ultimate-commerce",
+      "evidence": [
+        {
+          "path": "docs/audit-privacy-foundations.md",
+          "blob": "72c414d5262ea91bd110b3ac047e32e0d5b40f59"
+        },
+        {
+          "path": "docs/wishlist-contract-v1.md",
+          "blob": "245aab8b0bcd76389cab4c924f29a7209f9a5633"
+        },
+        {
+          "path": "docs/recently-viewed-contract-v1.md",
+          "blob": "da45ec60f69e88621c1078b39037d37b595c9980"
+        }
+      ],
+      "upstream": [],
+      "review_receipt": "",
+      "note": "Exact local document evidence; semantic, runtime and independent review remain open.",
+      "next_action": "Verify field/consent/export/erase and guest storage."
+    },
+    "test_strategy": {
+      "status": "incomplete",
+      "owner": "bad-otter-labs/ultimate-commerce",
+      "evidence": [
+        {
+          "path": "BUILD-WORKFLOW.md",
+          "blob": "b81f17186e6abcf76c4b176dad41c753e14e2fd5"
+        },
+        {
+          "path": "docs/php-quality-gate.md",
+          "blob": "9735ccf895c2b82a2575c87733c0f938a8f68c2e"
+        },
+        {
+          "path": "docs/compatibility-matrix.md",
+          "blob": "2d780e3af0c485b4cb5bb9935e718d37a188492b"
+        },
+        {
+          "path": "docs/accessibility-baseline.md",
+          "blob": "b7f2558ea4cee1ee07b092775025df4226b0e5f5"
+        }
+      ],
+      "upstream": [],
+      "review_receipt": "",
+      "note": "Exact local document evidence; semantic, runtime and independent review remain open.",
+      "next_action": "Verify required exact-head checks and native browser/Woo matrix."
+    },
+    "deployment": {
+      "status": "incomplete",
+      "owner": "bad-otter-labs/ultimate-commerce",
+      "evidence": [
+        {
+          "path": "docs/wordpress-org-release-gate.md",
+          "blob": "31f7be70e1d2e42a80fcbabc758133a62ea39b82"
+        },
+        {
+          "path": "docs/wordpress-org-release.md",
+          "blob": "020a4b00daea5e43b7641f71bf18c52802a69be0"
+        },
+        {
+          "path": "docs/development-distribution.md",
+          "blob": "88f46a754d5a1518c14b594d19abb67a2f1cf31d"
+        }
+      ],
+      "upstream": [],
+      "review_receipt": "",
+      "note": "Exact local document evidence; semantic, runtime and independent review remain open.",
+      "next_action": "Current exact ZIP/digest/installed state and separate publication approval."
+    },
+    "rollback_recovery": {
+      "status": "incomplete",
+      "owner": "bad-otter-labs/ultimate-commerce",
+      "evidence": [
+        {
+          "path": "docs/free-identity-migration.md",
+          "blob": "7e4068ff89031d1776ce25b6d92cad9a3f7d7191"
+        },
+        {
+          "path": "docs/settings-transfer.md",
+          "blob": "1582e18714056de85de054fe52052aa0fbaf9283"
+        },
+        {
+          "path": "docs/uninstall-data-retention.md",
+          "blob": "d2623b8b841ef6fdd7bcd19baaa79aea3bb319d7"
+        }
+      ],
+      "upstream": [],
+      "review_receipt": "",
+      "note": "Exact local document evidence; semantic, runtime and independent review remain open.",
+      "next_action": "Prove actual safe upgrade/replacement/restore and retained data."
+    },
+    "operations": {
+      "status": "incomplete",
+      "owner": "bad-otter-labs/ultimate-commerce",
+      "evidence": [
+        {
+          "path": "docs/module-management.md",
+          "blob": "8892e0d14e9be5a2e3d7ce76452135c6178417c1"
+        },
+        {
+          "path": "docs/diagnostics.md",
+          "blob": "7af59dc73e9bedd68a67a1de9c5d2fe785ae45f3"
+        },
+        {
+          "path": "docs/settings-transfer.md",
+          "blob": "1582e18714056de85de054fe52052aa0fbaf9283"
+        }
+      ],
+      "upstream": [],
+      "review_receipt": "",
+      "note": "Exact local document evidence; semantic, runtime and independent review remain open.",
+      "next_action": "Review merchant support, redacted diagnostics, failure and recovery."
+    },
+    "decisions": {
+      "status": "incomplete",
+      "owner": "bad-otter-labs/ultimate-commerce",
+      "evidence": [
+        {
+          "path": "docs/adr/0003-optional-labs-foundation-and-stock-authority.md",
+          "blob": "145c43beca7e60386333b9ec6bbbd01e07396566"
+        },
+        {
+          "path": "docs/adr/0001-free-pro-wordpress-org-distribution.md",
+          "blob": "74715c75947385e597e2d66decb0a00003d10eb5"
+        },
+        {
+          "path": "docs/adr/0002-pro-hub-shared-platform-engines.md",
+          "blob": "6aaab457091d7ad6ca204d2ed4919036a77c1e8a"
+        }
+      ],
+      "upstream": [],
+      "review_receipt": "",
+      "note": "Exact local document evidence; semantic, runtime and independent review remain open.",
+      "next_action": "Reconcile dated decisions and proposed alternatives."
+    },
+    "handover": {
+      "status": "incomplete",
+      "owner": "bad-otter-labs/ultimate-commerce",
+      "evidence": [
+        {
+          "path": "AGENTS.md",
+          "blob": "de63dc6b3e75aed9f2a43cca1cec249ab188cdc1"
+        },
+        {
+          "path": "BUILD-WORKFLOW.md",
+          "blob": "b81f17186e6abcf76c4b176dad41c753e14e2fd5"
+        },
+        {
+          "path": "docs/completion-and-interface-map.md",
+          "blob": "cd038aa3053f06a6bb3c7bdcf54dfe655e07a66c"
+        }
+      ],
+      "upstream": [],
+      "review_receipt": "",
+      "note": "Exact local document evidence; semantic, runtime and independent review remain open.",
+      "next_action": "Prove revision-bound handover with Pro and product owners."
+    },
+    "changelog": {
+      "status": "incomplete",
+      "owner": "bad-otter-labs/ultimate-commerce",
+      "evidence": [
+        {
+          "path": "CHANGELOG.md",
+          "blob": "202606ce693cbccf14a159f8e767d0f7b4f3f805"
+        },
+        {
+          "path": "packages/ultimate-commerce-for-woocommerce/readme.txt",
+          "blob": "84f4cb44826ca6634554ad9ee69c372f38918fd1"
+        }
+      ],
+      "upstream": [],
+      "review_receipt": "",
+      "note": "Exact local document evidence; semantic, runtime and independent review remain open.",
+      "next_action": "Match version history and exact published/installed identity."
+    },
+    "lessons": {
+      "status": "incomplete",
+      "owner": "bad-otter-labs/ultimate-commerce",
+      "evidence": [
+        {
+          "path": "docs/free-identity-migration.md",
+          "blob": "7e4068ff89031d1776ce25b6d92cad9a3f7d7191"
+        },
+        {
+          "path": "docs/public-ci-trust-boundary.md",
+          "blob": "a559c7e0384e13bd2060844eae48690910089f39"
+        },
+        {
+          "path": "docs/accessibility-baseline.md",
+          "blob": "b7f2558ea4cee1ee07b092775025df4226b0e5f5"
+        }
+      ],
+      "upstream": [],
+      "review_receipt": "",
+      "note": "Exact local document evidence; semantic, runtime and independent review remain open.",
+      "next_action": "Trace past incidents and actual regression evidence."
+    },
+    "commercial_cost": {
+      "status": "incomplete",
+      "owner": "bad-otter-labs/ultimate-commerce",
+      "evidence": [
+        {
+          "path": "BLUEPRINT.md",
+          "blob": "562a22f516d8ebca552a30e29f32997c583a574f"
+        },
+        {
+          "path": "ROADMAP.md",
+          "blob": "d9fdef7810cbab1988fea829e510095c7457f7cf"
+        },
+        {
+          "path": "docs/adr/0003-optional-labs-foundation-and-stock-authority.md",
+          "blob": "145c43beca7e60386333b9ec6bbbd01e07396566"
+        }
+      ],
+      "upstream": [],
+      "review_receipt": "",
+      "note": "Exact local document evidence; semantic, runtime and independent review remain open.",
+      "next_action": "Review Free utility, Pro/Hub and separate hosted cost authority."
+    },
+    "completion_map": {
+      "status": "incomplete",
+      "owner": "bad-otter-labs/ultimate-commerce",
+      "evidence": [
+        {
+          "path": "docs/completion-and-interface-map.md",
+          "blob": "cd038aa3053f06a6bb3c7bdcf54dfe655e07a66c"
+        },
+        {
+          "path": "ROADMAP.md",
+          "blob": "d9fdef7810cbab1988fea829e510095c7457f7cf"
+        }
+      ],
+      "upstream": [],
+      "review_receipt": "",
+      "note": "Exact local document evidence; semantic, runtime and independent review remain open.",
+      "next_action": "Complete actual evidence and independent acceptance."
+    },
+    "route_map": {
+      "status": "incomplete",
+      "owner": "bad-otter-labs/ultimate-commerce",
+      "evidence": [
+        {
+          "path": "docs/completion-and-interface-map.md",
+          "blob": "cd038aa3053f06a6bb3c7bdcf54dfe655e07a66c"
+        },
+        {
+          "path": "docs/storefront-catalogue-contract-v1.md",
+          "blob": "907e5da6a0d5f374e76c3def78a69e43c6c25057"
+        },
+        {
+          "path": "docs/theme-store-integration.md",
+          "blob": "99da200464e0fb41eb354ca4685ca5808a7e8919"
+        }
+      ],
+      "upstream": [],
+      "review_receipt": "",
+      "note": "Exact local document evidence; semantic, runtime and independent review remain open.",
+      "next_action": "Complete source, theme/runtime and role route inventory."
+    },
+    "design_brand_assets": {
+      "status": "incomplete",
+      "owner": "bad-otter-labs/ultimate-commerce",
+      "evidence": [
+        {
+          "path": "docs/wordpress-org-assets.md",
+          "blob": "5c3abca3cc29259dc6b5c323b1d5a27f2a633061"
+        },
+        {
+          "path": "docs/theme-store-integration.md",
+          "blob": "99da200464e0fb41eb354ca4685ca5808a7e8919"
+        },
+        {
+          "path": "docs/accessibility-baseline.md",
+          "blob": "b7f2558ea4cee1ee07b092775025df4226b0e5f5"
+        }
+      ],
+      "upstream": [],
+      "review_receipt": "",
+      "note": "Exact local document evidence; semantic, runtime and independent review remain open.",
+      "next_action": "Audit original design assets and rights, theme isolation."
+    },
+    "content_accessibility": {
+      "status": "incomplete",
+      "owner": "bad-otter-labs/ultimate-commerce",
+      "evidence": [
+        {
+          "path": "docs/accessibility-baseline.md",
+          "blob": "b7f2558ea4cee1ee07b092775025df4226b0e5f5"
+        },
+        {
+          "path": "docs/translation-readiness.md",
+          "blob": "c21e18bf54f85ca9198675105b00b0d979cf2cce"
+        },
+        {
+          "path": "docs/storefront-catalogue-contract-v1.md",
+          "blob": "907e5da6a0d5f374e76c3def78a69e43c6c25057"
+        }
+      ],
+      "upstream": [],
+      "review_receipt": "",
+      "note": "Exact local document evidence; semantic, runtime and independent review remain open.",
+      "next_action": "Verify actual responsive, keyboard, translation and error content."
+    }
+  }
+}
