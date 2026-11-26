@@ -2,6 +2,7 @@
 /**
  * Disposable release acceptance: published WordPress.org 0.2.0 -> candidate
  * 0.2.2 -> published 0.2.0 rollback -> candidate 0.2.2.
+ * Stable-only compatibility uses seed and verify_stable on the public ZIP.
  *
  * Executed by wp eval-file against real installed ZIPs, WooCommerce and HPOS.
  * The fixture is intentionally not distributed in the WordPress.org ZIP.
@@ -23,6 +24,7 @@ function uc_public_upgrade_assert(bool $condition, string $message): void
 $stage = (string) getenv('UC_UPGRADE_STAGE');
 $versions = array(
     'seed'           => '0.2.0',
+    'verify_stable'  => '0.2.0',
     'upgraded'       => '0.2.2',
     'rolled_back'    => '0.2.0',
     'upgraded_again' => '0.2.2',

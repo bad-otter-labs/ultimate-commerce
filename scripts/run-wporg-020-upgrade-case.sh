@@ -1,6 +1,12 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+mode="${1:---upgrade}"
+if [[ "$#" -gt 1 || ( "$mode" != "--upgrade" && "$mode" != "--stable-only" ) ]]; then
+  echo "Usage: $0 [--upgrade|--stable-only]" >&2
+  exit 2
+fi
+
 : "${WP_VERSION:?WP_VERSION is required}"
 : "${PHP_VERSION:?PHP_VERSION is required}"
 : "${WC_VERSION:?WC_VERSION is required}"
@@ -98,6 +104,14 @@ wpcli core install \
   --admin_email="matrix-admin@example.test" \
   --skip-email
 
+if [[ "$mode" == "--stable-only" ]]; then
+  actual_wp_version="$(wpcli core version)"
+  if [[ "$actual_wp_version" != "$WP_VERSION" ]]; then
+    echo "Installed WordPress version mismatch: expected $WP_VERSION, got $actual_wp_version." >&2
+    exit 1
+  fi
+fi
+
 wc_zip="$root/woocommerce.zip"
 curl -fL \
   "https://github.com/woocommerce/woocommerce/releases/download/${WC_VERSION}/woocommerce.zip" \
@@ -119,18 +133,22 @@ curl --fail --location --silent --show-error --retry 3 --max-time 120 \
   -o "$public_zip"
 printf '%s  %s\n' "$UC_WPORG_020_SHA256" "$public_zip" | sha256sum -c -
 
-# Build *this candidate head* into the exact distributable WordPress.org ZIP.
-python3 "$workspace/scripts/build-wordpress-org-package.py" \
-  --source packages/ultimate-commerce-for-woocommerce \
-  --output-dir "$root/candidate"
-candidate_name="bad-otter-ultimate-commerce-woocommerce-0.2.2.zip"
-candidate_zip="$root/candidate/$candidate_name"
-test -s "$candidate_zip"
-( cd "$root/candidate" && sha256sum -c "$candidate_name.sha256" )
-python3 "$workspace/scripts/check-wordpress-org-package.py" "$candidate_zip"
+archive_checks=("$public_zip" 0.2.0)
+if [[ "$mode" == "--upgrade" ]]; then
+  # Build *this candidate head* into the exact distributable WordPress.org ZIP.
+  python3 "$workspace/scripts/build-wordpress-org-package.py" \
+    --source packages/ultimate-commerce-for-woocommerce \
+    --output-dir "$root/candidate"
+  candidate_name="bad-otter-ultimate-commerce-woocommerce-0.2.2.zip"
+  candidate_zip="$root/candidate/$candidate_name"
+  test -s "$candidate_zip"
+  ( cd "$root/candidate" && sha256sum -c "$candidate_name.sha256" )
+  python3 "$workspace/scripts/check-wordpress-org-package.py" "$candidate_zip"
+  archive_checks+=("$candidate_zip" 0.2.2)
+fi
 
 # Fail closed on mismatched identity, ambiguous ZIP paths or version metadata.
-python3 - "$public_zip" "$candidate_zip" <<'PY'
+python3 - "${archive_checks[@]}" <<'PY'
 import pathlib
 import re
 import stat
@@ -139,7 +157,7 @@ import zipfile
 
 slug = "bad-otter-ultimate-commerce-woocommerce"
 entry = f"{slug}/ultimate-commerce-for-woocommerce.php"
-for filename, version in ((sys.argv[1], "0.2.0"), (sys.argv[2], "0.2.2")):
+for filename, version in zip(sys.argv[1::2], sys.argv[2::2]):
     with zipfile.ZipFile(filename) as archive:
         entries = archive.infolist()
         paths = [item.filename for item in entries]
@@ -162,11 +180,11 @@ for filename, version in ((sys.argv[1], "0.2.0"), (sys.argv[2], "0.2.2")):
             raise SystemExit(f"Unexpected {version} ZIP version header")
         if "Update URI:" in bootstrap:
             raise SystemExit("Public Free ZIP unexpectedly declares a custom updater")
-print("Published 0.2.0 and candidate 0.2.2 ZIP identity verified.")
+    print(f"WordPress.org Free {version} ZIP identity verified.")
 PY
 
 unzip -t "$public_zip" >/dev/null
-unzip -t "$candidate_zip" >/dev/null
+if [[ "$mode" == "--upgrade" ]]; then unzip -t "$candidate_zip" >/dev/null; fi
 
 wpcli plugin activate woocommerce
 wpcli wc hpos enable --user=admin
@@ -180,6 +198,15 @@ eval_stage() {
 }
 
 eval_stage seed
+
+if [[ "$mode" == "--stable-only" ]]; then
+  # A new request proves the published plugin can reload the persisted fixture
+  # on this WordPress version without ever installing candidate Free or Pro.
+  eval_stage verify_stable
+  wpcli wc hpos status --user=admin
+  echo "Published WordPress.org Free 0.2.0 compatibility smoke passed on WordPress $actual_wp_version, WooCommerce $WC_VERSION and PHP $PHP_VERSION."
+  exit 0
+fi
 
 # WP-CLI's --force installer exercises in-place replacement of the installed
 # plugin's canonical basename, retaining the database and active-plugin state.
