@@ -720,3 +720,11 @@ Before prioritising a roadmap item, ask:
 > Does this materially increase adoption, merchant revenue, customer retention, operational efficiency, security, scalability or platform defensibility?
 
 If not, it should not displace work that does.
+
+## Real-screen quality — 27 November 2026
+
+For every application build milestone and material UI change: run the exact candidate and capture actual screenshots on mobile (390 × 844), tablet (768 × 1024), desktop (1440 × 1000), narrow 320px and widescreen 1920 × 1080, plus supported landscape/device sizes and relevant user roles/states. Inspect against the brief and best practical outcome, including accessibility, layout, branding, navigation, interactions and errors. Record exact revision, environment, viewport/state, screenshot artifact/digest and initial score; fix, retest, recapture and rescore to justified 10/10, aiming for 11/10 across all meaningful work. For genuinely nonvisual work record appropriate actual evidence and why screenshots do not apply. Missing/stale screenshots block UI acceptance; mockups and green CI alone are insufficient.
+
+**Project focus:** Real supported WordPress/WooCommerce storefront, product/search/filter, cart, checkout and merchant admin; test Free standalone with representative fixtures and compatibility states. Preserve public contribution and hosted CI boundaries.
+
+Apply this self-contained quality requirement through existing browser QA and project review; no new paid tools. Keep existing roadmap priorities, formal gates, independent review, privacy/security, approved environment and release authority. This source amendment is not proof of screenshot capture, mechanical enforcement or release; verify adoption and evidence in each relevant PR.
